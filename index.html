@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eudaimonia Content OS</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js" integrity="sha384-iU8HYtnGQ8Cy4zl7gbNMOhsDTTKX02BTXptVP/vqAWIaTfM7isw76iyZCsjL2eVi" crossorigin="anonymous"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0f0f0e;--warm:#f5f2ec;--warm2:#ede8de;--warm3:#e5dfd4;
+  --amber:#c8832a;--amber-light:#f5e6cc;--amber-mid:#e8a84a;
+  --gold:#b8720f;--gold-light:#fdf0d8;
+  --green:#1a6b50;--green-light:#dff0e8;
+  --violet:#4a3fa0;--violet-light:#ebe9f9;
+  --red:#b83825;--red-light:#faebe7;
+  --muted:#888;--muted2:#aaa;--border:#e2dcd2;--border2:#d5cfc5;--white:#ffffff;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--warm);color:var(--ink);min-height:100vh}
+.page-wrap{max-width:980px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+.top-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:3rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:12px}
+.nav-logo{font-family:'DM Serif Display',serif;font-size:18px;letter-spacing:-.3px}
+.nav-logo span{color:var(--amber)}
+.nav-tabs{display:flex;gap:4px;background:var(--warm2);border-radius:8px;padding:3px;flex-wrap:wrap}
+.nav-tab{font-size:12px;font-weight:500;padding:6px 14px;border-radius:6px;cursor:pointer;color:var(--muted);border:none;background:transparent;transition:all .2s}
+.nav-tab.active{background:#fff;color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.section{display:none}.section.active{display:block}
+/* HERO */
+.hero{margin-bottom:3rem}
+.hero-eyebrow{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--amber);margin-bottom:.75rem}
+.hero-title{font-family:'DM Serif Display',serif;font-size:42px;line-height:1.1;margin-bottom:1rem;letter-spacing:-.5px}
+.hero-title em{font-style:italic;color:var(--amber)}
+.hero-sub{font-size:15px;color:#555;line-height:1.7;max-width:620px}
+/* ARCH */
+.arch-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:2rem 0}
+.arch-card{background:#fff;border-radius:12px;padding:1.5rem;border:1px solid var(--border);position:relative;overflow:hidden}
+.arch-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.arch-card.reach::before{background:var(--violet)}.arch-card.resonate::before{background:var(--amber)}.arch-card.respect::before{background:var(--green)}
+.arch-label{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.5rem}
+.arch-card.reach .arch-label{color:var(--violet)}.arch-card.resonate .arch-label{color:var(--amber)}.arch-card.respect .arch-label{color:var(--green)}
+.arch-title{font-family:'DM Serif Display',serif;font-size:22px;margin-bottom:.5rem}
+.arch-desc{font-size:13px;color:#666;line-height:1.6}
+.arch-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:.75rem}
+.arch-tag{font-size:11px;padding:3px 9px;border-radius:20px;font-weight:500}
+.reach .arch-tag{background:var(--violet-light);color:var(--violet)}.resonate .arch-tag{background:var(--amber-light);color:var(--amber)}.respect .arch-tag{background:var(--green-light);color:var(--green)}
+/* JOBS */
+.jobs-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:1.5rem 0}
+.job-card{background:#fff;border-radius:12px;padding:1.25rem 1.5rem;border:1px solid var(--border)}
+.job-num{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem}
+.job-name{font-size:16px;font-weight:600;margin-bottom:.4rem}
+.job-desc{font-size:13px;color:#666;line-height:1.6}
+.job-card.j1{border-left:3px solid var(--red)}.job-card.j2{border-left:3px solid var(--violet)}.job-card.j3{border-left:3px solid var(--amber)}.job-card.j4{border-left:3px solid var(--green)}
+/* SECTION HEADERS */
+.section-header{margin:2.5rem 0 1.25rem}
+.section-header h2{font-family:'DM Serif Display',serif;font-size:28px;letter-spacing:-.3px;margin-bottom:.3rem}
+.section-header p{font-size:14px;color:#666;line-height:1.6}
+.section-label{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem;padding-top:.5rem}
+/* CALENDAR */
+.cal-filter{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.25rem}
+.cal-pill{font-size:12px;padding:5px 14px;border-radius:20px;cursor:pointer;border:1.5px solid var(--border);background:#fff;color:var(--muted);font-weight:500;transition:all .15s}
+.cal-pill[data-f=all].active{background:var(--ink);color:#fff;border-color:var(--ink)}
+.cal-pill[data-f=pain].active{background:var(--red-light);border-color:var(--red);color:var(--red)}
+.cal-pill[data-f=shift].active{background:var(--violet-light);border-color:var(--violet);color:var(--violet)}
+.cal-pill[data-f=synth].active{background:var(--amber-light);border-color:var(--amber);color:var(--amber)}
+.cal-pill[data-f=bts].active{background:var(--green-light);border-color:var(--green);color:var(--green)}
+.cal-pill[data-f=seed].active{background:#f0f0f0;border-color:#999;color:#333}
+.vid-card{background:#fff;border:1px solid var(--border);border-radius:12px;margin-bottom:8px;overflow:hidden;transition:box-shadow .2s}
+.vid-card.hidden{display:none}
+.vid-card:hover{box-shadow:0 2px 12px rgba(0,0,0,.07)}
+.vid-header{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer}
+.vid-day{font-size:11px;color:var(--muted);font-weight:600;min-width:44px}
+.vid-badge{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;white-space:nowrap}
+.b-pain{background:var(--red-light);color:var(--red)}.b-shift{background:var(--violet-light);color:var(--violet)}.b-synth{background:var(--amber-light);color:var(--amber)}.b-bts{background:var(--green-light);color:var(--green)}.b-seed{background:#f0f0f0;color:#555}
+.vid-title{font-size:14px;font-weight:500;flex:1;line-height:1.3}
+.vid-arch{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.vid-caret{font-size:10px;color:#ccc;margin-left:8px;transition:transform .2s}
+.vid-card.open .vid-caret{transform:rotate(180deg)}
+.vid-body{display:none;padding:0 16px 16px;border-top:1px solid #f5f2ec}
+.vid-card.open .vid-body{display:block}
+.sub-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:14px 0 7px}
+.hook-row{display:flex;gap:10px;margin-bottom:7px;align-items:flex-start}
+.hook-n{font-size:11px;font-weight:700;color:#ccc;min-width:16px;margin-top:2px}
+.hook-t{font-size:13px;font-style:italic;color:var(--ink);line-height:1.55}
+.point-row{display:flex;gap:10px;padding:10px 12px;background:var(--warm);border-radius:8px;margin-bottom:6px}
+.point-n{font-size:11px;font-weight:700;color:#ccc;min-width:18px;margin-top:2px}
+.point-t{font-size:13px;color:#222;line-height:1.65}
+.callout{font-size:13px;color:#1a1a1a;font-style:italic;border-left:2px solid var(--amber);padding:9px 13px;background:var(--amber-light);border-radius:0 8px 8px 0;line-height:1.6;margin:8px 0}
+.flow-box{font-size:12px;color:#555;line-height:1.8;background:var(--warm);border-radius:8px;padding:10px 14px;margin:6px 0}
+.film-note{font-size:12px;color:var(--muted);padding:8px 0 0;border-top:1px solid #f0ebe2;line-height:1.55;margin-top:8px}
+.film-note strong{color:#777}
+/* BTS */
+.bts-intro{background:#fff;border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-bottom:1.5rem}
+.bts-intro p{font-size:14px;color:#555;line-height:1.7}
+.bts-ep{background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:8px}
+.bts-ep-header{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer}
+.bts-ep-num{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);min-width:48px}
+.bts-ep-badge{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:var(--green-light);color:var(--green);white-space:nowrap}
+.bts-ep-title{font-size:14px;font-weight:500;flex:1;line-height:1.3}
+.bts-ep-caret{font-size:10px;color:#ccc;transition:transform .2s}
+.bts-ep.open .bts-ep-caret{transform:rotate(180deg)}
+.bts-ep-body{display:none;padding:0 16px 16px;border-top:1px solid #f5f2ec}
+.bts-ep.open .bts-ep-body{display:block}
+/* ── Used tracker ── */
+.used-row{display:flex;align-items:center;justify-content:flex-end;margin-top:14px;padding-top:10px;border-top:1px solid var(--border)}
+.used-btn{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:5px 14px;border-radius:20px;border:1.5px solid var(--border2);background:#fff;color:var(--muted);cursor:pointer;transition:all .2s}
+.used-btn:hover{border-color:var(--green);color:var(--green);background:var(--green-light)}
+.used-btn.is-used{background:var(--green-light);border-color:var(--green);color:var(--green)}
+.vid-card.used-card>.vid-header .vid-title::after{content:' ✓';color:var(--green);font-size:10px;font-weight:700;margin-left:4px}
+.vid-card.used-card>.vid-header{opacity:.7}
+.bts-ep.used-card>.bts-ep-header .bts-ep-title::after{content:' ✓';color:var(--green);font-size:10px;font-weight:700;margin-left:4px}
+.bts-ep.used-card>.bts-ep-header{opacity:.7}
+.used-counter{font-size:12px;color:var(--muted);font-weight:500;margin-left:auto}
+.used-counter b{color:var(--green)}
+/* STRATEGY */
+.strat-block{background:#fff;border-radius:12px;border:1px solid var(--border);padding:1.5rem;margin-bottom:12px}
+.strat-block h3{font-size:16px;font-weight:600;margin-bottom:.75rem}
+.strat-block p,.strat-block li{font-size:13px;color:#555;line-height:1.7}
+.strat-block ul{padding-left:1.25rem;margin-top:.5rem}
+.strat-block li{margin-bottom:.3rem}
+.strat-two{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.highlight-box{background:var(--ink);color:#fff;border-radius:12px;padding:1.5rem;margin-bottom:12px}
+.highlight-box h3{font-size:15px;font-weight:600;margin-bottom:.6rem;color:var(--amber-mid)}
+.highlight-box p{font-size:13px;line-height:1.7;color:#ccc}
+.rule-row{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #f0ebe2}
+.rule-row:last-child{border-bottom:none}
+.rule-num{font-size:22px;font-family:'DM Serif Display',serif;color:var(--amber);min-width:30px}
+.rule-content h4{font-size:14px;font-weight:600;margin-bottom:3px}
+.rule-content p{font-size:13px;color:#666;line-height:1.5}
+/* ===== ANALYTICS TAB ===== */
+.analytics-alert{background:#fef8ec;border:1px solid var(--amber-light);border-left:4px solid var(--amber);border-radius:12px;padding:14px 18px;margin-bottom:20px;font-size:13px;color:#7a4e10;display:flex;gap:20px;flex-wrap:wrap}
+.analytics-alert strong{color:var(--gold)}
+.alert-item{display:flex;gap:8px;align-items:flex-start}
+.metric-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:24px}
+.metric-card{background:#fff;border-radius:12px;padding:18px;border:1px solid var(--border);border-top:3px solid var(--amber)}
+.metric-card.alert-card{border-top-color:var(--red)}
+.metric-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.metric-value{font-size:30px;font-weight:800;color:var(--ink);line-height:1;font-family:'DM Serif Display',serif}
+.metric-value.gold{color:var(--amber)}
+.metric-value.red{color:var(--red)}
+.metric-sub{font-size:11px;color:var(--muted);margin-top:5px}
+.charts-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:24px}
+.chart-card{background:#fff;border-radius:12px;padding:18px;border:1px solid var(--border)}
+.chart-title{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:14px}
+.chart-wrap{position:relative;height:180px}
+.tiers-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px}
+.tier-card{background:#fff;border-radius:12px;padding:16px 18px;border:1px solid var(--border)}
+.tier-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--warm3)}
+.tier-stars{font-size:13px}
+.tier-label{font-size:13px;font-weight:700}
+.tier-count{margin-left:auto;background:var(--warm2);border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;color:var(--muted)}
+.tier-card.excellent .tier-count{background:var(--green-light);color:var(--green)}
+.tier-card.strong .tier-count{background:var(--violet-light);color:var(--violet)}
+.tier-card.average .tier-count{background:var(--amber-light);color:var(--amber)}
+.tier-card.below .tier-count{background:var(--red-light);color:var(--red)}
+.post-row{padding:9px 0;border-bottom:1px solid #f5f2ec;display:flex;flex-direction:column;gap:4px}
+.post-row:last-child{border-bottom:none;padding-bottom:0}
+.post-title{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.post-meta{display:flex;gap:12px;flex-wrap:wrap}
+.meta-item{font-size:11px;color:var(--muted)}
+.meta-item strong{color:var(--ink);font-weight:700}
+.meta-item.gold strong{color:var(--amber)}
+.format-badge{font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px;background:var(--warm2);color:#555;display:inline-block}
+.format-table-card{background:#fff;border-radius:12px;padding:18px;border:1px solid var(--border);overflow-x:auto;margin-bottom:24px}
+.format-table-card table{width:100%;border-collapse:collapse;font-size:13px}
+.format-table-card th{text-align:left;padding:7px 10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted2);border-bottom:2px solid var(--warm3)}
+.format-table-card td{padding:9px 10px;border-bottom:1px solid #f5f2ec;color:var(--ink)}
+.format-table-card tr:last-child td{border-bottom:none}
+.mini-bar-wrap{width:80px;background:var(--warm3);border-radius:4px;height:6px;overflow:hidden;display:inline-block;vertical-align:middle}
+.mini-bar{height:6px;background:var(--amber);border-radius:4px}
+.insights-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-bottom:24px}
+.insight-card{background:#fff;border-radius:12px;padding:14px 16px;border:1px solid var(--border);border-left:4px solid var(--amber);display:flex;gap:11px;align-items:flex-start}
+.insight-card.warning{border-left-color:var(--red)}
+.insight-card.info{border-left-color:var(--violet)}
+.insight-emoji{font-size:18px;flex-shrink:0;margin-top:1px}
+.insight-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:4px}
+.insight-body{font-size:12px;color:#444;line-height:1.55}
+.plan-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-bottom:24px}
+.plan-card{background:#fff;border-radius:10px;padding:11px 13px;border:1px solid var(--border);border-left:3px solid var(--amber)}
+.plan-card.high{border-left-color:var(--red)}.plan-card.med{border-left-color:var(--amber)}.plan-card.low{border-left-color:var(--green)}
+.plan-date{font-size:10px;font-weight:700;color:var(--muted);margin-bottom:3px}
+.plan-format{font-size:10px;color:var(--muted2);margin-bottom:5px}
+.plan-hook{font-size:12px;font-weight:600;color:var(--ink);line-height:1.4}
+.analytics-footer{text-align:center;font-size:11px;color:var(--muted);padding:16px 0;border-top:1px solid var(--border);margin-top:8px}
+/* ===== TRACKER ===== */
+.trk-stats{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:1.5rem}
+.trk-stat{background:#fff;border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem;position:relative;overflow:hidden}
+.trk-stat::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px}
+.trk-stat.s-gold::after{background:linear-gradient(90deg,var(--amber),var(--amber-mid))}.trk-stat.s-green::after{background:var(--green)}.trk-stat.s-red::after{background:var(--red)}.trk-stat.s-violet::after{background:var(--violet)}.trk-stat.s-ink::after{background:var(--ink)}.trk-stat.s-blue::after{background:#1a6bc8}
+.trk-stat-val{font-family:'DM Serif Display',serif;font-size:26px;line-height:1;margin-bottom:3px}
+.trk-stat-val.v-gold{color:var(--amber)}.trk-stat-val.v-green{color:var(--green)}.trk-stat-val.v-red{color:var(--red)}.trk-stat-val.v-violet{color:var(--violet)}.trk-stat-val.v-blue{color:#1a6bc8}
+.trk-stat-lbl{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.trk-progress-wrap{margin-bottom:1.75rem}
+.trk-progress-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem}
+.trk-progress-header span{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.trk-progress-header strong{font-family:'DM Serif Display',serif;font-size:15px;color:var(--amber)}
+.trk-progress-bar{height:5px;background:var(--warm3);border-radius:5px;overflow:hidden}
+.trk-progress-fill{height:100%;background:linear-gradient(90deg,var(--amber),var(--amber-mid));border-radius:5px;transition:width .6s ease}
+.trk-grid-section{background:#fff;border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:1.25rem}
+.trk-grid-title{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.9rem}
+.dot-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:6px}
+.dot-cell{aspect-ratio:1;border-radius:4px;border:1px solid var(--border);background:var(--warm);cursor:default;transition:all .2s}
+.dot-cell.posted{background:var(--amber);border-color:var(--amber)}.dot-cell.filmed{background:var(--amber-light);border-color:var(--amber)}.dot-cell.scripted{background:var(--warm3);border-color:var(--border2)}
+.dot-cell.today{border-color:var(--amber);box-shadow:0 0 0 2px var(--amber-light);animation:dotpulse 2s ease-in-out infinite}
+@keyframes dotpulse{0%,100%{box-shadow:0 0 0 2px var(--amber-light)}50%{box-shadow:0 0 0 4px rgba(200,131,42,.15)}}
+.dot-legend{display:flex;gap:14px;margin-top:.75rem;flex-wrap:wrap}
+.dot-legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)}
+.dot-legend-swatch{width:10px;height:10px;border-radius:2px;border:1px solid var(--border)}
+.sort-toggle{display:flex;gap:4px;background:var(--warm2);border-radius:6px;padding:2px}
+.sort-btn{font-size:11px;font-weight:500;padding:4px 10px;border-radius:4px;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all .15s}
+.sort-btn.active{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.trk-main{display:grid;grid-template-columns:1fr 300px;gap:16px;align-items:start}
+.trk-log-wrap{background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:1.25rem}
+.trk-log-header{padding:.9rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.trk-log-header span{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.trk-table{width:100%;border-collapse:collapse}
+.trk-table th{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted2);padding:.55rem .8rem;text-align:left;border-bottom:1px solid var(--border);background:var(--warm);white-space:nowrap}
+.trk-table td{padding:.65rem .8rem;font-size:12px;border-bottom:1px solid #f5f2ec;vertical-align:middle}
+.trk-table tr:last-child td{border-bottom:none}.trk-table tr:hover td{background:var(--warm)}
+.trk-empty{padding:2.5rem;text-align:center;color:var(--muted);font-size:13px}
+.plat-row{display:flex;flex-direction:column;gap:3px;min-width:120px}
+.plat-line{display:flex;align-items:center;gap:5px;font-size:11px}
+.plat-pip{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.pip-tt{background:#1a6bc8}.pip-ig{background:#9b2c7a}.pip-yt{background:#c82a1a}.pip-tw{background:#1da1f2}.pip-li{background:#0077b5}.pip-ytl{background:#ff0000}
+.status-badge{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;white-space:nowrap}
+.st-idea{background:#f0f0f0;color:#777}.st-scripted{background:var(--warm3);color:#666}.st-filmed{background:var(--amber-light);color:var(--gold)}.st-edited{background:var(--violet-light);color:var(--violet)}.st-posted{background:var(--green-light);color:var(--green)}
+.verdict-badge{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;white-space:nowrap}
+.vb-hot{background:var(--green-light);color:var(--green)}.vb-test{background:var(--amber-light);color:var(--gold)}.vb-skip{background:#f0f0f0;color:#888}
+.type-dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:5px;flex-shrink:0}
+.td-pain{background:var(--red)}.td-shift{background:var(--violet)}.td-synth{background:var(--amber)}.td-bts{background:var(--green)}.td-seed{background:#999}
+.fmt-badge{font-size:10px;padding:2px 7px;border-radius:8px;font-weight:500;background:var(--warm2);color:#555;white-space:nowrap}
+.trk-form{background:#fff;border:1px solid var(--border);border-radius:12px;padding:1.4rem;margin-bottom:1.25rem}
+.trk-form-title{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--amber);margin-bottom:1.1rem}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.form-row.triple{grid-template-columns:1fr 1fr 1fr}.form-row.full{grid-template-columns:1fr}
+.form-group label{display:block;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:.35rem}
+.form-group input,.form-group select,.form-group textarea{width:100%;background:var(--warm);border:1px solid var(--border);border-radius:7px;color:var(--ink);font-family:'DM Sans',sans-serif;font-size:13px;padding:.5rem .7rem;outline:none;transition:border .15s}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--amber);background:#fff}
+.form-group textarea{resize:vertical;min-height:56px}
+.metrics-section{background:var(--warm);border-radius:8px;padding:.9rem;margin-bottom:10px}
+.metrics-section-title{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:.7rem;display:flex;align-items:center;gap:6px}
+.metrics-platform-block{margin-bottom:.75rem;padding-bottom:.75rem;border-bottom:1px solid var(--border)}
+.metrics-platform-block:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none}
+.metrics-plat-label{font-size:11px;font-weight:600;display:flex;align-items:center;gap:5px;margin-bottom:.5rem}
+.metrics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.metrics-grid.wide{grid-template-columns:repeat(5,1fr)}
+.mg-group{display:flex;flex-direction:column;gap:3px}
+.mg-group label{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted2)}
+.mg-group input{background:#fff;border:1px solid var(--border);border-radius:5px;padding:.35rem .5rem;font-size:12px;color:var(--ink);font-family:'DM Sans',sans-serif;outline:none;transition:border .15s;width:100%}
+.mg-group input:focus{border-color:var(--amber)}
+.plat-toggle{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:.8rem}
+.plat-check{display:none}
+.plat-check-label{font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;border:1.5px solid var(--border);cursor:pointer;transition:all .15s;color:var(--muted);background:#fff}
+.plat-check:checked+.plat-check-label{border-color:transparent}
+.plat-check[value=tt]:checked+.plat-check-label{background:#e8f4ff;color:#1a6bc8;border-color:#1a6bc8}
+.plat-check[value=ig]:checked+.plat-check-label{background:#fce8f5;color:#9b2c7a;border-color:#9b2c7a}
+.plat-check[value=yts]:checked+.plat-check-label{background:#fee8e8;color:#c82a1a;border-color:#c82a1a}
+.plat-check[value=ytl]:checked+.plat-check-label{background:#fee8e8;color:#c82a1a;border-color:#c82a1a}
+.plat-check[value=tw]:checked+.plat-check-label{background:#e8f6ff;color:#1da1f2;border-color:#1da1f2}
+.plat-check[value=li]:checked+.plat-check-label{background:#e8f0f8;color:#0077b5;border-color:#0077b5}
+.plat-metrics-section{display:none;margin-bottom:.6rem}
+.plat-metrics-section.visible{display:block}
+.btn-log{width:100%;background:var(--ink);color:#fff;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;padding:.7rem;cursor:pointer;margin-top:4px;transition:background .2s;letter-spacing:.02em}
+.btn-log:hover{background:var(--amber)}
+.trk-right{display:flex;flex-direction:column;gap:12px}
+.trk-panel{background:#fff;border:1px solid var(--border);border-radius:12px;padding:1.25rem}
+.trk-panel-title{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.9rem}
+.job-split-rows{display:flex;flex-direction:column;gap:.7rem}
+.jsplit-row{display:flex;flex-direction:column;gap:.25rem}
+.jsplit-label{display:flex;justify-content:space-between;align-items:center}
+.jsplit-name{font-size:12px;font-weight:500;color:var(--ink);display:flex;align-items:center;gap:5px}
+.jsplit-count{font-size:11px;color:var(--muted)}
+.jsplit-track{height:4px;background:var(--warm3);border-radius:4px;overflow:hidden}
+.jsplit-fill{height:100%;border-radius:4px;transition:width .5s ease}
+.hook-lb-row{display:flex;align-items:center;justify-content:space-between;padding:.55rem 0;border-bottom:1px solid #f5f2ec}
+.hook-lb-row:last-child{border-bottom:none}
+.hook-lb-text{font-size:12px;color:var(--ink);flex:1;padding-right:8px;line-height:1.4}
+.hook-lb-score{font-family:'DM Serif Display',serif;font-size:18px;color:var(--amber);min-width:32px;text-align:right}
+.trk-insight{background:var(--gold-light);border:1px solid rgba(200,131,42,.25);border-radius:8px;padding:1rem;font-size:13px;line-height:1.65;color:var(--ink)}
+.trk-insight strong{color:var(--gold)}
+.export-row{display:flex;gap:8px;margin-top:1.5rem}
+.btn-export,.btn-import{background:var(--warm2);border:1px solid var(--border2);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;color:var(--ink);padding:.6rem .9rem;cursor:pointer;transition:all .15s;letter-spacing:.02em}
+.btn-export{flex:1}
+.btn-export:hover,.btn-import:hover{background:var(--amber-light);border-color:var(--amber);color:var(--gold)}
+.import-area{display:none;margin-top:8px}
+.import-area textarea{width:100%;background:var(--warm);border:1px solid var(--border);border-radius:7px;font-family:'DM Sans',monospace;font-size:11px;padding:.6rem;height:80px;color:var(--ink);resize:vertical;outline:none}
+.import-area textarea:focus{border-color:var(--amber)}
+.btn-import-go{background:var(--amber);color:#fff;border:none;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;padding:.45rem .9rem;cursor:pointer;margin-top:6px}
+.upload-zone{border:1.5px dashed var(--border2);border-radius:8px;padding:1rem;text-align:center;cursor:pointer;transition:all .15s;background:var(--warm);margin-top:.75rem}
+.upload-zone:hover{border-color:var(--amber);background:var(--amber-light)}
+.upload-zone input{display:none}
+.upload-zone-label{font-size:12px;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+.upload-zone.has-image{border-color:var(--green);background:var(--green-light)}
+.upload-preview{max-width:100%;max-height:180px;border-radius:6px;margin-top:.5rem;display:block;margin-left:auto;margin-right:auto}
+.btn-read-screenshot{width:100%;background:var(--amber);color:#fff;border:none;border-radius:7px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;padding:.55rem;cursor:pointer;margin-top:.5rem;transition:opacity .2s;display:none}
+.btn-read-screenshot:hover{opacity:.85}
+.screenshot-result{font-size:12px;border-radius:6px;padding:.6rem .8rem;margin-top:.5rem;line-height:1.5;display:none}
+@media(max-width:760px){
+  .arch-grid,.jobs-grid,.strat-two,.trk-stats,.trk-main,.form-row.triple,.charts-row,.tiers-grid{grid-template-columns:1fr}
+  .form-row{grid-template-columns:1fr}.hero-title{font-size:30px}.nav-tab{font-size:11px;padding:5px 10px}
+}
+</style>
+</head>
+<body>
+<div class="page-wrap">
+<nav class="top-nav">
+  <div class="nav-logo">Eudaimonia <span>Content OS</span></div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showSection('strategy',this)">Strategy</button>
+    <button class="nav-tab" onclick="showSection('calendar',this)">14-Day Sprint</button>
+    <button class="nav-tab" onclick="showSection('bts',this)">BTS Series</button>
+    <button class="nav-tab" onclick="showSection('analytics',this)">📊 Analytics</button>
+    <button class="nav-tab" onclick="showSection('tracker',this)">Content Log</button>
+  </div>
+</nav>
+<!-- ======== STRATEGY ======== -->
+<div class="section active" id="sec-strategy">
+  <div class="hero">
+    <div class="hero-eyebrow">Content Operating System · 2026</div>
+    <h1 class="hero-title">Every video earns<br>reach, resonance,<br>or <em>respect.</em></h1>
+    <p class="hero-sub">This is the master framework for turning everything you consume, think, and experience into content that builds the Best Self audience and drives cohort enrollment. One thread. One purpose.</p>
+  </div>
+  <div class="section-label">The 3-Layer Architecture</div>
+  <div class="arch-grid">
+    <div class="arch-card reach"><div class="arch-label">Layer 1</div><div class="arch-title">Reach</div><div class="arch-desc">Eyeballs from people who've never heard of you. Hook-first, pattern-interrupt, broad enough to stop a scroll.</div><div class="arch-tags"><span class="arch-tag">Pain callout</span><span class="arch-tag">Contrarian take</span><span class="arch-tag">Relatable moment</span></div></div>
+    <div class="arch-card resonate"><div class="arch-label">Layer 2</div><div class="arch-title">Resonance</div><div class="arch-desc">Depth that makes them feel seen. Paradigm shifts, philosophical reframes, the synthesizer at work. Saves and shares.</div><div class="arch-tags"><span class="arch-tag">Paradigm shift</span><span class="arch-tag">Synthesizer insight</span><span class="arch-tag">The framework</span></div></div>
+    <div class="arch-card respect"><div class="arch-label">Layer 3</div><div class="arch-title">Respect</div><div class="arch-desc">Trust built over time. You living the principles, building in public, showing the proof — not just teaching it. BTS earns this.</div><div class="arch-tags"><span class="arch-tag">BTS / building</span><span class="arch-tag">Personal story</span><span class="arch-tag">Lived proof</span></div></div>
+  </div>
+  <div class="section-header"><h2>The 5 Content Jobs</h2><p>Every single video you make serves exactly one of these. If you can't name the job before you film, don't film yet.</p></div>
+  <div class="jobs-grid">
+    <div class="job-card j1"><div class="job-num">Job 01 · Reach</div><div class="job-name">Call Out the Pain</div><div class="job-desc">Mirror their exact experience back at them with zero solution. Make them feel profoundly seen. End without fixing anything. The goal is: "How does he know exactly how I feel?"</div></div>
+    <div class="job-card j2"><div class="job-num">Job 02 · Resonance</div><div class="job-name">Paradigm Shift</div><div class="job-desc">Challenge a core belief about why they're stuck. "It's not discipline, it's identity." "You're not missing information, you're missing a container." Reframe the problem at the root level.</div></div>
+    <div class="job-card j3"><div class="job-num">Job 03 · Resonance</div><div class="job-name">Synthesizer Drop</div><div class="job-desc">Share something you consumed, read, or thought about today. "I just re-read this Frankl passage and here's what it means for a 27-year-old who feels stuck." Walk-and-talk. You are the filter.</div></div>
+    <div class="job-card j4"><div class="job-num">Job 04 · Respect</div><div class="job-name">Building in Public</div><div class="job-desc">Show the behind-the-scenes of building this brand, this life, this program. Not highlights — the real thing. Decisions, doubts, pivots. Proof of concept via your own becoming.</div></div>
+    <div class="job-card" style="border-left:3px solid #999"><div class="job-num">Job 05 · Conversion</div><div class="job-name">Seed the Offer</div><div class="job-desc">Plant awareness of the workbook, challenge, or cohort naturally — never a hard pitch. "I built a free thing for exactly this." Never more than once per 5 days.</div></div>
+  </div>
+  <div class="highlight-box"><h3>Your Unfair Advantage: The Synthesizer Identity</h3><p>You're not a coach who teaches personal development. You're a synthesizer who spent 10 years at the intersection of Ikigai, Eudaimonia, identity psychology, neuroscience, stoicism, and purpose philosophy — and distilled it so your audience doesn't have to. Frame it that way explicitly: "I've spent 10 years studying this so you don't have to. Here's what I actually learned." The musician origin story is the proof of concept. Use it.</p></div>
+  <div class="section-header"><h2>The Non-Negotiable Rules</h2><p>These are the principles that make this specific — not just more content advice.</p></div>
+  <div class="strat-block">
+    <div class="rule-row"><div class="rule-num">1</div><div class="rule-content"><h4>Raw always beats polished</h4><p>Walk-and-talk, car, desk mid-thought. No waiting for perfect lighting or a "real" setup. The rawness is the message: you're living this, not performing it.</p></div></div>
+    <div class="rule-row"><div class="rule-num">2</div><div class="rule-content"><h4>Pain before solution — always</h4><p>Nobody buys transformation before they feel understood. Spend twice as long naming the experience as you do pointing toward the answer. Mirror first, guide second.</p></div></div>
+    <div class="rule-row"><div class="rule-num">3</div><div class="rule-content"><h4>The hook is a promise, not a trick</h4><p>Every hook variation should promise a specific feeling or insight. No clickbait. The best hook is the one that makes your exact ICP stop and say "wait — yes."</p></div></div>
+    <div class="rule-row"><div class="rule-num">4</div><div class="rule-content"><h4>One idea per video. Hard stop.</h4><p>If you can't finish "This video is about ___" with a single noun or concept, you're making two videos. Cut one. Keep the cleaner one.</p></div></div>
+    <div class="rule-row"><div class="rule-num">5</div><div class="rule-content"><h4>Specificity is the differentiator</h4><p>"A 27-year-old who reads every self-help book and still lays awake at 2am" beats "people who feel stuck." Specificity makes your audience feel individually called out. That's the goal.</p></div></div>
+    <div class="rule-row"><div class="rule-num">6</div><div class="rule-content"><h4>Content is proof, not pitch</h4><p>Every video you post is evidence that you live this. The coherence between your life (nomadic, intentional, music → coaching arc) and your content is your most powerful trust signal. Mine it.</p></div></div>
+  </div>
+  <div class="section-header"><h2>Weekly Cadence</h2><p>Volume with intention. This is sustainable and strategic.</p></div>
+  <div class="strat-two">
+    <div class="strat-block" style="margin-bottom:0"><h3>Filming (2x/week)</h3><ul><li>Session 1 (Mon/Tue): 90 min → 3 content videos</li><li>Session 2 (Thu): 90 min → 3 content videos + 1 BTS episode</li><li>Total: 6–7 videos ready to schedule</li><li>Film before you overthink. One take, one idea.</li></ul></div>
+    <div class="strat-block" style="margin-bottom:0"><h3>Posting (Daily)</h3><ul><li>4pm block: 30 min max</li><li>Post → reply to comments → engage 3–5 ICP accounts</li><li>Post sequence: Pain → Shift → Synth → BTS → Shift → Pain → Seed</li><li>BTS once per week minimum, twice maximum</li></ul></div>
+  </div>
+  <div class="strat-block" style="margin-top:12px"><h3>Input → Output Engine (The Synthesizer Model)</h3><p>Anything you read, watch, listen to, or think on a walk is raw material. Voice note → transcript → Content OS → script. The pipeline: <strong>consume → voice note → script → film → post.</strong></p><ul style="margin-top:.75rem"><li>Finished a book? That's a Synthesizer Drop (Job 03)</li><li>Had a breakthrough on a walk? That's a Pain callout or Shift (Jobs 01/02)</li><li>Made a decision about the business? That's BTS (Job 04)</li><li>Client got a result? That's a Seed (Job 05) + Proof</li></ul></div>
+</div>
+<!-- ======== 14-DAY SPRINT ======== -->
+<div class="section" id="sec-calendar">
+  <div class="section-header"><h2>14-Day Content Sprint</h2><p>Sharper hooks. More specific ICP language. The synthesizer angle baked into every frame. Filter by content job below.</p></div>
+  <div class="cal-filter">
+    <button class="cal-pill active" data-f="all" onclick="filterCal('all')">All 14</button>
+    <button class="cal-pill" data-f="pain" onclick="filterCal('pain')">Pain callout</button>
+    <button class="cal-pill" data-f="shift" onclick="filterCal('shift')">Paradigm shift</button>
+    <button class="cal-pill" data-f="synth" onclick="filterCal('synth')">Synthesizer</button>
+    <button class="cal-pill" data-f="bts" onclick="filterCal('bts')">BTS</button>
+    <button class="cal-pill" data-f="seed" onclick="filterCal('seed')">Seed offer</button>
+    <span class="used-counter" id="sprint-used-counter"><b>0</b> / 14 used</span>
+  </div>
+  <div id="cal-list"></div>
+</div>
+<!-- ======== BTS SERIES ======== -->
+<div class="section" id="sec-bts">
+  <div class="section-header"><h2>Building in Public Series</h2><p>A recurring BTS thread documenting what you're building, why, and what you're learning in real time.</p></div>
+  <div class="bts-intro">
+    <p><strong>What this series is:</strong> A weekly episode that pulls back the curtain on building the Best Self brand. It serves two audiences: your ICP men (who see you living the principles you teach) and creator/builder types (who are drawn to watching someone build something real in public). Both audiences convert — one into coaching clients, one into brand evangelists.</p>
+    <br><p><strong>The throughline:</strong> "I'm not teaching transformation from a distance. I'm in it." Every BTS episode is proof of concept for the coaching itself. The meta-lesson is always: this is what it looks like to actually live these principles.</p>
+    <br><p><strong>Format:</strong> Walk-and-talk or desk setup. No editing. Under 90 seconds. Post on same cadence as content — not a separate production. It IS the content.</p>
+  </div>
+  <div class="section-label" style="display:flex;align-items:center">Series Episodes — Film These in Order<span class="used-counter" id="bts-used-counter" style="margin-left:12px"><b>0</b> / 7 used</span></div>
+  <div id="bts-list"></div>
+</div>
+<!-- ======== ANALYTICS ======== -->
+<div class="section" id="sec-analytics">
+  <div class="section-header"><h2>Instagram Analytics</h2><p>Live performance data from @iamtristangregoire — auto-refreshed from your Instagram analysis file.</p></div>
+  <div class="analytics-alert">
+    <div class="alert-item"><span>⚠️</span><span><strong>6-Month Posting Gap:</strong> Oct 2025 → May 2026. Algorithm standing severely damaged. Consistency is now #1 priority.</span></div>
+    <div class="alert-item"><span>🚨</span><span><strong>0 Shares Across All Posts:</strong> No viral mechanics present. Shareable content formats urgently needed.</span></div>
+  </div>
+  <div class="section-label">Key Metrics</div>
+  <div class="metric-grid">
+    <div class="metric-card"><div class="metric-label">Top Post Views</div><div class="metric-value gold">7,000</div><div class="metric-sub">My Why carousel (profile-driven)</div></div>
+    <div class="metric-card"><div class="metric-label">Top Organic Views</div><div class="metric-value gold">1,601</div><div class="metric-sub">75HARD Day 75 (discovery-driven)</div></div>
+    <div class="metric-card"><div class="metric-label">Best Format Like Rate</div><div class="metric-value gold">4.3%</div><div class="metric-sub">Face-Cam Reels avg (6 posts)</div></div>
+    <div class="metric-card"><div class="metric-label">Max Non-Follower Reach</div><div class="metric-value">82.6%</div><div class="metric-sub">75HARD Day 75</div></div>
+    <div class="metric-card"><div class="metric-label">Avg Face-Cam Views</div><div class="metric-value">812</div><div class="metric-sub">Best consistent format</div></div>
+    <div class="metric-card alert-card"><div class="metric-label">Total Shares</div><div class="metric-value red">0</div><div class="metric-sub">⚠️ No viral spread</div></div>
+  </div>
+  <div class="section-label">Format Performance</div>
+  <div class="charts-row">
+    <div class="chart-card"><div class="chart-title">Avg Views by Format</div><div class="chart-wrap"><canvas id="viewsChart"></canvas></div></div>
+    <div class="chart-card"><div class="chart-title">Avg Like Rate % by Format</div><div class="chart-wrap"><canvas id="likeRateChart"></canvas></div></div>
+    <div class="chart-card"><div class="chart-title">Content Mix (19 Posts)</div><div class="chart-wrap"><canvas id="donutChart"></canvas></div></div>
+  </div>
+  <div class="section-label">Post Performance Tiers</div>
+  <div class="tiers-grid">
+    <div class="tier-card excellent">
+      <div class="tier-header"><div class="tier-stars">⭐⭐⭐⭐⭐</div><div class="tier-label">Excellent</div><div class="tier-count">2 posts</div></div>
+      <div class="post-row"><div class="post-title">that wants more</div><div class="post-meta"><span class="meta-item"><strong>403</strong> views</span><span class="meta-item"><strong>259</strong> reached</span><span class="meta-item"><strong>32</strong> likes</span><span class="meta-item gold"><strong>58.4%</strong> non-follower</span><span class="format-badge">Cinematic Reel</span></div></div>
+      <div class="post-row"><div class="post-title">THE RECIPE FOR A BEAUTIFUL LIFE</div><div class="post-meta"><span class="meta-item"><strong>597</strong> views</span><span class="meta-item"><strong>412</strong> reached</span><span class="meta-item"><strong>27</strong> likes</span><span class="meta-item gold"><strong>73.1%</strong> non-follower</span><span class="format-badge">Face-Cam Reel</span></div></div>
+    </div>
+    <div class="tier-card strong">
+      <div class="tier-header"><div class="tier-stars">⭐⭐⭐⭐</div><div class="tier-label">Strong</div><div class="tier-count">4 posts</div></div>
+      <div class="post-row"><div class="post-title">75HARD Day 75 – A Chapter Ends</div><div class="post-meta"><span class="meta-item"><strong>1,601</strong> views</span><span class="meta-item"><strong>1,180</strong> reached</span><span class="meta-item"><strong>65</strong> likes</span><span class="meta-item gold"><strong>82.6%</strong> non-follower</span><span class="format-badge">Face-Cam Reel</span></div></div>
+      <div class="post-row"><div class="post-title">THE KEY TO BALANCE</div><div class="post-meta"><span class="meta-item"><strong>798</strong> views</span><span class="meta-item"><strong>438</strong> reached</span><span class="meta-item"><strong>27</strong> likes</span><span class="meta-item gold"><strong>74.1%</strong> non-follower</span><span class="format-badge">Face-Cam Reel</span></div></div>
+      <div class="post-row"><div class="post-title">MY STORY (pinned)</div><div class="post-meta"><span class="meta-item"><strong>718</strong> views</span><span class="meta-item"><strong>565</strong> reached</span><span class="meta-item"><strong>26</strong> likes</span><span class="meta-item gold"><strong>75.2%</strong> non-follower</span><span class="format-badge">Face-Cam Reel</span></div></div>
+      <div class="post-row"><div class="post-title">COMPARISON IS FAKE</div><div class="post-meta"><span class="meta-item"><strong>549</strong> views</span><span class="meta-item"><strong>457</strong> reached</span><span class="meta-item"><strong>17</strong> likes</span><span class="meta-item gold"><strong>82.5%</strong> non-follower</span><span class="format-badge">Face-Cam Reel</span></div></div>
+    </div>
+    <div class="tier-card average">
+      <div class="tier-header"><div class="tier-stars">⭐⭐⭐</div><div class="tier-label">Average</div><div class="tier-count">1 post</div></div>
+      <div class="post-row"><div class="post-title">friendly reminder..</div><div class="post-meta"><span class="meta-item"><strong>799</strong> views</span><span class="meta-item"><strong>471</strong> reached</span><span class="meta-item"><strong>17</strong> likes</span><span class="meta-item gold"><strong>79.9%</strong> non-follower</span><span class="format-badge">Cinematic Reel</span></div></div>
+    </div>
+    <div class="tier-card below">
+      <div class="tier-header"><div class="tier-stars">⭐⭐</div><div class="tier-label">Below Average</div><div class="tier-count">2 posts</div></div>
+      <div class="post-row"><div class="post-title">My Why (pinned carousel)</div><div class="post-meta"><span class="meta-item"><strong>7,000</strong> views</span><span class="meta-item"><strong>896</strong> reached</span><span class="meta-item"><strong>38</strong> likes</span><span class="meta-item"><strong>74.4%</strong> non-follower</span><span class="format-badge">Carousel</span></div></div>
+      <div class="post-row"><div class="post-title">you are the creator.</div><div class="post-meta"><span class="meta-item"><strong>971</strong> views</span><span class="meta-item"><strong>759</strong> reached</span><span class="meta-item"><strong>13</strong> likes</span><span class="meta-item"><strong>67.3%</strong> non-follower</span><span class="format-badge">Green Text Reel</span></div></div>
+    </div>
+  </div>
+  <div class="section-label">Format Table</div>
+  <div class="format-table-card">
+    <table>
+      <thead><tr><th>Format</th><th>Posts</th><th>Avg Views</th><th>Avg Likes</th><th>Like Rate</th><th>Relative</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Carousel / Slides</strong></td><td>1</td><td><strong>7,000</strong></td><td>38</td><td>0.5%</td><td><div class="mini-bar-wrap"><div class="mini-bar" style="width:100%"></div></div></td></tr>
+        <tr><td><strong>75HARD Challenge</strong></td><td>1</td><td><strong>1,601</strong></td><td>65</td><td>4.1%</td><td><div class="mini-bar-wrap"><div class="mini-bar" style="width:23%"></div></div></td></tr>
+        <tr><td><strong>Face-Cam Reel</strong></td><td>6</td><td><strong>812</strong></td><td>35</td><td>4.3%</td><td><div class="mini-bar-wrap"><div class="mini-bar" style="width:12%"></div></div></td></tr>
+        <tr><td><strong>Green Text Reel</strong></td><td>3*</td><td><strong>757</strong></td><td>16</td><td>2.1%</td><td><div class="mini-bar-wrap"><div class="mini-bar" style="width:11%"></div></div></td></tr>
+        <tr><td><strong>Cinematic Reel</strong></td><td>2</td><td><strong>601</strong></td><td>25</td><td>4.2%</td><td><div class="mini-bar-wrap"><div class="mini-bar" style="width:9%"></div></div></td></tr>
+        <tr><td><strong>Text Graphic Slide</strong></td><td>2</td><td colspan="4" style="color:var(--muted);font-style:italic">Insufficient data</td></tr>
+        <tr><td><strong>Collab Reel</strong></td><td>1</td><td colspan="4" style="color:var(--muted);font-style:italic">Insufficient data</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:11px;color:var(--muted2);margin-top:10px">* Carousel views inflated by profile pinning. Green Text avg based on 1 post with full data.</p>
+  </div>
+  <div class="section-label">Key Insights</div>
+  <div class="insights-grid">
+    <div class="insight-card"><div class="insight-emoji">🏆</div><div><div class="insight-title">Best Format</div><div class="insight-body">Face-Cam Reels with bold topic titles — consistent 3–5% like rate, most comments. THE KEY TO BALANCE and COMPARISON IS FAKE are the blueprint.</div></div></div>
+    <div class="insight-card warning"><div class="insight-emoji">📉</div><div><div class="insight-title">Weakest Format</div><div class="insight-body">Green Text Cards — 1.3–2.1% like rate, 84% follower interactions = not driving discovery or new audience growth.</div></div></div>
+    <div class="insight-card"><div class="insight-emoji">🔥</div><div><div class="insight-title">Top Post</div><div class="insight-body">75HARD Day 75 — 1,601 views, 65 likes, 4.1% ER, 82.6% non-follower reach. Challenge content and personal milestones work best.</div></div></div>
+    <div class="insight-card warning"><div class="insight-emoji">⚠️</div><div><div class="insight-title">Critical Gap</div><div class="insight-body">6-month posting hiatus Oct 2025 → May 2026. Algorithm standing severely damaged. Consistency is the single most important lever right now.</div></div></div>
+    <div class="insight-card warning"><div class="insight-emoji">📢</div><div><div class="insight-title">Sharing Problem</div><div class="insight-body">0 shares across all analyzed posts. No viral mechanics. Need shareable formats — carousels with frameworks, quotable green text that people actually want to send.</div></div></div>
+    <div class="insight-card info"><div class="insight-emoji">📌</div><div><div class="insight-title">Pinned Post Impact</div><div class="insight-body">"My Why" carousel shows 7,000 views — but ~6,800 from profile visits. New visitors see it first; make it impossible to skip past.</div></div></div>
+    <div class="insight-card info"><div class="insight-emoji">💬</div><div><div class="insight-title">Comment Triggers</div><div class="insight-body">Specific, debatable, counter-intuitive titles drive most comments. COMPARISON IS FAKE: 5, KEY TO BALANCE: 6. Lean into provocative framing.</div></div></div>
+    <div class="insight-card"><div class="insight-emoji">📲</div><div><div class="insight-title">Reach Is There</div><div class="insight-body">60–83% of views from non-followers on most posts = algorithm IS pushing content out. Fix consistency + hooks to convert that reach into follows.</div></div></div>
+  </div>
+  <div class="section-label">30-Day Content Plan — May 16 – Jun 14, 2026</div>
+  <div class="plan-grid">
+    <div class="plan-card high"><div class="plan-date">May 16 · Sat</div><div class="plan-format">Face-Cam Reel</div><div class="plan-hook">I'M BACK — Here's What Happened</div></div>
+    <div class="plan-card med"><div class="plan-date">May 17 · Sun</div><div class="plan-format">Cinematic Reel</div><div class="plan-hook">A gentle reminder for your Sunday..</div></div>
+    <div class="plan-card high"><div class="plan-date">May 18 · Mon</div><div class="plan-format">Face-Cam Reel</div><div class="plan-hook">THE REASON MOST PEOPLE STAY STUCK</div></div>
+    <div class="plan-card high"><div class="plan-date">May 19 · Tue</div><div class="plan-format">Carousel</div><div class="plan-hook">5 questions to find your purpose (most skip #3)</div></div>
+    <div class="plan-card med"><div class="plan-date">May 20 · Wed</div><div class="plan-format">Face-Cam Reel</div><div class="plan-hook">THE TRUTH ABOUT SELF-DISCIPLINE</div></div>
+    <div class="plan-card low"><div class="plan-date">May 21 · Thu</div><div class="plan-format">Green Text Reel</div><div class="plan-hook">the life you want is already yours to build.</div></div>
+    <div class="plan-card high"><div class="plan-date">May 22 · Fri</div><div class="plan-format">Face-Cam Reel</div><div class="plan-hook">WHY YOUR GOALS AREN'T WORKING</div></div>
+    <div class="plan-card med"><div class="plan-date">May 23 · Sat</div><div class="plan-format">Collab/Podcast Clip</div><div class="plan-hook">[Guest Clip] The moment I realized I was living wrong</div></div>
+    <div class="plan-card low"><div class="plan-date">May 24 · Sun</div><div class="plan-format">Cinematic Reel</div><div class="plan-hook">you already know what you need to do..</div></div>
+    <div class="plan-card high"><div class="plan-date">May 25 · Mon</div><div class="plan-format">Face-Cam Reel</div><div class="plan-hook">THE IDENTITY SHIFT NOBODY TALKS ABOUT</div></div>
+    <div class="plan-card high"><div class="plan-date">May 26 · Tue</div><div class="plan-format">Carousel</div><div class="plan-hook">I asked 100 people what they regret most.</div></div>
+    <div class="plan-card med"><div class="plan-date">May 27 · Wed</div><div class="plan-format">Face-Cam Reel</div><div class="plan-hook">STOP OPTIMIZING. START LIVING.</div></div>
+    <div class="plan-card low"><div class="plan-date">May 28 · Thu</div><div class="plan-format">Green Text Reel</div><div class="plan-hook">clarity doesn't come before action. it comes from it.</div></div>
+    <div class="plan-card high"><div class="plan-date">May 29 · Fri</div><div class="plan-format">Face-Cam Reel</div><div class="plan-hook">THE 3 SIGNS YOU'RE ON THE RIGHT PATH</div></div>
+    <div class="plan-card med"><div class="plan-date">May 30 · Sat</div><div class="plan-format">Behind-Scenes Reel</div><div class="plan-hook">How I actually spend my mornings (no fluff)</div></div>
+    <div class="plan-card low"><div class="plan-date">May 31 · Sun</div><div class="plan-format">Cinematic Reel</div><div class="plan-hook">one decision away from a completely different life.</div></div>
+    <div class="plan-card high"><div class="plan-date">Jun 1 · Mon</div><div class="plan-format">Face-Cam Reel</div><div class="plan-hook">THE BIGGEST LIE IN SELF-DEVELOPMENT</div></div>
+    <div class="plan-card high"><div class="plan-date">Jun 2 · Tue</div><div class="plan-format">Carousel</div><div class="plan-hook">What Eudaimonia actually means</div></div>
+    <div class="plan-card high"><div class="plan-date">Jun 3 · Wed</div><div class="plan-format">Face-Cam Reel</div><div class="plan-hook">I WASTED 2 YEARS DOING THIS</div></div>
+    <div class="plan-card med"><div class="plan-date">Jun 4 · Thu</div><div class="plan-format">Green Text Reel</div><div class="plan-hook">you don't need more motivation. you need a better identity.</div></div>
+    <div class="plan-card med"><div class="plan-date">Jun 5 · Fri</div><div class="plan-format">Face-Cam Reel</div><div class="plan-hook">WHY COMPARING YOURSELF IS ACTUALLY USEFUL</div></div>
+    <div class="plan-card high"><div class="plan-date">Jun 6 · Sat</div><div class="plan-format">Community/Q&A Reel</div><div class="plan-hook">I read 500 DMs. Here's what you're all struggling with.</div></div>
+    <div class="plan-card low"><div class="plan-date">Jun 7 · Sun</div><div class="plan-format">Cinematic Reel</div><div class="plan-hook">what if the gap IS the growth?</div></div>
+    <div class="plan-card high"><div class="plan-date">Jun 8 · Mon</div><div class="plan-format">Face-Cam Reel</div><div class="plan-hook">THE RECIPE FOR LASTING CONFIDENCE</div></div>
+    <div class="plan-card high"><div class="plan-date">Jun 9 · Tue</div><div class="plan-format">Carousel</div><div class="plan-hook">The Ikigai exercise that took me 10 minutes</div></div>
+    <div class="plan-card med"><div class="plan-date">Jun 10 · Wed</div><div class="plan-format">Face-Cam Reel</div><div class="plan-hook">WHAT NOBODY TELLS YOU ABOUT BUILDING A LIFE YOU LOVE</div></div>
+    <div class="plan-card med"><div class="plan-date">Jun 11 · Thu</div><div class="plan-format">Green Text Reel</div><div class="plan-hook">design your life. don't just default to it.</div></div>
+    <div class="plan-card high"><div class="plan-date">Jun 12 · Fri</div><div class="plan-format">Face-Cam Reel</div><div class="plan-hook">THE MORNING ROUTINE THAT ACTUALLY CHANGED MY BRAIN</div></div>
+    <div class="plan-card high"><div class="plan-date">Jun 13 · Sat</div><div class="plan-format">Behind-Scenes Reel</div><div class="plan-hook">30 days back. Here's what changed.</div></div>
+    <div class="plan-card med"><div class="plan-date">Jun 14 · Sun</div><div class="plan-format">Face-Cam Reel</div><div class="plan-hook">A MESSAGE TO ANYONE WHO FEELS BEHIND</div></div>
+  </div>
+  <div class="analytics-footer">Last refreshed: May 18, 2026 · Data source: Instagram_Analysis_Tristan.xlsx</div>
+</div>
+<!-- ======== CONTENT LOG (TRACKER) ======== -->
+<div class="section" id="sec-tracker">
+  <div class="section-header"><h2>Content Log</h2><p>One entry per piece of content. Track it across every platform it's posted on, log metrics after 24 hours.</p></div>
+  <div class="trk-stats">
+    <div class="trk-stat s-gold"><div class="trk-stat-val v-gold" id="ts-posted">0</div><div class="trk-stat-lbl">Posted</div></div>
+    <div class="trk-stat s-green"><div class="trk-stat-val v-green" id="ts-follows">0</div><div class="trk-stat-lbl">Follows gained</div></div>
+    <div class="trk-stat s-red"><div class="trk-stat-val v-red" id="ts-hot">0</div><div class="trk-stat-lbl">🔥 Hot posts</div></div>
+    <div class="trk-stat s-violet"><div class="trk-stat-val v-violet" id="ts-views">0</div><div class="trk-stat-lbl">Total views</div></div>
+    <div class="trk-stat s-ink"><div class="trk-stat-val v-gold" id="ts-dms">0</div><div class="trk-stat-lbl">DMs received</div></div>
+    <div class="trk-stat s-blue"><div class="trk-stat-val" id="ts-toptype" style="font-size:15px;padding-top:5px">—</div><div class="trk-stat-lbl">Best type</div></div>
+  </div>
+  <div class="trk-progress-wrap">
+    <div class="trk-progress-header"><span>Sprint progress</span><strong id="ts-pct">0 / 30 days</strong></div>
+    <div class="trk-progress-bar"><div class="trk-progress-fill" id="ts-bar" style="width:0%"></div></div>
+  </div>
+  <div class="trk-grid-section">
+    <div class="trk-grid-title">30-day posting grid</div>
+    <div class="dot-grid" id="dot-grid"></div>
+    <div class="dot-legend">
+      <div class="dot-legend-item"><div class="dot-legend-swatch" style="background:var(--amber);border-color:var(--amber)"></div>Posted</div>
+      <div class="dot-legend-item"><div class="dot-legend-swatch" style="background:var(--amber-light);border-color:var(--amber)"></div>Filmed/Edited</div>
+      <div class="dot-legend-item"><div class="dot-legend-swatch" style="background:var(--warm3)"></div>Scripted</div>
+      <div class="dot-legend-item"><div class="dot-legend-swatch" style="background:var(--warm)"></div>Not started</div>
+    </div>
+  </div>
+  <div class="trk-main">
+    <div class="trk-left">
+      <div class="trk-log-wrap">
+        <div class="trk-log-header">
+          <span>Content log</span>
+          <div style="display:flex;align-items:center;gap:10px">
+            <span id="ts-log-count" style="color:var(--amber)">0 entries</span>
+            <div class="sort-toggle">
+              <button class="sort-btn active" id="sort-day" onclick="setSort('day')">By day</button>
+              <button class="sort-btn" id="sort-score" onclick="setSort('score')">By score</button>
+            </div>
+          </div>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="trk-table">
+            <thead><tr><th>Day</th><th>Hook / Title</th><th>Format</th><th>Job</th><th>Platforms</th><th>Status</th><th>Key metrics</th><th>Verdict</th></tr></thead>
+            <tbody id="trk-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="trk-form">
+        <div class="trk-form-title">+ Log a piece of content</div>
+        <div class="form-row triple">
+          <div class="form-group"><label>Day #</label><input type="number" id="f-day" min="1" max="30" placeholder="e.g. 3"></div>
+          <div class="form-group"><label>Format</label><select id="f-format"><option value="short">Short video</option><option value="carousel">Carousel</option><option value="ytlong">YouTube long-form</option><option value="tweet">Tweet / X post</option><option value="linkedin">LinkedIn post</option><option value="newsletter">Newsletter</option></select></div>
+          <div class="form-group"><label>Content job</label><select id="f-type"><option value="pain">Pain callout</option><option value="shift">Paradigm shift</option><option value="synth">Synthesizer</option><option value="bts">BTS / Building</option><option value="seed">Seed offer</option></select></div>
+        </div>
+        <div class="form-row full"><div class="form-group"><label>Hook / Title</label><input type="text" id="f-hook" placeholder="e.g. You don't have a discipline problem…"></div></div>
+        <div class="form-row">
+          <div class="form-group"><label>Status</label><select id="f-status"><option value="idea">Idea</option><option value="scripted">Scripted</option><option value="filmed">Filmed</option><option value="edited">Edited</option><option value="posted">Posted</option></select></div>
+          <div class="form-group"><label>Verdict</label><select id="f-verdict"><option value="test">Testing</option><option value="hot">🔥 Hot — double down</option><option value="skip">Skip this angle</option></select></div>
+        </div>
+        <div class="metrics-section">
+          <div class="metrics-section-title">Platforms posted on</div>
+          <div class="plat-toggle">
+            <input class="plat-check" type="checkbox" id="pc-tt" value="tt" onchange="togglePlatMetrics()"><label class="plat-check-label" for="pc-tt">TikTok</label>
+            <input class="plat-check" type="checkbox" id="pc-ig" value="ig" onchange="togglePlatMetrics()"><label class="plat-check-label" for="pc-ig">Instagram Reels</label>
+            <input class="plat-check" type="checkbox" id="pc-yts" value="yts" onchange="togglePlatMetrics()"><label class="plat-check-label" for="pc-yts">YouTube Shorts</label>
+            <input class="plat-check" type="checkbox" id="pc-ytl" value="ytl" onchange="togglePlatMetrics()"><label class="plat-check-label" for="pc-ytl">YouTube Long-form</label>
+            <input class="plat-check" type="checkbox" id="pc-tw" value="tw" onchange="togglePlatMetrics()"><label class="plat-check-label" for="pc-tw">Twitter / X</label>
+            <input class="plat-check" type="checkbox" id="pc-li" value="li" onchange="togglePlatMetrics()"><label class="plat-check-label" for="pc-li">LinkedIn</label>
+          </div>
+          <div class="plat-metrics-section" id="pm-tt"><div class="metrics-plat-label"><span class="plat-pip pip-tt"></span>TikTok metrics</div><div class="metrics-grid wide"><div class="mg-group"><label>Views</label><input type="number" id="tt-views" placeholder="0"></div><div class="mg-group"><label>Saves</label><input type="number" id="tt-saves" placeholder="0"></div><div class="mg-group"><label>Shares</label><input type="number" id="tt-shares" placeholder="0"></div><div class="mg-group"><label>Comments</label><input type="number" id="tt-comments" placeholder="0"></div><div class="mg-group"><label>Follows</label><input type="number" id="tt-follows" placeholder="0"></div></div></div>
+          <div class="plat-metrics-section" id="pm-ig"><div class="metrics-plat-label"><span class="plat-pip pip-ig"></span>Instagram Reels metrics</div><div class="metrics-grid wide"><div class="mg-group"><label>Views</label><input type="number" id="ig-views" placeholder="0"></div><div class="mg-group"><label>Saves</label><input type="number" id="ig-saves" placeholder="0"></div><div class="mg-group"><label>Shares</label><input type="number" id="ig-shares" placeholder="0"></div><div class="mg-group"><label>Comments</label><input type="number" id="ig-comments" placeholder="0"></div><div class="mg-group"><label>Follows</label><input type="number" id="ig-follows" placeholder="0"></div></div></div>
+          <div class="plat-metrics-section" id="pm-yts"><div class="metrics-plat-label"><span class="plat-pip pip-yt"></span>YouTube Shorts metrics</div><div class="metrics-grid wide"><div class="mg-group"><label>Views</label><input type="number" id="yts-views" placeholder="0"></div><div class="mg-group"><label>Likes</label><input type="number" id="yts-saves" placeholder="0"></div><div class="mg-group"><label>Shares</label><input type="number" id="yts-shares" placeholder="0"></div><div class="mg-group"><label>Comments</label><input type="number" id="yts-comments" placeholder="0"></div><div class="mg-group"><label>Subs gained</label><input type="number" id="yts-follows" placeholder="0"></div></div></div>
+          <div class="plat-metrics-section" id="pm-ytl"><div class="metrics-plat-label"><span class="plat-pip pip-ytl"></span>YouTube Long-form</div><div class="metrics-grid"><div class="mg-group"><label>Views</label><input type="number" id="ytl-views" placeholder="0"></div><div class="mg-group"><label>Watch time %</label><input type="number" id="ytl-watchtime" placeholder="42"></div><div class="mg-group"><label>CTR %</label><input type="number" id="ytl-ctr" placeholder="5.2"></div><div class="mg-group"><label>Subs gained</label><input type="number" id="ytl-follows" placeholder="0"></div></div></div>
+          <div class="plat-metrics-section" id="pm-tw"><div class="metrics-plat-label"><span class="plat-pip pip-tw"></span>Twitter / X</div><div class="metrics-grid"><div class="mg-group"><label>Impressions</label><input type="number" id="tw-views" placeholder="0"></div><div class="mg-group"><label>Likes</label><input type="number" id="tw-saves" placeholder="0"></div><div class="mg-group"><label>Retweets</label><input type="number" id="tw-shares" placeholder="0"></div><div class="mg-group"><label>Follows</label><input type="number" id="tw-follows" placeholder="0"></div></div></div>
+          <div class="plat-metrics-section" id="pm-li"><div class="metrics-plat-label"><span class="plat-pip pip-li"></span>LinkedIn</div><div class="metrics-grid"><div class="mg-group"><label>Impressions</label><input type="number" id="li-views" placeholder="0"></div><div class="mg-group"><label>Reactions</label><input type="number" id="li-saves" placeholder="0"></div><div class="mg-group"><label>Shares</label><input type="number" id="li-shares" placeholder="0"></div><div class="mg-group"><label>Follows</label><input type="number" id="li-follows" placeholder="0"></div></div></div>
+          <div style="margin-top:.7rem;padding-top:.7rem;border-top:1px solid var(--border)">
+            <div class="mg-group" style="max-width:180px"><label style="font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)">DMs received (any platform)</label><input type="number" id="f-dms" placeholder="0" style="background:#fff;border:1px solid var(--border);border-radius:5px;padding:.35rem .5rem;font-size:13px;color:var(--ink);font-family:'DM Sans',sans-serif;outline:none;width:100%;transition:border .15s;margin-top:3px"></div>
+          </div>
+        </div>
+        <div class="form-row full"><div class="form-group"><label>Notes / observations</label><textarea id="f-notes" placeholder="What resonated? Exact phrases from comments or DMs…"></textarea></div></div>
+        <button class="btn-log" onclick="logEntry()">Save entry</button>
+      </div>
+      <div class="export-row">
+        <button class="btn-export" onclick="exportData()">↓ Export data (JSON)</button>
+        <button class="btn-import" onclick="toggleImport()">↑ Import data</button>
+      </div>
+      <div class="import-area" id="import-area">
+        <textarea id="import-text" placeholder="Paste your exported JSON here…"></textarea>
+        <button class="btn-import-go" onclick="importData()">Load data</button>
+      </div>
+    </div>
+    <div class="trk-right">
+      <div class="trk-panel"><div class="trk-panel-title">Content job split</div><div class="job-split-rows">
+        <div class="jsplit-row"><div class="jsplit-label"><span class="jsplit-name"><span class="type-dot td-pain"></span>Pain callout</span><span class="jsplit-count" id="js-pain">0</span></div><div class="jsplit-track"><div class="jsplit-fill" id="jb-pain" style="width:0%;background:var(--red)"></div></div></div>
+        <div class="jsplit-row"><div class="jsplit-label"><span class="jsplit-name"><span class="type-dot td-shift"></span>Paradigm shift</span><span class="jsplit-count" id="js-shift">0</span></div><div class="jsplit-track"><div class="jsplit-fill" id="jb-shift" style="width:0%;background:var(--violet)"></div></div></div>
+        <div class="jsplit-row"><div class="jsplit-label"><span class="jsplit-name"><span class="type-dot td-synth"></span>Synthesizer</span><span class="jsplit-count" id="js-synth">0</span></div><div class="jsplit-track"><div class="jsplit-fill" id="jb-synth" style="width:0%;background:var(--amber)"></div></div></div>
+        <div class="jsplit-row"><div class="jsplit-label"><span class="jsplit-name"><span class="type-dot td-bts"></span>BTS / Building</span><span class="jsplit-count" id="js-bts">0</span></div><div class="jsplit-track"><div class="jsplit-fill" id="jb-bts" style="width:0%;background:var(--green)"></div></div></div>
+        <div class="jsplit-row"><div class="jsplit-label"><span class="jsplit-name"><span class="type-dot td-seed"></span>Seed offer</span><span class="jsplit-count" id="js-seed">0</span></div><div class="jsplit-track"><div class="jsplit-fill" id="jb-seed" style="width:0%;background:#999"></div></div></div>
+      </div></div>
+      <div class="trk-panel"><div class="trk-panel-title">Platform views</div><div class="job-split-rows">
+        <div class="jsplit-row"><div class="jsplit-label"><span class="jsplit-name"><span class="type-dot" style="background:#1a6bc8"></span>TikTok</span><span class="jsplit-count" id="pv-tt">—</span></div><div class="jsplit-track"><div class="jsplit-fill" id="pb-tt" style="width:0%;background:#1a6bc8"></div></div></div>
+        <div class="jsplit-row"><div class="jsplit-label"><span class="jsplit-name"><span class="type-dot" style="background:#9b2c7a"></span>Instagram</span><span class="jsplit-count" id="pv-ig">—</span></div><div class="jsplit-track"><div class="jsplit-fill" id="pb-ig" style="width:0%;background:#9b2c7a"></div></div></div>
+        <div class="jsplit-row"><div class="jsplit-label"><span class="jsplit-name"><span class="type-dot" style="background:#c82a1a"></span>YouTube</span><span class="jsplit-count" id="pv-yt">—</span></div><div class="jsplit-track"><div class="jsplit-fill" id="pb-yt" style="width:0%;background:#c82a1a"></div></div></div>
+        <div class="jsplit-row"><div class="jsplit-label"><span class="jsplit-name"><span class="type-dot" style="background:#1da1f2"></span>Twitter/X</span><span class="jsplit-count" id="pv-tw">—</span></div><div class="jsplit-track"><div class="jsplit-fill" id="pb-tw" style="width:0%;background:#1da1f2"></div></div></div>
+        <div class="jsplit-row"><div class="jsplit-label"><span class="jsplit-name"><span class="type-dot" style="background:#0077b5"></span>LinkedIn</span><span class="jsplit-count" id="pv-li">—</span></div><div class="jsplit-track"><div class="jsplit-fill" id="pb-li" style="width:0%;background:#0077b5"></div></div></div>
+      </div></div>
+      <div class="trk-panel"><div class="trk-panel-title">🔥 Top hooks</div><div id="hook-lb"><p style="font-size:12px;color:var(--muted)">No data yet — start logging.</p></div></div>
+      <div class="trk-panel"><div class="trk-panel-title">Live insight</div><div class="trk-insight" id="trk-insight"><strong>Start logging.</strong> Post something, wait 24 hours, log your metrics. By day 7 you'll have real signal on which format and hook type is driving follows and DMs.</div></div>
+    </div>
+  </div>
+</div>
+</div><!-- /page-wrap -->
+<script>
+// NAV
+function showSection(id,btn){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  if(btn)btn.classList.add('active');
+  if(id==='analytics'&&!window._chartsBuilt){buildCharts();window._chartsBuilt=true;}
+}
+
+// CHARTS
+function buildCharts(){
+  var amber='#c8832a',ink='#0f0f0e',warm3='#e5dfd4',muted='#888';
+  new Chart(document.getElementById('viewsChart').getContext('2d'),{
+    type:'bar',
+    data:{labels:['Face-Cam','75HARD','Green Text','Cinematic','Carousel*'],
+      datasets:[{label:'Avg Views',data:[812,1601,757,601,7000],backgroundColor:[amber,ink,'#a0a0a0',amber,'#e8dfc8'],borderRadius:6,borderSkipped:false}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{grid:{display:false},ticks:{font:{size:10}}},y:{grid:{color:warm3},ticks:{font:{size:10},callback:v=>v>=1000?(v/1000).toFixed(1)+'K':v}}}}
+  });
+  new Chart(document.getElementById('likeRateChart').getContext('2d'),{
+    type:'bar',
+    data:{labels:['Face-Cam','75HARD','Cinematic','Green Text','Carousel'],
+      datasets:[{label:'Like Rate %',data:[4.3,4.1,4.2,2.1,0.5],backgroundColor:[amber,ink,amber,'#a0a0a0','#e8dfc8'],borderRadius:6,borderSkipped:false}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{grid:{display:false},ticks:{font:{size:10}}},y:{grid:{color:warm3},ticks:{font:{size:10},callback:v=>v+'%'},max:6}}}
+  });
+  new Chart(document.getElementById('donutChart').getContext('2d'),{
+    type:'doughnut',
+    data:{labels:['Face-Cam Reel','Green Text Reel','Cinematic Reel','Text Graphic','Carousel','Collab Reel'],
+      datasets:[{data:[10,3,2,2,1,1],backgroundColor:[amber,ink,'#8b7a3a','#a0a0a0','#e8dfc8','#555'],borderWidth:0}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'62%',
+      plugins:{legend:{position:'right',labels:{font:{size:9},padding:6,boxWidth:10}}}}
+  });
+}
+
+// CALENDAR DATA
+var CAL=[
+{d:1,job:'pain',arch:'reach',title:'The 2am audit',
+ hooks:['You read the books. You go to the gym. You\'re doing everything right. And you still feel completely lost.','There\'s a specific feeling you get at 2am when you\'ve tried everything — and nothing\'s actually shifted.','If you\'ve ever laid awake thinking "I\'m doing all the things and I still feel like I\'m going nowhere" — this video is for you.'],
+ points:['You\'re not lazy. That\'s the thing nobody says. The guys I work with are some of the most driven people I know. They read. They train. They reflect. And they still end up lying awake at 2am feeling like something is fundamentally wrong with them.','And the worst part isn\'t being stuck. It\'s that you\'re trying. Because if you weren\'t trying, you could blame that. But you are. And it\'s still not working. That specific feeling — that\'s what I want to sit with today.','I\'m not giving you a solution today. I just want you to know: if this is where you are, you\'re not broken. You\'re not behind. And you\'re not alone. Something is wrong — but it\'s not what you think.'],
+ callout:'Doing everything right and still feeling lost isn\'t a motivation problem. It\'s a sign you\'re solving the wrong problem entirely.',
+ flow:'Hook → name the effort in detail → the 2am feeling → validate: not lazy, not broken → leave without solution → "stay close this week"',
+ note:'Speak slowly. Long pauses after each feeling you name. This is a mirror, not a lecture.'},
+{d:2,job:'shift',arch:'resonance',title:'Your habits don\'t fail — your identity does',
+ hooks:['You don\'t have a discipline problem. You have an identity problem.','The reason every habit you\'ve tried eventually collapsed has nothing to do with effort or willpower.','Stop trying harder. The problem isn\'t your discipline level — and I can show you why in 60 seconds.'],
+ points:['Think about every habit you\'ve tried to build. Every morning routine, every system. You go hard for a few weeks. Then it falls apart. You tell yourself: I need more discipline. So you try again, harder. Same result. Every time.','Here\'s the mechanism nobody explains: you\'re trying to bolt new behaviors onto an old identity. The habits are asking you to be someone you haven\'t become yet. And your brain — wired to keep you consistent with who you believe you are — quietly kills every attempt.','You can\'t out-discipline a misaligned identity. The problem was never the habit. It was the foundation the habit was sitting on.'],
+ callout:'You can\'t renovate the inside of a house built on a cracked foundation. At some point, you have to fix what\'s underneath.',
+ flow:'Hook → the familiar loop of trying and quitting → the identity mechanism → the renovation analogy → reframe: not a willpower failure',
+ note:'Pause for 2 full seconds after the hook. Use your hands to illustrate "behaviors on top, identity underneath."'},
+{d:3,job:'synth',arch:'resonance',title:'What Frankl got right about your stuck phase',
+ hooks:['Viktor Frankl spent years in a concentration camp and figured out something about purpose that explains exactly why you\'re stuck.','I re-read Man\'s Search for Meaning this week and one paragraph completely changed how I think about the "I don\'t know what I want" problem.','The people who come out of suffering with direction share one thing in common — and it\'s not what you\'d expect.'],
+ points:['Frankl noticed that prisoners who survived — not physically, but psychologically — were the ones who had found a why. Not a plan. Not a goal. A why. And here\'s what struck me: most men I talk to aren\'t in suffering. They\'re in comfort. And somehow that\'s worse for purpose.','In comfort with no why, you drift. You consume. You wait for clarity to arrive. But Frankl\'s point is that meaning isn\'t found in the absence of pressure. It\'s built through it. You can\'t think your way to purpose. You have to move toward something uncomfortable enough to reveal what you\'re made of.','The reason you don\'t know what you want isn\'t a lack of self-knowledge. It\'s a lack of deliberate contact with difficulty. Purpose isn\'t hidden — it\'s forged.'],
+ callout:'"He who has a why to live can bear almost any how." The question isn\'t what you want. It\'s what you\'re willing to suffer for.',
+ flow:'Hook → Frankl context briefly → the insight: meaning is forged → the comfort-drift parallel → application: deliberate difficulty',
+ note:'Walk-and-talk. Book in hand. You\'ve read this — distill, don\'t summarize.'},
+{d:4,job:'bts',arch:'respect',title:'Why I\'m doing this publicly',
+ hooks:['I\'m building something in public for the next 30 days and I want to take you along.','Most coaches talk about transformation. I\'m going to show you mine — in real time.','I made a decision this morning I want to tell you about.'],
+ points:['I\'ve been building something for a while. A coaching program, a framework, a community, a way of living. And I\'ve done most of it quietly. Today I\'m changing that. For the next 30 days I\'m documenting everything.','Because I think the most important thing a coach can do isn\'t tell you how to change. It\'s show you. I left a music career, rebuilt from scratch, and I\'m still in the middle of that process. If watching that is useful — I want you to see it.','What\'s coming is going to be honest. Some polished. Most not. But all of it real.'],
+ callout:'The best proof that something works isn\'t a testimonial. It\'s watching someone live it.',
+ flow:'Hook → the decision → what you\'re building and why public now → what to expect → invitation to follow along',
+ note:'Film raw — no setup. The BTS aesthetic IS the message.'},
+{d:5,job:'pain',arch:'reach',title:'Nobody around you gets it',
+ hooks:['The loneliest feeling isn\'t being alone. It\'s being surrounded by people who don\'t understand why you want more.','Your friends think you should just be grateful. But you can\'t turn off the pull.','When you try to explain that you\'re meant for more — and everyone says you\'re already doing great.'],
+ points:['You love the people around you. That\'s what makes this so hard. When you try to explain the feeling — that pull, that sense that you\'re supposed to be doing something more — they look at you like you\'re being ungrateful.','It\'s about knowing there\'s a version of your life more aligned with who you actually are. And not knowing how to get there. And feeling like you can\'t talk about that without sounding arrogant or ungrateful.','That specific loneliness — surrounded by people who love you and still feeling completely alone in the thing that matters most — that\'s real.'],
+ callout:'The loneliest thing isn\'t having no one around you. It\'s having everyone around you — and still feeling like no one sees the version of you that\'s trying to get out.',
+ flow:'Hook → validate love for the people → the specific mismatch → name the loneliness precisely → "you\'re not alone in this"',
+ note:'Don\'t make the friends the villain. Slow, warm delivery.'},
+{d:6,job:'shift',arch:'resonance',title:'The content trap',
+ hooks:['The more personal development content you consume, the more stuck you get. Here\'s exactly why.','You don\'t need another book, podcast, or video. You need to stop running from the thing content can\'t fix.','Consuming feels like progress. It isn\'t. And I spent years in that trap.'],
+ points:['I spent years consuming. Thousands of hours. And I kept thinking: the answer is in the next one. What actually happened? I got more confused, not less.','Here\'s the mechanism nobody explains: consuming content activates the same reward pathway as making progress. Your brain gets a hit of "I\'m doing something" without doing the uncomfortable thing.','Information doesn\'t create change. Integration does. You don\'t need more input. You need to do something with what you already know. And you know more than enough.'],
+ callout:'You\'re not stuck because you don\'t know enough. You\'re stuck because knowing has become a substitute for becoming.',
+ flow:'Hook → personal story: years consuming, still lost → the dopamine mechanism → information vs integration → end: "including this video"',
+ note:'That ending line — "including this video" — is the most trust-building moment. Do not cut it.'},
+{d:7,job:'pain',arch:'reach',title:'The years audit',
+ hooks:['There\'s a specific fear that hits you around 27 or 28 that nobody warns you about.','I feel like I\'m wasting my best years figuring this out — if that thought has crossed your mind, stay.','Another year passed and quietly you wonder: what actually changed?'],
+ points:['There\'s a moment — most people hit it somewhere between 25 and 30 — where you do a quiet audit and realize: not that much has actually changed. You\'re older. Maybe more to show externally. Internally? Same questions.','The fear isn\'t just being lost. It\'s the compounding cost of being lost. Every year without clarity is a year you can\'t get back. The drift isn\'t free — it\'s expensive.','The men who feel this most acutely are usually the ones closest to doing something about it. The fear means you care. And caring — that\'s where everything starts.'],
+ callout:'The cost of staying stuck isn\'t just the life you\'re not living. It\'s the person you\'re not becoming while you wait.',
+ flow:'Hook → the quiet life audit → compounding feeling: time cost → validate: fear is signal → turn toward forward motion',
+ note:'Don\'t perform this one. Low affect, conversational. The topic does the work.'},
+{d:8,job:'synth',arch:'resonance',title:'What the Japanese already know about this',
+ hooks:['The Japanese have a concept that explains why most men in their late 20s feel directionless — and it\'s not motivation.','I\'ve been studying Ikigai for years and there\'s one thing most people who talk about it completely miss.','The reason your life feels purposeless isn\'t a you problem. The Japanese have had the framework for 2,000 years.'],
+ points:['Most people know Ikigai as the venn diagram. But here\'s what gets lost in translation: in the original Okinawan usage, Ikigai doesn\'t mean your purpose. It literally translates to "reason to wake up." That\'s a much lower bar — and a much more useful one.','The problem with purpose as a concept is that it implies a destination. But Ikigai is more like a practice. A daily asking: what is the thing that pulls me out of bed today? That question, asked honestly over time, builds direction.','The men I see stuck aren\'t missing purpose. They\'re missing a daily practice of asking what matters. Ikigai is that practice.'],
+ callout:'Ikigai isn\'t your life\'s purpose. It\'s your reason to wake up tomorrow. That\'s a question you can answer today.',
+ flow:'Hook → correct the common Ikigai misunderstanding → original meaning → purpose as destination vs practice → the daily question',
+ note:'Walk-and-talk. Speak from ownership. You\'ve studied this for real.'},
+{d:9,job:'bts',arch:'respect',title:'The musician who felt lost',
+ hooks:['I was a professional musician before I became a coach. And for a long time, I thought that was my path.','I looked like I had direction. Real gigs. A creative career. And I still felt completely hollow.','The moment I realized I\'d been building someone else\'s version of my life.'],
+ points:['I had a music career. Real gigs, actual creative work. From the outside it looked like I had it figured out. Internally? I felt hollow. Like I was performing a version of my life rather than living it.','The moment that cracked it open — I remember sitting after a gig, waiting for the feeling of accomplishment that was supposed to come. And instead: nothing.','That question — is this mine? — changed everything. Not because it gave me the answer immediately. Because it finally asked the right thing.'],
+ callout:'There\'s a difference between having a path and having your path. I spent years on the first one before I found the second.',
+ flow:'Hook → set the scene → the specific moment → the question: "is this mine?" → what changed after → honest, no heroics',
+ note:'One specific night. One specific gig. One feeling. Specificity makes this testimony, not theory.'},
+{d:10,job:'pain',arch:'reach',title:'Big ambitions, no direction',
+ hooks:['Having big ambitions and absolutely no idea which direction to point them.','You know you want more. You can feel it pulling. You just don\'t know what "more" actually looks like yet.','Being a dreamer with no path isn\'t a flaw. But it is a real problem — and it has a real solution.'],
+ points:['You\'re not someone who wants a small, quiet life. The issue is the thing you want — more, aligned, purposeful — doesn\'t have a shape yet. You can feel the pull. But when someone asks what you actually want, you don\'t have a clean answer.','The ambition doesn\'t go away. It just turns inward. Becomes restlessness. Frustration. Sometimes comparison — watching other people seem to know exactly where they\'re going.','The dreamer without a path isn\'t someone who wants too much. It\'s someone who hasn\'t yet been asked the right questions. Clarity is buildable.'],
+ callout:'Ambition without direction isn\'t laziness. It\'s energy with nowhere to land.',
+ flow:'Hook → wanting more without a shape → ambition turning to restlessness → reframe: drive problem vs direction problem → "this is solvable"',
+ note:'Warm, not urgent. The dreamer needs to hear direction is buildable.'},
+{d:11,job:'shift',arch:'resonance',title:'Purpose isn\'t found — it\'s built',
+ hooks:['Stop waiting to find your purpose. That\'s not how it works.','The idea that you\'ll wake up one day and your path will suddenly be clear — that belief is keeping you stuck.','Purpose isn\'t a discovery. It\'s a construction project.'],
+ points:['We\'ve been sold the idea that purpose is out there waiting for you to stumble across it. And because you\'re waiting for that moment, every day without it feels like failure.','Here\'s the truth: purpose is built, not found. The people who seem to have it figured out didn\'t find their path — they took steps, paid attention to what energized them, made decisions with incomplete information, and let direction reveal itself through movement.','You don\'t wait for clarity and then act. You act — even imperfectly — and clarity follows. The path doesn\'t appear ahead of you. It appears underneath you, as you walk.'],
+ callout:'Clarity is not the prerequisite to action. It\'s the product of it. You don\'t find the path. You build it by walking.',
+ flow:'Hook → the "waiting for purpose" myth → why it creates paralysis → how purpose forms through movement → builder vs seeker → concrete invitation',
+ note:'End with: "What\'s one thing you\'ve been putting off because you didn\'t feel clear enough?" Pause. Look at camera.'},
+{d:12,job:'synth',arch:'resonance',title:'What Aristotle knew about your "I\'m not happy" feeling',
+ hooks:['Aristotle figured out 2,400 years ago why you\'re not happy — and it\'s not what self-help says it is.','There\'s a word in Ancient Greek that perfectly describes what you\'re actually searching for.','The Greeks had two words for happiness. We\'ve been chasing the wrong one our whole lives.'],
+ points:['In Ancient Greek there are two concepts that both translate as "happiness." Hedonia — pleasure, feeling good. And Eudaimonia — flourishing, living in alignment with your highest nature. Modern life sells us hedonia.','Eudaimonia is different. Aristotle called it the highest human good — not because it feels the best moment to moment, but because it\'s the kind of wellbeing that compounds. When you\'re living in alignment with your best self — growing, contributing, becoming — the satisfaction doesn\'t fade. It builds.','The reason so many men in their late 20s feel hollow despite having good lives is that they\'ve optimized for hedonia and starved the eudaimonic side. You don\'t need more pleasure. You need more becoming.'],
+ callout:'You don\'t have a happiness problem. You have a eudaimonia deficit. And those require completely different solutions.',
+ flow:'Hook → two Greek words → hedonia vs eudaimonia → why modern life defaults to hedonia → application for a man in his late 20s',
+ note:'Speak from ownership. Make it conversational: "Here\'s what hit me about this..."'},
+{d:13,job:'bts',arch:'respect',title:'What I\'m building and why',
+ hooks:['Here\'s the honest version of what I\'m building and why I think it\'s needed.','I want to show you the actual business model I\'m running — because it\'s also the proof of concept for everything I teach.','Three things I\'ve learned building this in public that nobody tells you about.'],
+ points:['I\'m building Best Self. The core offer is a 30-day live cohort — weekly group calls, Ikigai curriculum, identity-first transformation. Not a course. A container.','The whole point is that the way I build this business proves the framework — because if I can\'t design my own life with intention, the coaching is worthless. The business model IS the case study.','What I\'m learning: most people overcomplicate the offer before they\'ve proven the transformation. I have. So I\'m simplifying. One cohort. One framework. One clear promise.'],
+ callout:'The business model is the case study. I\'m not teaching life by design from a distance — I\'m building it.',
+ flow:'Hook → what I\'m building specifically → honest about the lifestyle intention → the nomadic life as proof → what I\'m simplifying and why',
+ note:'This is the most vulnerable BTS episode. Be honest about what\'s working and what\'s not.'},
+{d:14,job:'seed',arch:'resonance',title:'Something I built for exactly this',
+ hooks:['Everything I\'ve talked about this week points to one thing — and I built something free around it.','If any of this week\'s content has hit home, I want to tell you about something I put together.','I\'m doing something at the end of this month for exactly the person I\'ve been talking to all week.'],
+ points:['This week I\'ve talked about the 2am feeling, the identity-behavior loop, the content trap, the cost of the drift. All of it is pointing at the same root: most people don\'t have a clear enough answer to "who am I becoming?"','I built something called BestSelf30. It\'s a 30-day live cohort — four weeks, weekly group calls, Ikigai framework, identity-first curriculum. For men in their mid-to-late 20s who are done spinning their wheels.','If what I\'ve been posting this week has been speaking directly to you — that\'s not a coincidence. Details are in my bio. If this is for you, you\'ll know.'],
+ callout:'You don\'t need more information. You need a container. A framework. A room with people doing this alongside you.',
+ flow:'Hook → callback to the week → introduce BestSelf30 → one-line description → "if this is for you, you\'ll know" → link in bio',
+ note:'Restraint is everything. Don\'t list features. Make it feel like a natural conclusion, not a sales pivot.'}
+];
+var jobLabel={pain:'Pain callout',shift:'Paradigm shift',synth:'Synthesizer',bts:'BTS / Building',seed:'Seed offer'};
+var jobBadge={pain:'b-pain',shift:'b-shift',synth:'b-synth',bts:'b-bts',seed:'b-seed'};
+var archLabel={reach:'↑ Reach',resonance:'◉ Resonance',respect:'★ Respect'};
+function buildCalendar(){
+  var el=document.getElementById('cal-list');
+  CAL.forEach(function(v){
+    var hs=v.hooks.map(function(h,i){return '<div class="hook-row"><span class="hook-n">'+(i+1)+'</span><span class="hook-t">'+h+'</span></div>'}).join('');
+    var ps=v.points.map(function(p,i){return '<div class="point-row"><span class="point-n">'+(i+1)+'</span><span class="point-t">'+p+'</span></div>'}).join('');
+    el.innerHTML+='<div class="vid-card" id="vc'+v.d+'" data-job="'+v.job+'"><div class="vid-header" onclick="toggleVid('+v.d+')"><span class="vid-day">Day '+v.d+'</span><span class="vid-badge '+jobBadge[v.job]+'">'+jobLabel[v.job]+'</span><span class="vid-title">'+v.title+'</span><span class="vid-arch">'+archLabel[v.arch]+'</span><span class="vid-caret">▾</span></div><div class="vid-body"><div class="sub-label">3 hook variations</div>'+hs+'<div class="sub-label">Talking points</div>'+ps+'<div class="callout">'+v.callout+'</div><div class="sub-label">Script flow</div><div class="flow-box">'+v.flow+'</div><div class="film-note"><strong>Filming note:</strong> '+v.note+'</div><div class="used-row"><button class="used-btn" id="ubS'+v.d+'" onclick="toggleUsed(\'sprint\','+v.d+',this)">Mark as Used</button></div></div></div>';
+  });
+}
+function toggleVid(id){document.getElementById('vc'+id).classList.toggle('open')}
+function filterCal(f){
+  document.querySelectorAll('.cal-pill').forEach(p=>p.classList.remove('active'));
+  document.querySelector('.cal-pill[data-f="'+f+'"]').classList.add('active');
+  document.querySelectorAll('.vid-card').forEach(c=>{c.classList.toggle('hidden',f!=='all'&&c.dataset.job!==f)});
+}
+var BTS=[
+{ep:'Ep 01',title:'Why I\'m doing this publicly — the decision',angle:'The launch moment. Set the entire series. Why now, why in public, what you\'re building.',hooks:['I made a decision this morning that I want to tell you about.','I\'ve been building something quietly for two years. Today I\'m changing that.','Most creators share highlights. I\'m going to show you the whole thing — including the parts that aren\'t working yet.'],points:['What you\'re building: Best Self brand, coaching cohort, identity-first transformation framework for men in their late 20s who are stuck despite trying hard.','Why public: accountability, proof of concept, and because the best marketing is showing your work.','What to expect: weekly episodes on decisions, pivots, what\'s working, what\'s not. Raw format. No polish.'],note:'Film this immediately. Don\'t overthink the setup. The rawness of ep 01 sets the tone for the whole series.'},
+{ep:'Ep 02',title:'The offer — what I\'m actually selling and why',angle:'Pull back the curtain on BestSelf30. What it is, why you built it this way, the thesis behind it.',hooks:['Here\'s the actual thing I\'m building — and the reason behind every decision in it.','I want to walk you through the offer I\'m selling. Not to pitch you — to show you why I built it this way.','The business model I\'m running is also the proof of concept for what I teach.'],points:['The offer: 30-day live cohort, 4 weekly calls, Ikigai curriculum, identity-first. Not a course. A container.','The thesis: you can\'t change behavior without an identity shift first.','The price point and why: accessible enough to say yes, high enough to have skin in the game.'],note:'Be honest about what you\'re still figuring out. The uncertainty is relatable, not a weakness.'},
+{ep:'Ep 03',title:'The nomadic life — why this is part of the proof',angle:'The lifestyle is the case study. Show the connection between how you live and what you teach.',hooks:['I\'m recording this from [location]. And that\'s not a flex — it\'s part of the proof.','The reason I live nomadically is the same reason I coach the way I do.','Life by design isn\'t something I teach from a desk. I\'m living it.'],points:['What the nomadic lifestyle actually looks like day to day — not the Instagram version.','The connection between location flexibility and identity-first living.','This doesn\'t mean you need to be nomadic. But you do need to be intentional.'],note:'Film from wherever you actually are. That context is the content.'},
+{ep:'Ep 04',title:'The music chapter — what it taught me and why I left',angle:'The origin story. The most important trust-building episode in the series.',hooks:['I had a music career before this. I left it. Here\'s what that decision actually looked like.','The thing I was most afraid of turning my back on showed me exactly what I needed to build instead.','There was a specific night where I realized I\'d been building someone else\'s version of my life.'],points:['The music career: what it was, what it gave you, what it cost. No romanticizing, no regret.','The hollow feeling: performing a life vs living one.','The question that changed everything: "is this mine?"'],note:'Most important BTS episode. One specific memory. One specific night. Not the summary of years.'},
+{ep:'Ep 05',title:'Content strategy — what I\'m doing and why',angle:'Meta-episode. Show the content flywheel.',hooks:['Here\'s the content strategy I\'m running — and why I built it this way.','I\'m posting every day for 30 days. Here\'s the thinking behind every decision in that system.','If you\'re also building a personal brand, I want to show you the exact framework I\'m using.'],points:['The 5 content jobs: pain callout, paradigm shift, synthesizer drop, building in public, seed the offer.','The Reach / Resonance / Respect architecture. Every video earns one of those three things.','The synthesizer model: everything you consume becomes content fuel.'],note:'Two audiences: your ICP and creator types. Serve both.'},
+{ep:'Ep 06',title:'Week 1 honest debrief — what worked, what didn\'t',angle:'After week one, pull back and share honestly.',hooks:['One week in. Here\'s the honest report.','This is what actually happened in week one — not the highlight reel version.','Three things I learned in the first week of building this publicly.'],points:['What the numbers looked like. What performed. What didn\'t. No inflating.','What surprised you. What felt off. What you\'re adjusting.','The meta-lesson: the gap between planning and doing is always bigger than expected.'],note:'Establish that every Friday/Sunday you do a debrief. Consistency builds loyalty.'},
+{ep:'Ep 07',title:'The client result — Anthony\'s story',angle:'The social proof episode. Anthony is your proof of concept.',hooks:['I want to tell you about the most important conversation I\'ve had in this coaching work.','My longest client taught me more about what I\'m actually building than any framework I\'ve studied.','This is what the result actually looks like — and it\'s not what I expected.'],points:['Anthony\'s before: where he was when you started working together. Be specific.','The work: what the process actually looked like. The moments that mattered.','The after: what\'s different now. His words if you have them.'],note:'Ask Anthony if he\'s willing to let you share this. Specific detail of a real human story beats any polished testimonial.'}
+];
+function buildBTS(){
+  var el=document.getElementById('bts-list');
+  BTS.forEach(function(ep){
+    var hs=ep.hooks.map(function(h,i){return '<div class="hook-row"><span class="hook-n">'+(i+1)+'</span><span class="hook-t">'+h+'</span></div>'}).join('');
+    var ps=ep.points.map(function(p,i){return '<div class="point-row"><span class="point-n">'+(i+1)+'</span><span class="point-t">'+p+'</span></div>'}).join('');
+    var epKey=ep.ep.replace(/\s+/g,'');
+    el.innerHTML+='<div class="bts-ep" id="be'+epKey+'"><div class="bts-ep-header" onclick="this.parentElement.classList.toggle(\'open\')"><span class="bts-ep-num">'+ep.ep+'</span><span class="bts-ep-badge">BTS</span><span class="bts-ep-title">'+ep.title+'</span><span class="bts-ep-caret">▾</span></div><div class="bts-ep-body"><div class="sub-label">Angle</div><div class="flow-box" style="margin-bottom:10px">'+ep.angle+'</div><div class="sub-label">3 hook variations</div>'+hs+'<div class="sub-label">Talking points</div>'+ps+'<div class="film-note"><strong>Filming note:</strong> '+ep.note+'</div><div class="used-row"><button class="used-btn" id="ubB'+epKey+'" onclick="toggleUsed(\'bts\',\''+epKey+'\',this)">Mark as Used</button></div></div></div>';
+  });
+}
+// TRACKER
+var TRK=JSON.parse(localStorage.getItem('bs_trk')||'[]');
+var TRK_SORT='day';
+function setSort(s){TRK_SORT=s;document.getElementById('sort-day').classList.toggle('active',s==='day');document.getElementById('sort-score').classList.toggle('active',s==='score');renderTracker();}
+function togglePlatMetrics(){['tt','ig','yts','ytl','tw','li'].forEach(p=>{var cb=document.getElementById('pc-'+p);var sec=document.getElementById('pm-'+p);if(cb&&sec)sec.classList.toggle('visible',cb.checked);});}
+function getN(id){return parseFloat(document.getElementById(id)?.value)||0;}
+function scoreEntry(e){var p=e.platforms||{};var views=0,saves=0,shares=0,follows=0,dms=e.dms||0;Object.values(p).forEach(m=>{views+=(m.views||0);saves+=(m.saves||0);shares+=(m.shares||0);follows+=(m.follows||0);});return Math.round(saves*3+shares*4+follows*5+dms*5+(views/200));}
+function totalViews(e){return Object.values(e.platforms||{}).reduce((s,m)=>s+(m.views||0),0);}
+function totalFollows(e){return Object.values(e.platforms||{}).reduce((s,m)=>s+(m.follows||0),0);}
+function fmtNum(n){if(!n&&n!==0)return '—';if(n===0)return '—';if(n>=1000000)return (n/1000000).toFixed(1)+'M';if(n>=1000)return (n/1000).toFixed(1)+'k';return n;}
+function statusBadge(s){var map={idea:['st-idea','Idea'],scripted:['st-scripted','Scripted'],filmed:['st-filmed','Filmed'],edited:['st-edited','Edited'],posted:['st-posted','Posted']};var m=map[s]||['st-idea','—'];return '<span class="status-badge '+m[0]+'">'+m[1]+'</span>';}
+function verdictBadge(v){var map={hot:['vb-hot','🔥 Hot'],test:['vb-test','Testing'],skip:['vb-skip','Skip']};var m=map[v]||['vb-test','—'];return '<span class="verdict-badge '+m[0]+'">'+m[1]+'</span>';}
+function typeDot(t){var col={pain:'var(--red)',shift:'var(--violet)',synth:'var(--amber)',bts:'var(--green)',seed:'#999'};var lbl={pain:'Pain',shift:'Shift',synth:'Synth',bts:'BTS',seed:'Seed'};return '<span style="display:inline-flex;align-items:center;gap:4px;font-size:11px"><span style="width:6px;height:6px;border-radius:50%;background:'+(col[t]||'#999')+';display:inline-block"></span>'+(lbl[t]||t)+'</span>';}
+function fmtBadge(f){var lbl={short:'Short video',carousel:'Carousel',ytlong:'YT Long-form',tweet:'Tweet',linkedin:'LinkedIn',newsletter:'Newsletter'};return '<span class="fmt-badge">'+(lbl[f]||f)+'</span>';}
+var PLAT_META={tt:{label:'TikTok',pip:'pip-tt'},ig:{label:'Instagram',pip:'pip-ig'},yts:{label:'YT Shorts',pip:'pip-yt'},ytl:{label:'YT Long',pip:'pip-ytl'},tw:{label:'Twitter',pip:'pip-tw'},li:{label:'LinkedIn',pip:'pip-li'}};
+function platRowsHtml(platforms){var keys=Object.keys(platforms||{});if(!keys.length)return '<span style="color:var(--muted);font-size:11px">—</span>';return '<div class="plat-row">'+keys.map(k=>{var m=PLAT_META[k]||{label:k,pip:''};var views=platforms[k].views||0;return '<div class="plat-line"><span class="plat-pip '+m.pip+'"></span><span style="color:var(--muted)">'+m.label+'</span>'+(views?'<span style="margin-left:auto;color:var(--ink);font-weight:500">'+fmtNum(views)+'</span>':'')+'</div>';}).join('')+'</div>';}
+function keyMetricsHtml(e){var saves=Object.values(e.platforms||{}).reduce((s,m)=>s+(m.saves||0),0);var shares=Object.values(e.platforms||{}).reduce((s,m)=>s+(m.shares||0),0);var follows=totalFollows(e);var dms=e.dms||0;var parts=[];if(saves)parts.push('<span style="color:var(--amber)">'+saves+' saves</span>');if(shares)parts.push('<span>'+shares+' shares</span>');if(follows)parts.push('<span style="color:var(--green)">'+follows+' follows</span>');if(dms)parts.push('<span style="color:var(--red)">'+dms+' DMs</span>');if(!parts.length)return '<span style="color:var(--muted);font-size:11px">No metrics yet</span>';return '<div style="display:flex;flex-wrap:wrap;gap:5px;font-size:11px">'+parts.join('')+'</div>';}
+function renderTracker(){
+  var total=TRK.length,posted=TRK.filter(e=>e.status==='posted').length,allDMs=TRK.reduce((s,e)=>s+(e.dms||0),0),hot=TRK.filter(e=>e.verdict==='hot').length,allViews=TRK.reduce((s,e)=>s+totalViews(e),0),allFollows=TRK.reduce((s,e)=>s+totalFollows(e),0);
+  document.getElementById('ts-posted').textContent=posted;document.getElementById('ts-dms').textContent=allDMs||'—';document.getElementById('ts-hot').textContent=hot;document.getElementById('ts-views').textContent=fmtNum(allViews)||'—';document.getElementById('ts-follows').textContent=allFollows||'—';
+  var types={pain:0,shift:0,synth:0,bts:0,seed:0};TRK.forEach(e=>{if(types[e.type]!==undefined)types[e.type]++;});
+  var best=Object.entries(types).sort((a,b)=>b[1]-a[1])[0];var typeNames={pain:'Pain',shift:'Shift',synth:'Synth',bts:'BTS',seed:'Seed'};
+  document.getElementById('ts-toptype').textContent=best&&best[1]>0?typeNames[best[0]]:'—';
+  var pct=Math.round((posted/30)*100);document.getElementById('ts-bar').style.width=pct+'%';document.getElementById('ts-pct').textContent=posted+' / 30 days';
+  var grid=document.getElementById('dot-grid');grid.innerHTML='';
+  var today=Math.max(1,Math.min(30,Math.floor((new Date()-new Date('2026-05-15'))/86400000)+1));
+  for(var i=1;i<=30;i++){var entry=TRK.find(e=>e.day===i);var cls='dot-cell';if(entry){if(entry.status==='posted')cls+=' posted';else if(entry.status==='edited'||entry.status==='filmed')cls+=' filmed';else if(entry.status==='scripted')cls+=' scripted';}else if(i===today){cls+=' today';}var d=document.createElement('div');d.className=cls;d.title='Day '+i+(entry?' — '+(entry.hook||'logged'):'');grid.appendChild(d);}
+  var tbody=document.getElementById('trk-tbody');tbody.innerHTML='';document.getElementById('ts-log-count').textContent=total+' entr'+(total===1?'y':'ies');
+  if(total===0){tbody.innerHTML='<tr><td colspan="8" class="trk-empty">No content logged yet. Select platforms, fill your first entry, and hit Save.</td></tr>';}
+  else{var sorted=TRK_SORT==='score'?[...TRK].sort((a,b)=>scoreEntry(b)-scoreEntry(a)):[...TRK].reverse();sorted.forEach(e=>{var tr=document.createElement('tr');tr.innerHTML='<td style="color:var(--amber);font-weight:700;font-family:\'DM Serif Display\',serif;white-space:nowrap">'+e.day+'</td><td style="max-width:150px;font-size:11px;line-height:1.4">'+(e.hook||'—')+'</td><td>'+fmtBadge(e.format||'short')+'</td><td>'+typeDot(e.type)+'</td><td>'+platRowsHtml(e.platforms)+'</td><td>'+statusBadge(e.status)+'</td><td>'+keyMetricsHtml(e)+'</td><td>'+verdictBadge(e.verdict)+'</td>';tbody.appendChild(tr);});}
+  var maxJ=Math.max(1,total);['pain','shift','synth','bts','seed'].forEach(t=>{var cnt=TRK.filter(e=>e.type===t).length;document.getElementById('js-'+t).textContent=cnt;document.getElementById('jb-'+t).style.width=Math.round(cnt/maxJ*100)+'%';});
+  var fmtMap={short:0,carousel:0,ytlong:0,tweet:0,linkedin:0,newsletter:0};TRK.forEach(e=>{if(fmtMap[e.format]!==undefined)fmtMap[e.format]++;});
+  var platViews={tt:0,ig:0,yts:0,ytl:0,tw:0,li:0};TRK.forEach(e=>{Object.entries(e.platforms||{}).forEach(([k,m])=>{if(platViews[k]!==undefined)platViews[k]+=(m.views||0);});});
+  var ytTotal=(platViews.yts||0)+(platViews.ytl||0);var maxP=Math.max(1,platViews.tt,platViews.ig,ytTotal,platViews.tw,platViews.li);
+  var pvData={tt:platViews.tt,ig:platViews.ig,yt:ytTotal,tw:platViews.tw,li:platViews.li};
+  ['tt','ig','yt','tw','li'].forEach(k=>{var v=pvData[k]||0;document.getElementById('pv-'+k).textContent=v?fmtNum(v):'—';document.getElementById('pb-'+k).style.width=Math.round(v/maxP*100)+'%';});
+  var lb=document.getElementById('hook-lb');if(total===0){lb.innerHTML='<p style="font-size:12px;color:var(--muted)">No data yet.</p>';}else{var sorted2=[...TRK].sort((a,b)=>scoreEntry(b)-scoreEntry(a)).slice(0,5);lb.innerHTML=sorted2.map(e=>'<div class="hook-lb-row"><span class="hook-lb-text">'+(e.hook||'Day '+e.day)+'</span><span class="hook-lb-score">'+scoreEntry(e)+'</span></div>').join('');}
+  var ins=document.getElementById('trk-insight');var postedEntries=TRK.filter(e=>e.status==='posted');
+  if(total===0){ins.innerHTML='<strong>Start logging.</strong> Post something, wait 24 hours, log your metrics. By day 7 you\'ll have real signal.';}
+  else if(postedEntries.length<5){ins.innerHTML='<strong>Keep going — '+(5-postedEntries.length)+' more posted to get signal.</strong> Volume beats optimization right now.';}
+  else{var top=[...TRK].sort((a,b)=>scoreEntry(b)-scoreEntry(a))[0];var dmPosts=TRK.filter(e=>(e.dms||0)>0);ins.innerHTML='<strong>You have data.</strong> Top performer: "'+(top?.hook||'—')+'" (score '+scoreEntry(top||{})+').'+(dmPosts.length?' '+dmPosts.length+' post'+(dmPosts.length>1?'s':'')+' drove DMs — double down on those angles.':' No DMs yet — lean harder into pain callout hooks.');}
+  localStorage.setItem('bs_trk',JSON.stringify(TRK));
+}
+function logEntry(){
+  var day=parseInt(document.getElementById('f-day').value)||1,format=document.getElementById('f-format').value,type=document.getElementById('f-type').value,hook=document.getElementById('f-hook').value.trim(),status=document.getElementById('f-status').value,verdict=document.getElementById('f-verdict').value,dms=getN('f-dms'),notes=document.getElementById('f-notes').value.trim();
+  var platforms={};
+  var platFields={tt:['tt-views','tt-saves','tt-shares','tt-comments',null,'tt-follows'],ig:['ig-views','ig-saves','ig-shares','ig-comments',null,'ig-follows'],yts:['yts-views','yts-saves','yts-shares','yts-comments',null,'yts-follows'],ytl:['ytl-views',null,null,null,null,'ytl-follows','ytl-watchtime','ytl-ctr'],tw:['tw-views','tw-saves','tw-shares',null,null,'tw-follows'],li:['li-views','li-saves','li-shares',null,null,'li-follows']};
+  var platKeys=['views','saves','shares','comments','profiles','follows','watchtime','ctr'];
+  ['tt','ig','yts','ytl','tw','li'].forEach(p=>{var cb=document.getElementById('pc-'+p);if(cb&&cb.checked){var m={};(platFields[p]||[]).forEach((fid,i)=>{if(fid)m[platKeys[i]]=getN(fid);});platforms[p]=m;}});
+  TRK=TRK.filter(e=>e.day!==day);TRK.push({day,format,type,hook,status,verdict,dms,notes,platforms});TRK.sort((a,b)=>a.day-b.day);
+  document.getElementById('f-hook').value='';document.getElementById('f-notes').value='';document.getElementById('f-dms').value='';document.getElementById('f-status').value='idea';document.getElementById('f-verdict').value='test';
+  ['tt','ig','yts','ytl','tw','li'].forEach(p=>{var cb=document.getElementById('pc-'+p);if(cb)cb.checked=false;var sec=document.getElementById('pm-'+p);if(sec)sec.classList.remove('visible');});
+  ['tt-views','tt-saves','tt-shares','tt-comments','tt-follows','ig-views','ig-saves','ig-shares','ig-comments','ig-follows','yts-views','yts-saves','yts-shares','yts-comments','yts-follows','ytl-views','ytl-follows','ytl-watchtime','ytl-ctr','tw-views','tw-saves','tw-shares','tw-follows','li-views','li-saves','li-shares','li-follows'].forEach(fid=>{var el=document.getElementById(fid);if(el)el.value='';});
+  renderTracker();
+}
+function exportData(){var json=JSON.stringify(TRK,null,2);var blob=new Blob([json],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='bestself_tracker_'+new Date().toISOString().slice(0,10)+'.json';a.click();}
+function toggleImport(){var ia=document.getElementById('import-area');ia.style.display=ia.style.display==='block'?'none':'block';}
+function importData(){try{var raw=document.getElementById('import-text').value.trim();var data=JSON.parse(raw);if(Array.isArray(data)){TRK=data;renderTracker();document.getElementById('import-area').style.display='none';document.getElementById('import-text').value='';}else{alert('Invalid format.');}}catch(e){alert('Could not parse JSON.');}}
+// ── USED TRACKER ──────────────────────────────────────────────────────────
+var USED=JSON.parse(localStorage.getItem('bs_used')||'{"sprint":[],"bts":[]}');
+function saveUsed(){localStorage.setItem('bs_used',JSON.stringify(USED));}
+function updateUsedCounters(){
+  var sc=document.getElementById('sprint-used-counter');
+  var bc=document.getElementById('bts-used-counter');
+  if(sc)sc.innerHTML='<b>'+USED.sprint.length+'</b> / 14 used';
+  if(bc)bc.innerHTML='<b>'+USED.bts.length+'</b> / 7 used';
+}
+function toggleUsed(type,id,btn){
+  var arr=USED[type];
+  var idx=arr.indexOf(id);
+  if(idx===-1){
+    arr.push(id);
+    btn.textContent='✓ Used';
+    btn.classList.add('is-used');
+    var card=type==='sprint'?document.getElementById('vc'+id):document.getElementById('be'+id);
+    if(card)card.classList.add('used-card');
+  } else {
+    arr.splice(idx,1);
+    btn.textContent='Mark as Used';
+    btn.classList.remove('is-used');
+    var card=type==='sprint'?document.getElementById('vc'+id):document.getElementById('be'+id);
+    if(card)card.classList.remove('used-card');
+  }
+  saveUsed();
+  updateUsedCounters();
+}
+function initUsedState(){
+  USED.sprint.forEach(function(id){
+    var btn=document.getElementById('ubS'+id);
+    var card=document.getElementById('vc'+id);
+    if(btn){btn.textContent='✓ Used';btn.classList.add('is-used');}
+    if(card)card.classList.add('used-card');
+  });
+  USED.bts.forEach(function(id){
+    var btn=document.getElementById('ubB'+id);
+    var card=document.getElementById('be'+id);
+    if(btn){btn.textContent='✓ Used';btn.classList.add('is-used');}
+    if(card)card.classList.add('used-card');
+  });
+  updateUsedCounters();
+}
+// ─────────────────────────────────────────────────────────────────────────
+buildCalendar();buildBTS();renderTracker();initUsedState();
+</script>
+</body>
+</html>
