@@ -375,21 +375,33 @@
   const obs = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); }), { threshold: 0.06 });
   document.querySelectorAll('.fade').forEach(el => obs.observe(el));
 
-  // Guide form — connect to Kit/ConvertKit webhook
+  // Guide form — connected to Kit form 9559454
   function handleGuide(e) {
     e.preventDefault();
     const email = document.getElementById('hero-email').value;
     const btn = e.target.querySelector('button');
-    btn.textContent = 'Guide sent! Check your inbox ✦';
-    btn.style.background = '#4A6741';
+    btn.textContent = 'Sending…';
     btn.disabled = true;
-    // TODO: Replace with your Kit/ConvertKit form action URL
-    // fetch('https://app.kit.com/forms/YOUR_FORM_ID/subscriptions', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({ email_address: email })
-    // });
-    console.log('Guide requested:', email);
+    fetch('https://app.kit.com/forms/9559454/subscriptions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email_address: email })
+    })
+    .then(r => {
+      if (r.ok || r.status === 200 || r.status === 201) {
+        btn.textContent = 'Guide sent! Check your inbox ✦';
+        btn.style.background = '#4A6741';
+      } else {
+        btn.textContent = 'Something went wrong — try again';
+        btn.style.background = '#9A3030';
+        btn.disabled = false;
+      }
+    })
+    .catch(() => {
+      btn.textContent = 'Something went wrong — try again';
+      btn.style.background = '#9A3030';
+      btn.disabled = false;
+    });
   }
 </script>
 
