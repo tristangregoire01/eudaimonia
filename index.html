@@ -51,6 +51,25 @@ body{font-family:'DM Sans',sans-serif;background:var(--warm);color:var(--ink);mi
 .job-name{font-size:16px;font-weight:600;margin-bottom:.4rem}
 .job-desc{font-size:13px;color:#666;line-height:1.6}
 .job-card.j1{border-left:3px solid var(--red)}.job-card.j2{border-left:3px solid var(--violet)}.job-card.j3{border-left:3px solid var(--amber)}.job-card.j4{border-left:3px solid var(--green)}
+
+/* NICHE RESEARCH */
+.nr-pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem}
+.nr-pill{font-size:12px;padding:5px 14px;border-radius:20px;cursor:pointer;border:1.5px solid var(--border);background:#fff;color:var(--muted);font-weight:500;transition:all .15s}
+.nr-pill.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+.nr-note{font-size:13px;color:#666;line-height:1.6;margin-bottom:.9rem}
+.nr-wrap{background:#fff;border:1px solid var(--border);border-radius:12px;padding:6px 14px 10px;overflow-x:auto}
+.nr-table{width:100%;border-collapse:collapse;font-size:13px;min-width:640px}
+.nr-table th{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:left;padding:10px 8px;border-bottom:1px solid var(--border)}
+.nr-table td{padding:10px 8px;border-bottom:1px solid var(--warm2);vertical-align:top}
+.nr-table tr:last-child td{border-bottom:none}
+.nr-table .num{text-align:right;font-variant-numeric:tabular-nums}
+.nr-table a{color:var(--ink);font-weight:600;text-decoration:none;border-bottom:1px solid var(--amber)}
+.nr-table .cap{color:#555;line-height:1.45;max-width:340px}
+.nr-h{font-size:10px;font-weight:700;color:var(--gold);background:var(--gold-light);border-radius:10px;padding:1px 7px;margin-left:6px}
+.nr-learn{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:.5rem}
+.nr-card{background:#fff;border:1px solid var(--border);border-top:3px solid var(--amber);border-radius:12px;padding:14px 16px;font-size:13px;line-height:1.6;color:#444}
+.nr-card b{display:block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:5px}
+.nr-card.warn{border-top-color:var(--red)}.nr-card.warn b{color:var(--red)}
 /* SECTION HEADERS */
 .section-header{margin:2.5rem 0 1.25rem}
 .section-header h2{font-family:'DM Serif Display',serif;font-size:28px;letter-spacing:-.3px;margin-bottom:.3rem}
@@ -310,6 +329,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--warm);color:var(--ink);mi
     <button class="nav-tab" onclick="showSection('calendar',this)">14-Day Sprint</button>
     <button class="nav-tab" onclick="showSection('bts',this)">BTS Series</button>
     <button class="nav-tab" onclick="showSection('analytics',this)">📊 Analytics</button>
+    <button class="nav-tab" onclick="showSection('niche',this)">🔎 Niche Research</button>
     <button class="nav-tab" onclick="showSection('tracker',this)">Content Log</button>
   </div>
 </nav>
@@ -484,6 +504,35 @@ body{font-family:'DM Sans',sans-serif;background:var(--warm);color:var(--ink);mi
   </div>
   <div class="analytics-footer">Last refreshed: May 18, 2026 · Data source: Instagram_Analysis_Tristan.xlsx</div>
 </div>
+<!-- ======== NICHE RESEARCH ======== -->
+<div class="section" id="sec-niche">
+  <div class="section-header"><h2>Niche Research: what wins on Instagram</h2><p>Audit #1 · Oct 22, 2026 · 264 posts found by searching Marcus's own pain words (lost in your 20s, successful but empty, identity shift, finding purpose, life direction, hustle burnout). Posts from other creators, not your account. Like rate = likes ÷ views. Comment rate = comments ÷ views.</p></div>
+  <div class="nr-pills">
+    <button class="nr-pill active" data-seg="lead" onclick="nrShow('lead')">Lead magnets</button>
+    <button class="nr-pill" data-seg="eng" onclick="nrShow('eng')">Engagement</button>
+    <button class="nr-pill" data-seg="vis" onclick="nrShow('vis')">Visibility</button>
+  </div>
+  <p class="nr-note" id="nr-note"></p>
+  <div class="nr-wrap"><table class="nr-table">
+    <thead><tr><th class="num">#</th><th>Account</th><th>Hook / CTA</th><th class="num">Views</th><th class="num">Likes</th><th class="num">Comments</th><th class="num" id="nr-ratehead">Rate</th><th class="num">Age</th></tr></thead>
+    <tbody id="nr-body"></tbody>
+  </table></div>
+  <div class="section-header"><h2>What the data says</h2></div>
+  <div class="nr-learn">
+    <div class="nr-card"><b>Lead magnets</b>One emotional keyword plus a named asset (guide, tracker, journal). A 0.3–0.5% comment rate is good. @ruidigital hit 3.1% on only 62K views with "Comment JOURNAL".</div>
+    <div class="nr-card"><b>Engagement</b>Short, second-person, one-idea lines get 9–13% like rates against 3–4% for long explainers. The hollow-success angle ("you already achieved the things you said would make you successful") is proven.</div>
+    <div class="nr-card"><b>Visibility</b>Experiment hooks, status-and-identity questions and clips of well-known speakers reach 10M+. Posts on your exact ICP angles land at 0.2–1.7M, the realistic range for this niche.</div>
+    <div class="nr-card warn"><b>Brand check</b>Top competitors use PURPOSE and IDENTITY as comment keywords. Your ICP rules ban abstract "purpose", so use RESET or IKIGAI for the Life by Design Guide. Posts tagged H are hustle culture, your brand enemy: study the format only.</div>
+  </div>
+  <div class="section-header"><h2>Three post angles to film</h2><p>Angles only, in line with the Video Angles Bank. Pick one, and the content job is already set.</p></div>
+  <div class="nr-learn">
+    <div class="nr-card"><b>Engagement · Resonance</b>"No one claps for almost": your musician arc (arrived, felt hollow) as one short second-person line over b-roll.</div>
+    <div class="nr-card"><b>Visibility · Reach</b>"Who are you when the title falls away?" The old-identity angle. A status-and-identity question did 11M for a clip page.</div>
+    <div class="nr-card"><b>Lead magnet · Respect</b>Comment RESET for the Life by Design Guide, with a qualifier like "only if you've done everything right and still feel off".</div>
+  </div>
+  <p class="nr-note" style="margin-top:1.25rem;font-size:12px;color:#888">Method: keyword searches on Instagram in a logged-in browser, with views, likes and comments read per post. No follower counts yet, so no views-per-follower score. Explore "For You" was personalised noise and is excluded. Full lists and the routine notes are in the vault: Business OS / Content &amp; Brand / Instagram Research.</p>
+</div>
+
 <!-- ======== CONTENT LOG (TRACKER) ======== -->
 <div class="section" id="sec-tracker">
   <div class="section-header"><h2>Content Log</h2><p>One entry per piece of content. Track it across every platform it's posted on, log metrics after 24 hours.</p></div>
@@ -855,6 +904,54 @@ function initUsedState(){
 }
 // ─────────────────────────────────────────────────────────────────────────
 buildCalendar();buildBTS();renderTracker();initUsedState();
+var NR={
+ lead:{note:'Ranked by comments. These posts ask viewers to comment a keyword to get a free asset.',rate:'Comment rate',rows:[
+  ['gloriastonelake','DTFZ1evkp1d','DM "WINNER" after a challenge (off-niche, shows giveaway CTA at scale)','4.4M','374K','19.4K','0.44%','291d'],
+  ['magnus.aka','DWC5LRcj8nI','Comment "PURPOSE" for a free guide built from hundreds of hours of podcasts','2.0M','91K','10.9K','0.55%','217d'],
+  ['viktoriakoshina_','C6I0PQ7MlIz','Comment "ME" to fill your life with a sense of purpose','5.4M','164K','2.7K','0.05%','911d'],
+  ['ruidigital','DWofsUhEy0A','Comment "JOURNAL" for the 10-min visual journal to rebrand your life','62K','3.1K','2.0K','3.12%','203d'],
+  ['trevorgetsholistic','DU0g8VEkXW3','Comment "tracker" for the personal alignment tracker','1.4M','55K','1.8K','0.12%','248d'],
+  ['hubermanlab','DTJEssPkojd','Tie habits to your identity. Comment "HABITS"','1.1M','26K','853','0.08%','289d'],
+  ['thediaryofaceopodcast','DPMUDBTDECH','Why do you still feel empty even when you have everything? Comment "Life"','190K','n/a','670','0.35%','387d'],
+  ['dan_zakaria','Da2kdpPsGg2','How to identity shift. Comment "identity" for the full framework','168K','6.7K','592','0.35%','97d'],
+  ['tristan.vds','Deb-VXIhgY5','Comment "IDENTITY" for the video on becoming the 2.0 version of yourself','62K','1.9K','333','0.54%','9d'],
+  ['a.dehel','DZnQ0WFMKSX','Comment "Identity" to see where it is holding you back, with a qualifier','48K','4.1K','163','0.34%','128d']]},
+ eng:{note:'Ranked by like rate on posts over 100K views. Short, second-person lines win.',rate:'Like rate',rows:[
+  ['cutswithro','DKz44SoguWT',"Do it all in ya 20's, storytelling reshare",'4.3M','586K','1.2K','13.5%','496d'],
+  ['xvr.k_ng','DbfL_E8O6ib','Keep going, king','5.8M','669K','4.3K','11.5%','82d',1],
+  ['elevenstoic','DFbXcD5iod6','Live your twenties with direction and adventure','4.8M','537K','1.0K','11.3%','630d'],
+  ['tobydeboer','DOxoxWaAucY','Everyday hustle...','2.5M','253K','527','10.1%','398d',1],
+  ['austingeorgas','DW1Z4swjYGH','Send this to the right person','2.8M','263K','2.2K','9.4%','198d'],
+  ['nathanazareth','C9s4acASiTe','How much would you be worth if you lost everything?','2.8M','257K','635','9.3%','822d'],
+  ['grindcommunity','DGBouR0Cljq',"Discover your purpose, don't pick it",'410K','38K','284','9.2%','615d'],
+  ['mjdoing','DNTYALdJfuA','You have already achieved the things you said would make you successful','838K','75K','121','9.0%','432d'],
+  ['drshivachauhan','DXmRB9ugf_5','No one claps for almost.','9.0M','672K','1.0K','7.4%','171d'],
+  ['behomewithyourdog','DcJAdTwxxeQ','Script reshare with credit to the original creator','10.9M','913K','5.3K','8.4%','66d']]},
+ vis:{note:'Ranked by views. Old posts dominate, so check the age before copying a format.',rate:'Like rate',rows:[
+  ['itsadamitka','DVxRLxuiF2a','This 45-second experiment will change your life','102.9M','6.5M','53.1K','6.4%','186d'],
+  ['elevated.states','C9iUyBxyzsk','You owe it to yourself. You owe it to life.','32.2M','970K','3.1K','3.0%','826d'],
+  ['richroll','CrJUTOZJeZ4','We are spiritual beings having a human experience','23.9M','1.1M','7.7K','4.6%','1283d'],
+  ['matthgray','CscbR_OqT-Z',"Don't waste time doing work you hate. Find your calling",'17.1M','1.2M','3.0K','6.9%','1251d'],
+  ['latenightepiphanies_','DGOZeHGSbmO',"Being in your 20's is weird: nostalgia of time passing",'13.1M','562K','814','4.3%','610d'],
+  ['welltowealth','DL0HZTTiUYG','Who are you when titles, money and status fall away?','11.1M','432K','5.7K','3.9%','471d'],
+  ['behomewithyourdog','DcJAdTwxxeQ','Script reshare with credit to the original creator','10.9M','913K','5.3K','8.4%','66d'],
+  ['isaacbramirez','DV1JEHAkt_I','The work must continue','10.3M','487K','5.0K','4.7%','222d',1],
+  ['pedronfrey','Dc9eTFjy2bT','What level are you on?','9.6M','588K','11.7K','6.1%','44d'],
+  ['drshivachauhan','DXmRB9ugf_5','No one claps for almost.','9.0M','672K','1.0K','7.4%','171d']]}
+};
+function nrShow(seg){
+  var d=NR[seg],b=document.getElementById('nr-body');
+  document.getElementById('nr-note').textContent=d.note;
+  document.getElementById('nr-ratehead').textContent=d.rate;
+  b.innerHTML='';
+  d.rows.forEach(function(r,i){
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td class="num">'+(i+1)+'</td><td><a href="https://www.instagram.com/p/'+r[1]+'/" target="_blank" rel="noopener">@'+r[0]+'</a>'+(r[8]?'<span class="nr-h">H</span>':'')+'</td><td class="cap">'+r[2].replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</td><td class="num">'+r[3]+'</td><td class="num">'+r[4]+'</td><td class="num">'+r[5]+'</td><td class="num">'+r[6]+'</td><td class="num">'+r[7]+'</td>';
+    b.appendChild(tr);
+  });
+  document.querySelectorAll('.nr-pill').forEach(function(p){p.classList.toggle('active',p.dataset.seg===seg);});
+}
+nrShow('lead');
 </script>
 </body>
 </html>
