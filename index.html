@@ -332,7 +332,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--warm);color:var(--ink);mi
   <div class="nav-logo">Eudaimonia <span>Content OS</span></div>
   <div class="nav-tabs">
     <button class="nav-tab active" onclick="showSection('niche',this)">📈 Trends &amp; Ideas</button>
-    <button class="nav-tab" onclick="showSection('analytics',this)">📊 Analytics</button>
+    <button class="nav-tab" onclick="showSection('analytics',this)">📊 Instagram</button>
+    <button class="nav-tab" onclick="showSection('youtube',this)">▶ YouTube</button>
     <button class="nav-tab" onclick="showSection('strategy',this)">Strategy</button>
     <button class="nav-tab" onclick="showSection('calendar',this)">Script Bank: Sprint</button>
     <button class="nav-tab" onclick="showSection('bts',this)">Script Bank: BTS</button>
@@ -404,27 +405,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--warm);color:var(--ink);mi
 <!-- ======== ANALYTICS ======== -->
 <div class="section" id="sec-analytics">
 
-  <div class="analytics-alert" style="background:var(--gold-light)"><div class="alert-item"><span>ℹ️</span><span><strong>Own-account metrics are being moved to an automatic feed.</strong> Until Instagram is connected to vidIQ, this tab shows the last snapshot (Sep 28, 2026, @tristangregoire.life, from Meta Business Suite). The old May 2026 data and its alerts are archived below and no longer current.</span></div></div>
-  <div class="section-label">Latest snapshot · Sep 28, 2026</div>
-  <div class="metrics-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:1rem">
-    <div class="metric-card"><div class="metric-label">Followers</div><div class="metric-value">1,328</div><div class="metric-sub">flat over 30 days</div></div>
-    <div class="metric-card"><div class="metric-label">Posts (90 days)</div><div class="metric-value">13</div><div class="metric-sub">3 Reels, 5 Stories, 5 unconfirmed</div></div>
-    <div class="metric-card"><div class="metric-label">Avg views · Reels</div><div class="metric-value">612</div><div class="metric-sub">Stories avg 556</div></div>
-    <div class="metric-card"><div class="metric-label">Best non-follower reach</div><div class="metric-value">85.9%</div><div class="metric-sub">Camp Mondays story</div></div>
-  </div>
-  <div class="section-label">Content history · last 90 days at Sep 28</div>
-  <div class="nr-wrap"><table class="nr-table" style="min-width:560px">
-    <thead><tr><th>Post</th><th>Format</th><th class="num">Views</th><th class="num">Likes</th><th class="num">Non-follower</th></tr></thead>
-    <tbody>
-      <tr><td class="cap">"1/2 of the most inspiring people I've ever met" (Camp Mondays)</td><td>Story</td><td class="num">1,900</td><td class="num">5</td><td class="num">85.9%</td></tr>
-      <tr><td class="cap">"It's my birthday today"</td><td>Reel</td><td class="num">724</td><td class="num">n/a</td><td class="num">n/a</td></tr>
-      <tr><td class="cap">"The small habit that always makes my day better"</td><td>Reel</td><td class="num">689</td><td class="num">41</td><td class="num">74.1%</td></tr>
-      <tr><td class="cap">"POV: you remember what it was always about..." (Sep 12)</td><td>Reel</td><td class="num">422</td><td class="num">n/a</td><td class="num">n/a</td></tr>
-      <tr><td class="cap">Dinner table, golden hour</td><td>Story</td><td class="num">248</td><td class="num">n/a</td><td class="num">n/a</td></tr>
-      <tr><td class="cap">"I spent a week at a 10-day retreat... beautiful souls"</td><td>Story</td><td class="num">229</td><td class="num">n/a</td><td class="num">n/a</td></tr>
-      <tr><td class="cap">"Beyond blessed for this life"</td><td>Story</td><td class="num">206</td><td class="num">n/a</td><td class="num">n/a</td></tr>
-      <tr><td class="cap">6 more posts</td><td>mixed</td><td class="num">128–199</td><td class="num">n/a</td><td class="num">n/a</td></tr>
-    </tbody>
+  <p class="tr-meta" id="own-meta"></p>
+  <div class="section-label">Instagram · @tristangregoire.life</div>
+  <div id="own-ig-cards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:.75rem"></div>
+  <p class="nr-note" id="own-ig-note"></p>
+  <div class="nr-wrap"><table class="nr-table" style="min-width:600px">
+    <thead><tr><th class="num">Posted</th><th>Post</th><th class="num">Views</th><th class="num">Likes</th><th class="num">Comments</th><th class="num">Shares</th><th class="num">Saves</th></tr></thead>
+    <tbody id="own-ig-posts"></tbody>
   </table></div>
   <details style="margin-top:1.5rem"><summary style="cursor:pointer;font-weight:600;font-size:13px;color:var(--muted)">May 2026 data (archived, out of date)</summary>
   <div class="section-header"><h2>Instagram Analytics</h2><p>Live performance data from @iamtristangregoire — auto-refreshed from your Instagram analysis file.</p></div>
@@ -534,6 +521,27 @@ body{font-family:'DM Sans',sans-serif;background:var(--warm);color:var(--ink);mi
   <div class="analytics-footer">Last refreshed: May 18, 2026 · Data source: Instagram_Analysis_Tristan.xlsx</div>
   </details>
 </div>
+<!-- ======== YOUTUBE ======== -->
+<div class="section" id="sec-youtube">
+  <div class="section-header"><h2>YouTube</h2><p>Your channel, live from vidIQ, plus what is working for other channels in Marcus's topics. Long-form is the top of the funnel; Shorts and Instagram reels are cut from it.</p></div>
+  <p class="tr-meta" id="own-yt-meta"></p>
+  <div class="section-label">Your channel · @iamtristangregoire</div>
+  <div id="own-yt-cards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:1rem"></div>
+  <div class="nr-wrap"><table class="nr-table" style="min-width:560px">
+    <thead><tr><th class="num">Published</th><th>Title</th><th>Type</th><th class="num">Views</th><th class="num">Likes</th></tr></thead>
+    <tbody id="own-yt-videos"></tbody>
+  </table></div>
+  <div class="section-label" style="margin-top:1.5rem">Searches the biweekly run uses</div>
+  <div id="own-searches" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1rem"></div>
+  <div class="section-label">Inspiration: breakout and trending titles</div>
+  <div class="nr-wrap"><table class="nr-table">
+    <thead><tr><th>Type</th><th>Title</th><th>Channel</th><th class="num">Views</th><th class="num">Signal</th><th class="num">Posted</th></tr></thead>
+    <tbody id="yt-insp"></tbody>
+  </table></div>
+  <div class="section-label" style="margin-top:1.5rem">Your own ideas become scripts</div>
+  <div class="nr-card">Add your own ideas, voice-note thoughts and inspiration to the <b style="display:inline;letter-spacing:0;text-transform:none;font-size:13px;color:var(--ink)">Video Angles Bank</b> note in the vault (Business OS / Content &amp; Brand). Each biweekly run reads the unused angles, matches them with what is trending, and writes the long-form outline and the 60 to 120 second cuts for the next two weeks.</div>
+</div>
+
 <!-- ======== NICHE RESEARCH ======== -->
 <div class="section active" id="sec-niche">
   <div class="section-header"><h2>Trends &amp; Ideas</h2><p>What is winning right now for Marcus's topics, pulled weekly from vidIQ. Multiplier = views vs that creator's own median, so it shows posts that beat their usual reach, not just big accounts.</p></div>
@@ -1072,6 +1080,27 @@ function trRender(){
   TR.kw.forEach(function(r){var tr=document.createElement('tr');tr.innerHTML='<td>'+esc(r[0])+'</td><td class="num">'+r[1]+'</td><td class="cap">'+esc(r[2])+'</td>';kb.appendChild(tr);});
 }
 trRender();
+
+var OWN={"updated": "Nov 14, 2026", "source": "vidIQ, connected to @tristangregoire.life and @iamtristangregoire (live, 0 credits for Instagram)", "ig": {"followers": "1,349", "views30": "7,045", "reach30": "1,266", "visits30": "275", "lastPost": "Oct 27 (reel, 1.3K views)", "note": "Last 30 days (Oct 15 to Nov 14). Shares and saves are real: the older \"0 shares\" alert was wrong."}, "igPosts": [["2026-10-27", "too busy livin", 1301, 38, 6, 1, 3, "https://www.instagram.com/reel/De_2bZvPriY/"], ["2026-10-14", "The hardest part of this quote isn’t recognising it in others.", 344, 7, 0, 8, 2, "https://www.instagram.com/reel/DeeVlrvPUog/"], ["2026-09-12", "what a life. make sure you make the most of it.", 471, 34, 1, 0, 0, "https://www.instagram.com/reel/DdMWqZnocCB/"], ["2026-08-05", "A small habit that might just change your life.. 🙌🏼", 746, 46, 3, 0, 2, "https://www.instagram.com/reel/DbquWs6o_-J/"], ["2026-08-04", "Happy Birthday Dad 💛", 765, 89, 40, 3, 2, "https://www.instagram.com/reel/DbnfpPnoMJc/"], ["2026-06-19", "Live Now!🕊️  “I should have done this.” “I never should have d", 432, 21, 0, 1, 2, "https://www.instagram.com/reel/DZxLTtiIcwr/"], ["2026-06-17", "Trust yourself. Follow the path. Create life as you want it.  ", 1892, 83, 2, 1, 9, "https://www.instagram.com/reel/DZsOa6fID3J/"], ["2026-06-11", "there’s a difference between playing to win and playing not to", 1776, 29, 0, 9, 27, "https://www.instagram.com/reel/DZdR69XII3O/"], ["2026-06-11", "most people are playing not to lose and calling it ambition. t", 1509, 16, 2, 4, 23, "https://www.instagram.com/reel/DZdRcWcITpL/"], ["2026-06-09", "You are the creator. Trust me, i was just like you. You too ca", 5523, 175, 6, 47, 210, "https://www.instagram.com/reel/DZYFOploXrk/"], ["2026-06-08", "Once you see it, you can’t unsee it  “ignorance is bliss” they", 4002, 191, 4, 17, 95, "https://www.instagram.com/reel/DZVmfl1o9Ra/"], ["2026-06-05", "You are the master. Don’t throw away the power to create anyth", 1940, 61, 2, 6, 23, "https://www.instagram.com/reel/DZNJ8QqIRbc/"], ["2026-05-28", "Do the future version of you a favor and do this experiment.  ", 1285, 24, 0, 18, 23, "https://www.instagram.com/reel/DY5VrbmIukT/"]], "yt": {"subs": "458", "views": "168.6K", "videos": "311", "long30": "11", "shorts30": "19", "lastLong": "Jun 24, 2026 (56 views)"}, "ytVideos": [["2026-06-24", "Why Doing Everything Right Still Leaves You Feeling Completely Lost", "Long", "56", "4", "7MHzF_v1pOg"], ["2025-10-05", "The Secret To Balance", "Short", "1,230", "24", "apHiwo5lERg"], ["2025-10-04", "Why You Must Not Give Up", "Short", "911", "14", "XeEFhCIWCRI"], ["2025-09-30", "Two Reasons You're Stuck (and how to fix them)", "Short", "817", "14", "h9stxakdD08"], ["2025-09-30", "How To Rewrite Your Story", "Short", "1,038", "35", "1qj-woWHOSk"], ["2025-09-28", "The Truth About Your Comparison", "Short", "1,323", "46", "DTdORldt2oY"], ["2025-09-27", "The Only Way To Change Your Life", "Short", "1,724", "60", "oiERyqBURx0"], ["2025-09-07", "How To Overcome Fear Of Failure", "Short", "850", "14", "sMJHTs97Q9c"], ["2025-09-05", "The Hidden Secret Of Success Keeping You Stuck", "Short", "1,490", "25", "TNkGQVDmmIQ"], ["2025-09-03", "Why Your Perfect Plan Is Keeping You Stuck", "Short", "804", "12", "tiqSAMa-oBA"], ["2025-09-02", "Why Chasing Success Will Never Satisfy You", "Short", "1,124", "19", "Gav5nedBk64"], ["2025-08-31", "Why The Recipe For Success Will Make You Miserable", "Short", "1,152", "25", "8Gbv6xztqn4"]], "searches": ["feeling lost in your 20s", "successful but empty", "done everything right still feels off", "outgrowing your old life", "life direction", "identity shift", "finding direction", "what to do when life feels meaningless", "hustle culture burnout"]};
+function ownRender(){
+  var esc=function(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;');};
+  var card=function(l,v,sub){return '<div class="metric-card"><div class="metric-label">'+l+'</div><div class="metric-value">'+v+'</div><div class="metric-sub">'+sub+'</div></div>';};
+  document.getElementById('own-meta').textContent='Updated '+OWN.updated+' · Source: '+OWN.source;
+  document.getElementById('own-yt-meta').textContent='Updated '+OWN.updated+' · Source: '+OWN.source;
+  var g=OWN.ig;
+  document.getElementById('own-ig-cards').innerHTML=card('Followers',g.followers,'now')+card('Views · 30 days',g.views30,'all formats')+card('Accounts reached',g.reach30,'30 days')+card('Profile visits',g.visits30,'30 days')+card('Last post',g.lastPost.split(' (')[0],g.lastPost.indexOf('(')>0?g.lastPost.slice(g.lastPost.indexOf('(')):'');
+  document.getElementById('own-ig-note').textContent=g.note;
+  var b=document.getElementById('own-ig-posts');b.innerHTML='';
+  OWN.igPosts.forEach(function(r){var tr=document.createElement('tr');tr.innerHTML='<td class="num nowrap">'+r[0]+'</td><td class="cap"><a href="'+r[7]+'" target="_blank" rel="noopener">'+esc(r[1])+'</a></td><td class="num">'+r[2].toLocaleString()+'</td><td class="num">'+r[3]+'</td><td class="num">'+r[4]+'</td><td class="num">'+r[5]+'</td><td class="num">'+r[6]+'</td>';b.appendChild(tr);});
+  var y=OWN.yt;
+  document.getElementById('own-yt-cards').innerHTML=card('Subscribers',y.subs,'channel')+card('Total views',y.views,y.videos+' videos')+card('Views · 30 days','Long '+y.long30,'Shorts '+y.shorts30)+card('Last long-form',y.lastLong.split(' (')[0],y.lastLong.indexOf('(')>0?y.lastLong.slice(y.lastLong.indexOf('(')):'');
+  var v=document.getElementById('own-yt-videos');v.innerHTML='';
+  OWN.ytVideos.forEach(function(r){var tr=document.createElement('tr');tr.innerHTML='<td class="num nowrap">'+r[0]+'</td><td class="cap"><a href="https://www.youtube.com/watch?v='+r[5]+'" target="_blank" rel="noopener">'+esc(r[1])+'</a></td><td>'+r[2]+'</td><td class="num">'+r[3]+'</td><td class="num">'+r[4]+'</td>';v.appendChild(tr);});
+  document.getElementById('own-searches').innerHTML=OWN.searches.map(function(t){return '<span class="tr-tag">'+esc(t)+'</span>';}).join('');
+  var yi=document.getElementById('yt-insp');yi.innerHTML='';
+  TR.yt.forEach(function(r){var tr=document.createElement('tr');tr.innerHTML='<td><span class="tr-tag yt">'+r[0]+'</span></td><td class="cap">'+esc(r[1])+'</td><td>'+esc(r[2])+'</td><td class="num">'+r[3]+'</td><td class="num">'+r[4]+'</td><td class="num nowrap">'+r[5]+'</td>';yi.appendChild(tr);});
+}
+ownRender();
 </script>
 </body>
 </html>
