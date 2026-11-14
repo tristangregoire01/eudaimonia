@@ -70,6 +70,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--warm);color:var(--ink);mi
 .nr-card{background:#fff;border:1px solid var(--border);border-top:3px solid var(--amber);border-radius:12px;padding:14px 16px;font-size:13px;line-height:1.6;color:#444}
 .nr-card b{display:block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:5px}
 .nr-card.warn{border-top-color:var(--red)}.nr-card.warn b{color:var(--red)}
+
+.tr-meta{font-size:12px;color:var(--muted);margin:-.4rem 0 1rem}
+.tr-tag{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border-radius:10px;padding:2px 8px;background:var(--amber-light);color:var(--gold)}
+.tr-tag.tt{background:var(--violet-light);color:var(--violet)}
+.tr-tag.yt{background:var(--red-light);color:var(--red)}
+.nr-table .nowrap{white-space:nowrap}
 /* SECTION HEADERS */
 .section-header{margin:2.5rem 0 1.25rem}
 .section-header h2{font-family:'DM Serif Display',serif;font-size:28px;letter-spacing:-.3px;margin-bottom:.3rem}
@@ -329,7 +335,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--warm);color:var(--ink);mi
     <button class="nav-tab" onclick="showSection('calendar',this)">14-Day Sprint</button>
     <button class="nav-tab" onclick="showSection('bts',this)">BTS Series</button>
     <button class="nav-tab" onclick="showSection('analytics',this)">📊 Analytics</button>
-    <button class="nav-tab" onclick="showSection('niche',this)">🔎 Niche Research</button>
+    <button class="nav-tab" onclick="showSection('niche',this)">📈 Trends & Ideas</button>
     <button class="nav-tab" onclick="showSection('tracker',this)">Content Log</button>
   </div>
 </nav>
@@ -506,7 +512,28 @@ body{font-family:'DM Sans',sans-serif;background:var(--warm);color:var(--ink);mi
 </div>
 <!-- ======== NICHE RESEARCH ======== -->
 <div class="section" id="sec-niche">
-  <div class="section-header"><h2>Niche Research: what wins on Instagram</h2><p>Audit #1 · Oct 22, 2026 · 264 posts found by searching Marcus's own pain words (lost in your 20s, successful but empty, identity shift, finding purpose, life direction, hustle burnout). Posts from other creators, not your account. Like rate = likes ÷ views. Comment rate = comments ÷ views.</p></div>
+  <div class="section-header"><h2>Trends &amp; Ideas</h2><p>What is winning right now for Marcus's topics, pulled weekly from vidIQ. Multiplier = views vs that creator's own median, so it shows posts that beat their usual reach, not just big accounts.</p></div>
+  <p class="tr-meta" id="tr-meta"></p>
+  <div class="section-label">Instagram &amp; TikTok winners</div>
+  <div class="nr-wrap"><table class="nr-table">
+    <thead><tr><th>Platform</th><th>Account</th><th>Hook (first 3 seconds)</th><th class="num">Views</th><th class="num">× median</th><th class="num">Followers</th><th>Format</th><th class="num">Posted</th></tr></thead>
+    <tbody id="tr-social"></tbody>
+  </table></div>
+  <div class="nr-learn" id="tr-patterns"></div>
+  <div class="section-label" style="margin-top:1.5rem">YouTube: breakout and trending titles</div>
+  <div class="nr-wrap"><table class="nr-table">
+    <thead><tr><th>Type</th><th>Title</th><th>Channel</th><th class="num">Views</th><th class="num">Signal</th><th class="num">Posted</th></tr></thead>
+    <tbody id="tr-yt"></tbody>
+  </table></div>
+  <div class="nr-learn" id="tr-yt-notes"></div>
+  <div class="section-label" style="margin-top:1.5rem">Rising YouTube keywords (niche search)</div>
+  <div class="nr-wrap"><table class="nr-table" style="min-width:420px">
+    <thead><tr><th>Keyword</th><th class="num">Search growth (month)</th><th>Read</th></tr></thead>
+    <tbody id="tr-kw"></tbody>
+  </table></div>
+  <div class="section-header"><h2>What to post this week</h2><p>Angles only, in your voice. Each follows a format that is beating its creators' median right now.</p></div>
+  <div class="nr-learn" id="tr-ideas"></div>
+      <div class="section-header"><h2>Audit #1: what won on Instagram</h2><p>Audit #1 · Oct 22, 2026 · 264 posts found by searching Marcus's own pain words (lost in your 20s, successful but empty, identity shift, finding purpose, life direction, hustle burnout). Posts from other creators, not your account. Like rate = likes ÷ views. Comment rate = comments ÷ views.</p></div>
   <div class="nr-pills">
     <button class="nr-pill active" data-seg="lead" onclick="nrShow('lead')">Lead magnets</button>
     <button class="nr-pill" data-seg="eng" onclick="nrShow('eng')">Engagement</button>
@@ -952,6 +979,75 @@ function nrShow(seg){
   document.querySelectorAll('.nr-pill').forEach(function(p){p.classList.toggle('active',p.dataset.seg===seg);});
 }
 nrShow('lead');
+
+var TR={
+ updated:'Nov 14, 2026',
+ source:'vidIQ (Instagram, TikTok and YouTube outlier search, rising keywords). Refreshed weekly.',
+ social:[
+  ['IG','tasteofoutdoors','DekjneFNBIr','Call it millennial crisis if you want. But in my 30s, I realized I don\'t actually want the life I worked so hard for.','5.2M','3,685×','1.2K','Faceless text over scenic loop','Oct 18'],
+  ['IG','johanleifandersson','DfiD3KeR42N','How to live a life you won\'t regret (comment "no regrets" for the episode)','1.7M','765×','157K','B-roll voiceover + talking head','Nov 10'],
+  ['IG','mike_dav1s','De92nEMgGFO','starting new again but this time with experience','853K','12×','9.7K','Cinematic b-roll, text','Oct 26'],
+  ['IG','btsg____','Dfb-7K2PCS5','maybe this year feels harder because you\'re trying to become someone you\'ve never been before','365K','49×','11K','Static b-roll, text loop','Nov 9'],
+  ['IG','yanoborn2','DfdqNEZN8wl','Your old self may fight you hardest just as you\'re drawing closer to your true potential.','367K','26×','13K','Static face, long text, loop','Nov 8'],
+  ['IG','chriscruz','DfiS79BRydw','Nobody has an identity crisis at 39','321K','77×','28.7K','B-roll voiceover + talking head','Nov 9'],
+  ['IG','bwebb_2ndlifefitness','DffV-BaxCKG','Some people are rebuilding careers. Others are rebuilding homes. Some of us are rebuilding ourselves.','88K','95×','891','Faceless text, static','Nov 8'],
+  ['IG','imdrpixel','DfeqOIHO9er','28, a doctor, still figuring life out','86K','40×','2.7K','B-roll over voiceover','Nov 8'],
+  ['TT','prodigal_son_777','7697425564931493150','please be patient with yourself because it takes time to become someone that you\'ve never been','1.8M','3,709×','3.2K','Talking head, 12s','Oct 17'],
+  ['TT','joshuaa.macc','7706943460347055390','Nobody tells you how hard it is to rewire your brain so you can allow amazing things to happen to you','1.6M','19×','67.5K','Car shot, text, 7s','Nov 11'],
+  ['TT','go.l.d.e.n.h.o.ur','7702584600710614294','You are not responsible for the way others choose to see you','724K','121×','new','Animated quote, 8s','Oct 30'],
+  ['TT','philgoodwithin','7696724429836913950','Why Your Life Hasn\'t Worked Out Yet','866K','13×','465K','Split-screen podcast clip','Oct 15']
+ ],
+ patterns:[
+  ['Format','Faceless text over one static or scenic shot, looped, wins on tiny accounts (1K to 13K followers reaching 300K to 5M). About an hour to make.'],
+  ['Language','"Become someone you\'ve never been", "old self", "identity crisis", "start again with experience". This is your old-identity angle, already proven.'],
+  ['Hook','One reflective sentence on screen in the first 3 seconds, music only, no intro. A comment keyword on top of a talking head also works (1.7M).']
+ ],
+ yt:[
+  ['Breakout','Why You Feel Empty Even When Your Life Is Going Well','Beyond Echo (135 subs)','13.3K','23× channel avg','Aug 20'],
+  ['Breakout','Stop "Finding Yourself" - Get a Savings Account Instead','Tabea (2.3K subs)','3.9K','104× channel avg','Sep 24'],
+  ['Breakout','how to lock in when you\'re ambitious but lost (post-grad edition)','Amal Jameela (7.1K subs)','12.1K','15× channel avg','Oct 2'],
+  ['Breakout','You Have Outgrown the Life You Once Prayed For','The Energy Within (2.6K subs)','5.2K','22 views/hr','Nov 8'],
+  ['Breakout','Why So Many Men Feel Lost After 30','Dr Sunny Garg (117K subs)','67.8K','4.7× channel avg','Aug 29'],
+  ['Trending','Purpose - The Deepest Human Desire','Bygone Philosophy (107K subs)','20.3K','1,044 views/hr','Nov 12'],
+  ['Trending','I Lost My Job at 40... What Happens Now?','Gangzi (42.9K subs)','8.6K','2,444 views/hr','Nov 13'],
+  ['Trending','When you feel like your life has no purpose, listen to this','T&H Inspiration (841K subs)','26.6K','371 views/hr','Nov 10']
+ ],
+ ytNotes:[
+  ['Title pattern','"Why you feel X even when Y" and "Stop doing X, do Y instead". Your planned title "Why Doing Everything Right Still Feels Empty" fits the first pattern.'],
+  ['Small channels win','Four of five breakouts come from channels under 8K subscribers. Packaging beats audience size here.']
+ ],
+ kw:[
+  ['psychology of life','+467%','Broad psychology framing, mostly India, Pakistan and Vietnam traffic'],
+  ['pattern recognition','+163%','Self-awareness angle, fits "name what has been running the show"'],
+  ['mentality','+161%','Generic, high competition'],
+  ['just start','+108%','Fits the 2-minute-rule angle'],
+  ['bygone philosophy','+113%','A channel name, a rising philosophy-for-men competitor to watch']
+ ],
+ ideas:[
+  ['Reel · faceless text loop','"i got the career i worked ten years for. then i quietly stopped wanting it." One shot of Lombok (beach or road), music only. Comment RESET for the Life by Design Guide.'],
+  ['Reel · talking head 45s','"Your old self fights you hardest right before the new one shows up." Old-identity angle from the Video Angles Bank. Raw, one take.'],
+  ['Reel · b-roll voiceover','"mid-20s, still figuring it out, building it from Lombok." Walks, desk, travel b-roll. Personal, relatable, matches the 28-year-old doctor format.'],
+  ['YouTube title','"Why Doing Everything Right Still Feels Empty". Matches the winning "Why you feel X even when Y" pattern. Alt: "You Have Outgrown the Life You Built".']
+ ]
+};
+function trRender(){
+  document.getElementById('tr-meta').textContent='Updated '+TR.updated+' · Source: '+TR.source;
+  var esc=function(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;');};
+  var sb=document.getElementById('tr-social');sb.innerHTML='';
+  TR.social.forEach(function(r){
+    var url=r[0]==='IG'?'https://www.instagram.com/reel/'+r[2]+'/':'https://www.tiktok.com/@'+r[1]+'/video/'+r[2];
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td><span class="tr-tag '+(r[0]==='TT'?'tt':'')+'">'+r[0]+'</span></td><td><a href="'+url+'" target="_blank" rel="noopener">@'+esc(r[1])+'</a></td><td class="cap">'+esc(r[3])+'</td><td class="num">'+r[4]+'</td><td class="num">'+r[5]+'</td><td class="num">'+r[6]+'</td><td>'+esc(r[7])+'</td><td class="num nowrap">'+r[8]+'</td>';
+    sb.appendChild(tr);
+  });
+  var cards=function(id,arr,warn){document.getElementById(id).innerHTML=arr.map(function(c){return '<div class="nr-card"><b>'+esc(c[0])+'</b>'+esc(c[1])+'</div>';}).join('');};
+  cards('tr-patterns',TR.patterns);cards('tr-yt-notes',TR.ytNotes);cards('tr-ideas',TR.ideas);
+  var yb=document.getElementById('tr-yt');yb.innerHTML='';
+  TR.yt.forEach(function(r){var tr=document.createElement('tr');tr.innerHTML='<td><span class="tr-tag yt">'+r[0]+'</span></td><td class="cap">'+esc(r[1])+'</td><td>'+esc(r[2])+'</td><td class="num">'+r[3]+'</td><td class="num">'+r[4]+'</td><td class="num nowrap">'+r[5]+'</td>';yb.appendChild(tr);});
+  var kb=document.getElementById('tr-kw');kb.innerHTML='';
+  TR.kw.forEach(function(r){var tr=document.createElement('tr');tr.innerHTML='<td>'+esc(r[0])+'</td><td class="num">'+r[1]+'</td><td class="cap">'+esc(r[2])+'</td>';kb.appendChild(tr);});
+}
+trRender();
 </script>
 </body>
 </html>
