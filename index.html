@@ -533,11 +533,27 @@ body{font-family:'DM Sans',sans-serif;background:var(--warm);color:var(--ink);mi
   </table></div>
   <div class="section-label" style="margin-top:1.5rem">Searches the biweekly run uses</div>
   <div id="own-searches" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1rem"></div>
-  <div class="section-label">Inspiration: breakout and trending titles</div>
+  <div class="section-label" style="margin-top:1.5rem">Long-form winners (breakouts vs channel average)</div>
   <div class="nr-wrap"><table class="nr-table">
     <thead><tr><th>Type</th><th>Title</th><th>Channel</th><th class="num">Views</th><th class="num">Signal</th><th class="num">Posted</th></tr></thead>
-    <tbody id="yt-insp"></tbody>
+    <tbody id="yt-win"></tbody>
   </table></div>
+  <div class="section-label" style="margin-top:1.5rem">Long-form trending feed (views per hour)</div>
+  <div class="nr-wrap"><table class="nr-table">
+    <thead><tr><th>Type</th><th>Title</th><th>Channel</th><th class="num">Views</th><th class="num">Signal</th><th class="num">Posted</th></tr></thead>
+    <tbody id="yt-trend"></tbody>
+  </table></div>
+  <div class="section-label" style="margin-top:1.5rem">Shorts winners (breakouts vs channel average)</div>
+  <div class="nr-wrap"><table class="nr-table">
+    <thead><tr><th>Type</th><th>Title</th><th>Channel</th><th class="num">Views</th><th class="num">Signal</th><th class="num">Posted</th></tr></thead>
+    <tbody id="yt-swin"></tbody>
+  </table></div>
+  <div class="section-label" style="margin-top:1.5rem">Shorts trending feed (views per hour)</div>
+  <div class="nr-wrap"><table class="nr-table">
+    <thead><tr><th>Type</th><th>Title</th><th>Channel</th><th class="num">Views</th><th class="num">Signal</th><th class="num">Posted</th></tr></thead>
+    <tbody id="yt-strend"></tbody>
+  </table></div>
+  <div class="nr-learn" id="yt-notes2"></div>
   <div class="section-label" style="margin-top:1.5rem">Your own ideas become scripts</div>
   <div class="nr-card">Add your own ideas, voice-note thoughts and inspiration to the <b style="display:inline;letter-spacing:0;text-transform:none;font-size:13px;color:var(--ink)">Video Angles Bank</b> note in the vault (Business OS / Content &amp; Brand). Each biweekly run reads the unused angles, matches them with what is trending, and writes the long-form outline and the 60 to 120 second cuts for the next two weeks.</div>
 </div>
@@ -1013,7 +1029,7 @@ function nrShow(seg){
 nrShow('lead');
 
 var TR={
- updated:'Nov 14, 2026',
+ updated:'Nov 15, 2026',
  source:'vidIQ (Instagram, TikTok and YouTube outlier search, rising keywords). Refreshed weekly.',
  social:[
   ['IG','tasteofoutdoors','DekjneFNBIr','Call it millennial crisis if you want. But in my 30s, I realized I don\'t actually want the life I worked so hard for.','5.2M','3,685×','1.2K','Faceless text over scenic loop','Oct 18'],
@@ -1042,10 +1058,23 @@ var TR={
   ['Breakout','Why So Many Men Feel Lost After 30','Dr Sunny Garg (117K subs)','67.8K','4.7× channel avg','Aug 29'],
   ['Trending','Purpose - The Deepest Human Desire','Bygone Philosophy (107K subs)','20.3K','1,044 views/hr','Nov 12'],
   ['Trending','I Lost My Job at 40... What Happens Now?','Gangzi (42.9K subs)','8.6K','2,444 views/hr','Nov 13'],
-  ['Trending','When you feel like your life has no purpose, listen to this','T&H Inspiration (841K subs)','26.6K','371 views/hr','Nov 10']
+  ['Trending','When you feel like your life has no purpose, listen to this','T&H Inspiration (841K subs)','26.6K','371 views/hr','Nov 10'],
+  ['Trending','5 Successful People Reveal The WORST Advice','Raj Shamani Insights (268K subs)','58.9K','438 views/hr','Nov 9'],
+  ['Trending','She Fought Depression & Anxiety to Build Her Identity','Josh Talks (4.1M subs)','127.6K','1,413 views/hr','Nov 11']
+ ],
+ ytS:[
+  ['Winner','Stop Blaming Karma: Taking Control of Your Life at Any Age','GREYTOCOLORS (11K subs)','1.2M','439× channel avg','Oct 14','jV6IVftg-m0'],
+  ['Winner','Feeling lost doesn\'t always mean you\'re going in the wrong direction. #IdentityShift','Amina (8.3K subs)','15.4K','68× channel avg','Sep 7','asafxGVY5kI'],
+  ['Winner','Imaginary Race','Olio Tells (13.5K subs)','30K','8.4× channel avg','Nov 13','D0oVlxvhvYg'],
+  ['Winner','Why Sky Bri QUIT P*rn While Making Millions','Michael Porter Jr. (93K subs)','181.7K','4.5× channel avg','Sep 14','iDkhikwUF7c'],
+  ['Trending','One bold decision can change d direction of your entire life','Bassi Brothers Vlogs (1.4K subs)','920.6K','13,322 views/hr','Nov 12','4tVVHtF840k'],
+  ['Trending','When Success Stops Feeling Like Success','mdscae (642K subs)','143.3K','4,130 views/hr','Nov 13','2UzrindEw3c'],
+  ['Trending','Glorious purpose','Ben Meister (21K subs)','12.7K','1,104 views/hr','Nov 14','cq6jvQp6wQ4'],
+  ['Trending','How God shows you the direction in life','Subhasmita Das (1.2K subs)','34.1K','398 views/hr','Nov 11','hUl_-6J3uDA']
  ],
  ytNotes:[
   ['Title pattern','"Why you feel X even when Y" and "Stop doing X, do Y instead". Your planned title "Why Doing Everything Right Still Feels Empty" fits the first pattern.'],
+  ['Shorts: 20 to 60 seconds, one sentence','Winning Shorts are one reflective line, 20 to 60 seconds. "When success stops feeling like success" (143K) and "feeling lost doesn\'t mean wrong direction" (15K from an 8K channel) are your Marcus angle almost word for word. Faith-flavoured versions get views too, but not your voice.'],
   ['Small channels win','Four of five breakouts come from channels under 8K subscribers. Packaging beats audience size here.']
  ],
  kw:[
@@ -1081,7 +1110,7 @@ function trRender(){
 }
 trRender();
 
-var OWN={"updated": "Nov 14, 2026", "source": "vidIQ, connected to @tristangregoire.life and @iamtristangregoire (live, 0 credits for Instagram)", "ig": {"followers": "1,349", "views30": "7,045", "reach30": "1,266", "visits30": "275", "lastPost": "Oct 27 (reel, 1.3K views)", "note": "Last 30 days (Oct 15 to Nov 14). Shares and saves are real: the older \"0 shares\" alert was wrong."}, "igPosts": [["2026-10-27", "too busy livin", 1301, 38, 6, 1, 3, "https://www.instagram.com/reel/De_2bZvPriY/"], ["2026-10-14", "The hardest part of this quote isn’t recognising it in others.", 344, 7, 0, 8, 2, "https://www.instagram.com/reel/DeeVlrvPUog/"], ["2026-09-12", "what a life. make sure you make the most of it.", 471, 34, 1, 0, 0, "https://www.instagram.com/reel/DdMWqZnocCB/"], ["2026-08-05", "A small habit that might just change your life.. 🙌🏼", 746, 46, 3, 0, 2, "https://www.instagram.com/reel/DbquWs6o_-J/"], ["2026-08-04", "Happy Birthday Dad 💛", 765, 89, 40, 3, 2, "https://www.instagram.com/reel/DbnfpPnoMJc/"], ["2026-06-19", "Live Now!🕊️  “I should have done this.” “I never should have d", 432, 21, 0, 1, 2, "https://www.instagram.com/reel/DZxLTtiIcwr/"], ["2026-06-17", "Trust yourself. Follow the path. Create life as you want it.  ", 1892, 83, 2, 1, 9, "https://www.instagram.com/reel/DZsOa6fID3J/"], ["2026-06-11", "there’s a difference between playing to win and playing not to", 1776, 29, 0, 9, 27, "https://www.instagram.com/reel/DZdR69XII3O/"], ["2026-06-11", "most people are playing not to lose and calling it ambition. t", 1509, 16, 2, 4, 23, "https://www.instagram.com/reel/DZdRcWcITpL/"], ["2026-06-09", "You are the creator. Trust me, i was just like you. You too ca", 5523, 175, 6, 47, 210, "https://www.instagram.com/reel/DZYFOploXrk/"], ["2026-06-08", "Once you see it, you can’t unsee it  “ignorance is bliss” they", 4002, 191, 4, 17, 95, "https://www.instagram.com/reel/DZVmfl1o9Ra/"], ["2026-06-05", "You are the master. Don’t throw away the power to create anyth", 1940, 61, 2, 6, 23, "https://www.instagram.com/reel/DZNJ8QqIRbc/"], ["2026-05-28", "Do the future version of you a favor and do this experiment.  ", 1285, 24, 0, 18, 23, "https://www.instagram.com/reel/DY5VrbmIukT/"]], "yt": {"subs": "458", "views": "168.6K", "videos": "311", "long30": "11", "shorts30": "19", "lastLong": "Jun 24, 2026 (56 views)"}, "ytVideos": [["2026-06-24", "Why Doing Everything Right Still Leaves You Feeling Completely Lost", "Long", "56", "4", "7MHzF_v1pOg"], ["2025-10-05", "The Secret To Balance", "Short", "1,230", "24", "apHiwo5lERg"], ["2025-10-04", "Why You Must Not Give Up", "Short", "911", "14", "XeEFhCIWCRI"], ["2025-09-30", "Two Reasons You're Stuck (and how to fix them)", "Short", "817", "14", "h9stxakdD08"], ["2025-09-30", "How To Rewrite Your Story", "Short", "1,038", "35", "1qj-woWHOSk"], ["2025-09-28", "The Truth About Your Comparison", "Short", "1,323", "46", "DTdORldt2oY"], ["2025-09-27", "The Only Way To Change Your Life", "Short", "1,724", "60", "oiERyqBURx0"], ["2025-09-07", "How To Overcome Fear Of Failure", "Short", "850", "14", "sMJHTs97Q9c"], ["2025-09-05", "The Hidden Secret Of Success Keeping You Stuck", "Short", "1,490", "25", "TNkGQVDmmIQ"], ["2025-09-03", "Why Your Perfect Plan Is Keeping You Stuck", "Short", "804", "12", "tiqSAMa-oBA"], ["2025-09-02", "Why Chasing Success Will Never Satisfy You", "Short", "1,124", "19", "Gav5nedBk64"], ["2025-08-31", "Why The Recipe For Success Will Make You Miserable", "Short", "1,152", "25", "8Gbv6xztqn4"]], "searches": ["feeling lost in your 20s", "successful but empty", "done everything right still feels off", "outgrowing your old life", "life direction", "identity shift", "finding direction", "what to do when life feels meaningless", "hustle culture burnout"]};
+var OWN={"updated": "Nov 15, 2026", "source": "vidIQ, connected to @tristangregoire.life and @iamtristangregoire (live, 0 credits for Instagram)", "ig": {"followers": "1,350", "views30": "7,210", "reach30": "1,251", "visits30": "291", "lastPost": "Oct 27 (reel, 1.3K views)", "note": "Last 30 days (Oct 16 to Nov 15), straight from Instagram's own API via vidIQ. Shares and saves are real: the older \"0 shares\" alert was wrong."}, "igPosts": [["2026-10-27", "too busy livin", 1301, 38, 6, 1, 3, "https://www.instagram.com/reel/De_2bZvPriY/"], ["2026-10-14", "The hardest part of this quote isn’t recognising it in others.", 344, 7, 0, 8, 2, "https://www.instagram.com/reel/DeeVlrvPUog/"], ["2026-09-12", "what a life. make sure you make the most of it.", 471, 34, 1, 0, 0, "https://www.instagram.com/reel/DdMWqZnocCB/"], ["2026-08-05", "A small habit that might just change your life.. 🙌🏼", 746, 46, 3, 0, 2, "https://www.instagram.com/reel/DbquWs6o_-J/"], ["2026-08-04", "Happy Birthday Dad 💛", 765, 89, 40, 3, 2, "https://www.instagram.com/reel/DbnfpPnoMJc/"], ["2026-06-19", "Live Now!🕊️  “I should have done this.” “I never should have d", 432, 21, 0, 1, 2, "https://www.instagram.com/reel/DZxLTtiIcwr/"], ["2026-06-17", "Trust yourself. Follow the path. Create life as you want it.  ", 1892, 83, 2, 1, 9, "https://www.instagram.com/reel/DZsOa6fID3J/"], ["2026-06-11", "there’s a difference between playing to win and playing not to", 1776, 29, 0, 9, 27, "https://www.instagram.com/reel/DZdR69XII3O/"], ["2026-06-11", "most people are playing not to lose and calling it ambition. t", 1509, 16, 2, 4, 23, "https://www.instagram.com/reel/DZdRcWcITpL/"], ["2026-06-09", "You are the creator. Trust me, i was just like you. You too ca", 5523, 175, 6, 47, 210, "https://www.instagram.com/reel/DZYFOploXrk/"], ["2026-06-08", "Once you see it, you can’t unsee it  “ignorance is bliss” they", 4002, 191, 4, 17, 95, "https://www.instagram.com/reel/DZVmfl1o9Ra/"], ["2026-06-05", "You are the master. Don’t throw away the power to create anyth", 1940, 61, 2, 6, 23, "https://www.instagram.com/reel/DZNJ8QqIRbc/"], ["2026-05-28", "Do the future version of you a favor and do this experiment.  ", 1285, 24, 0, 18, 23, "https://www.instagram.com/reel/DY5VrbmIukT/"]], "yt": {"subs": "458", "views": "168.6K", "videos": "311", "long30": "11", "shorts30": "19", "lastLong": "Jun 24, 2026 (56 views)"}, "ytVideos": [["2026-06-24", "Why Doing Everything Right Still Leaves You Feeling Completely Lost", "Long", "56", "4", "7MHzF_v1pOg"], ["2025-10-05", "The Secret To Balance", "Short", "1,230", "24", "apHiwo5lERg"], ["2025-10-04", "Why You Must Not Give Up", "Short", "911", "14", "XeEFhCIWCRI"], ["2025-09-30", "Two Reasons You're Stuck (and how to fix them)", "Short", "817", "14", "h9stxakdD08"], ["2025-09-30", "How To Rewrite Your Story", "Short", "1,038", "35", "1qj-woWHOSk"], ["2025-09-28", "The Truth About Your Comparison", "Short", "1,323", "46", "DTdORldt2oY"], ["2025-09-27", "The Only Way To Change Your Life", "Short", "1,724", "60", "oiERyqBURx0"], ["2025-09-07", "How To Overcome Fear Of Failure", "Short", "850", "14", "sMJHTs97Q9c"], ["2025-09-05", "The Hidden Secret Of Success Keeping You Stuck", "Short", "1,490", "25", "TNkGQVDmmIQ"], ["2025-09-03", "Why Your Perfect Plan Is Keeping You Stuck", "Short", "804", "12", "tiqSAMa-oBA"], ["2025-09-02", "Why Chasing Success Will Never Satisfy You", "Short", "1,124", "19", "Gav5nedBk64"], ["2025-08-31", "Why The Recipe For Success Will Make You Miserable", "Short", "1,152", "25", "8Gbv6xztqn4"]], "searches": ["feeling lost in your 20s", "successful but empty", "done everything right still feels off", "outgrowing your old life", "life direction", "identity shift", "finding direction", "what to do when life feels meaningless", "hustle culture burnout"]};
 function ownRender(){
   var esc=function(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;');};
   var card=function(l,v,sub){return '<div class="metric-card"><div class="metric-label">'+l+'</div><div class="metric-value">'+v+'</div><div class="metric-sub">'+sub+'</div></div>';};
@@ -1097,8 +1126,9 @@ function ownRender(){
   var v=document.getElementById('own-yt-videos');v.innerHTML='';
   OWN.ytVideos.forEach(function(r){var tr=document.createElement('tr');tr.innerHTML='<td class="num nowrap">'+r[0]+'</td><td class="cap"><a href="https://www.youtube.com/watch?v='+r[5]+'" target="_blank" rel="noopener">'+esc(r[1])+'</a></td><td>'+r[2]+'</td><td class="num">'+r[3]+'</td><td class="num">'+r[4]+'</td>';v.appendChild(tr);});
   document.getElementById('own-searches').innerHTML=OWN.searches.map(function(t){return '<span class="tr-tag">'+esc(t)+'</span>';}).join('');
-  var yi=document.getElementById('yt-insp');yi.innerHTML='';
-  TR.yt.forEach(function(r){var tr=document.createElement('tr');tr.innerHTML='<td><span class="tr-tag yt">'+r[0]+'</span></td><td class="cap">'+esc(r[1])+'</td><td>'+esc(r[2])+'</td><td class="num">'+r[3]+'</td><td class="num">'+r[4]+'</td><td class="num nowrap">'+r[5]+'</td>';yi.appendChild(tr);});
+  var ytRows=function(id,arr,type){var el=document.getElementById(id);el.innerHTML='';arr.filter(function(r){return type==='Trending'?r[0]==='Trending':r[0]!=='Trending';}).forEach(function(r){var t=r[6]?'<a href="https://www.youtube.com/watch?v='+r[6]+'" target="_blank" rel="noopener">'+esc(r[1])+'</a>':esc(r[1]);var tr=document.createElement('tr');tr.innerHTML='<td><span class="tr-tag yt">'+r[0]+'</span></td><td class="cap">'+t+'</td><td>'+esc(r[2])+'</td><td class="num">'+r[3]+'</td><td class="num">'+r[4]+'</td><td class="num nowrap">'+r[5]+'</td>';el.appendChild(tr);});};
+  ytRows('yt-win',TR.yt,'Winner');ytRows('yt-trend',TR.yt,'Trending');ytRows('yt-swin',TR.ytS,'Winner');ytRows('yt-strend',TR.ytS,'Trending');
+  document.getElementById('yt-notes2').innerHTML=TR.ytNotes.map(function(c){return '<div class="nr-card"><b>'+esc(c[0])+'</b>'+esc(c[1])+'</div>';}).join('');
 }
 ownRender();
 </script>
