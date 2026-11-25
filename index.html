@@ -135,6 +135,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--warm);color:var(--ink);mi
 .vid-card.used-card>.vid-header{opacity:.7}
 .bts-ep.used-card>.bts-ep-header .bts-ep-title::after{content:' ✓';color:var(--green);font-size:10px;font-weight:700;margin-left:4px}
 .bts-ep.used-card>.bts-ep-header{opacity:.7}
+.vid-card.used-card,.bts-ep.used-card,.nr-card.idea-used{filter:grayscale(1);opacity:.42}
+.vid-card.used-card .vid-title,.bts-ep.used-card .bts-ep-title,.nr-card.idea-used .idea-text{text-decoration:line-through}
+.idea-btn{margin-top:8px;display:inline-flex;font-size:11px;font-weight:600;padding:4px 12px;border-radius:20px;border:1.5px solid var(--border2);background:#fff;color:var(--muted);cursor:pointer}
+.idea-btn:hover{border-color:var(--green);color:var(--green)}
+.nr-card.idea-used .idea-btn{background:var(--green-light);border-color:var(--green);color:var(--green)}
 .used-counter{font-size:12px;color:var(--muted);font-weight:500;margin-left:auto}
 .used-counter b{color:var(--green)}
 /* STRATEGY */
@@ -1036,6 +1041,7 @@ function nrShow(seg){
 nrShow('lead');
 
 var TR={
+ done:[],
  updated:'Nov 15, 2026',
  source:'vidIQ (Instagram, TikTok and YouTube outlier search, rising keywords). Refreshed weekly.',
  social:[
@@ -1109,7 +1115,13 @@ function trRender(){
     sb.appendChild(tr);
   });
   var cards=function(id,arr,warn){document.getElementById(id).innerHTML=arr.map(function(c){return '<div class="nr-card"><b>'+esc(c[0])+'</b>'+esc(c[1])+'</div>';}).join('');};
-  cards('tr-patterns',TR.patterns);cards('tr-yt-notes',TR.ytNotes);cards('tr-ideas',TR.ideas);
+  cards('tr-patterns',TR.patterns);cards('tr-yt-notes',TR.ytNotes);
+  var IU={};try{IU=JSON.parse(localStorage.getItem('bs_used_ideas')||'{}');}catch(e){}
+  var ik=function(c){return (c[0]+'|'+c[1]).slice(0,60);};
+  var isUsed=function(c){return IU[ik(c)]||(TR.done||[]).some(function(d){return (c[0]+' '+c[1]).toLowerCase().indexOf(String(d).toLowerCase())>-1;});};
+  var ide=document.getElementById('tr-ideas');
+  ide.innerHTML=TR.ideas.map(function(c,i){var u=isUsed(c);return '<div class="nr-card'+(u?' idea-used':'')+'"><b>'+esc(c[0])+'</b><span class="idea-text">'+esc(c[1])+'</span><br><button class="idea-btn" data-i="'+i+'">'+(u?'✓ Used (undo)':'Mark as used')+'</button></div>';}).join('');
+  ide.querySelectorAll('.idea-btn').forEach(function(b){b.onclick=function(){var c=TR.ideas[+b.dataset.i];var k=ik(c);if(IU[k])delete IU[k];else IU[k]=1;try{localStorage.setItem('bs_used_ideas',JSON.stringify(IU));}catch(e){}trRender();};});
   var yb=document.getElementById('tr-yt');yb.innerHTML='';
   TR.yt.forEach(function(r){var tr=document.createElement('tr');tr.innerHTML='<td><span class="tr-tag yt">'+r[0]+'</span></td><td class="cap">'+esc(r[1])+'</td><td>'+esc(r[2])+'</td><td class="num">'+r[3]+'</td><td class="num">'+r[4]+'</td><td class="num nowrap">'+r[5]+'</td>';yb.appendChild(tr);});
   var kb=document.getElementById('tr-kw');kb.innerHTML='';
