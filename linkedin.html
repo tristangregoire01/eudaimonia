@@ -1,0 +1,875 @@
+<title>Eudaimonia LinkedIn Dashboard</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=Cardo:ital@1&family=Montserrat:wght@500;600&family=Playfair+Display:wght@500;600&display=swap">
+<style>
+/* Layout: one calm column, sticky tab bar, seven sections shown one at a time. Soul, Mind, Body glyphs and the gold rule are the brand's own ornaments. */
+:root{
+  --bg:#FAF7F2; --surface:#FFFFFF; --fg:#1A1F1E; --muted:#5F6B65; --line:#E3DDD2;
+  --forest:#2D3B34; --on-forest:#FAF7F2; --gold:#C4963A; --gold-text:#8A6416;
+  --audience:#2D3B34; --trust:#7E8F83; --conversion:#C4963A; --ok:#3F6B53; --soul:#2D3B34; --mind:#8A6416; --body:#4A6741; --f-glyph:'Cardo',Georgia,serif;
+  --f-head:'Playfair Display',Georgia,serif; --f-body:'Lora',Georgia,serif; --f-label:'Montserrat',system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#1A1F1E; --surface:#232A28; --fg:#F1EDE4; --muted:#A3AEA7; --line:#34403B;
+  --forest:#2D3B34; --on-forest:#FAF7F2; --gold-text:#D8AE55;
+  --audience:#9DB5A5; --trust:#5F7568; --conversion:#C4963A; --ok:#7FB596; --soul:#9DB5A5; --mind:#D8AE55; --body:#7A9E7E; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1A1F1E; --surface:#232A28; --fg:#F1EDE4; --muted:#A3AEA7; --line:#34403B;
+  --forest:#2D3B34; --on-forest:#FAF7F2; --gold-text:#D8AE55;
+  --audience:#9DB5A5; --trust:#5F7568; --conversion:#C4963A; --ok:#7FB596; --soul:#9DB5A5; --mind:#D8AE55; --body:#7A9E7E; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:16px/1.6 var(--f-body);padding-inline:max(16px,env(safe-area-inset-left,0px)) max(16px,env(safe-area-inset-right,0px));padding-block:24px 64px}
+.wrap{max-width:960px;margin:0 auto}
+header{padding-bottom:20px}
+.eyebrow{font:600 11px/1 var(--f-label);letter-spacing:.16em;text-transform:uppercase;color:var(--gold-text)}
+h1{font:500 clamp(28px,5vw,40px)/1.15 var(--f-head);margin:10px 0 6px;text-wrap:balance}
+h2{font:500 24px/1.25 var(--f-head);margin:0 0 4px;text-wrap:balance}
+h3{font:600 12px/1.2 var(--f-label);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:28px 0 10px}
+p{margin:0 0 12px;max-width:68ch}
+.sub{color:var(--muted)}
+.save{font-size:14px;color:var(--muted);border-left:2px solid var(--gold);padding-left:12px;margin-top:14px}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);display:flex;gap:4px;overflow-x:auto;margin-bottom:24px;padding-block:6px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+nav button{font:600 11px/1 var(--f-label);letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;background:none;border:0;border-bottom:2px solid transparent;color:var(--muted);padding:12px 10px;cursor:pointer}
+nav button[aria-selected="true"]{color:var(--fg);border-bottom-color:var(--gold)}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+section[hidden]{display:none}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:15px}
+th{font:600 11px/1.2 var(--f-label);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:left;padding:12px 14px;border-bottom:1px solid var(--line)}
+td{padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+td.code{font:600 13px var(--f-label);white-space:nowrap}
+.tag{display:inline-block;font:600 10px/1 var(--f-label);letter-spacing:.1em;text-transform:uppercase;padding:5px 8px;border:1px solid var(--line);color:var(--fg);white-space:nowrap}
+.tag.audience{border-color:var(--audience)}.tag.trust{border-color:var(--trust)}.tag.conversion{border-color:var(--conversion)}
+.pill{font:600 10px/1 var(--f-label);letter-spacing:.1em;text-transform:uppercase;padding:5px 8px;background:var(--forest);color:var(--on-forest);white-space:nowrap}
+.parked{color:var(--muted);font-size:14px;margin-top:12px}
+.bar{display:flex;height:28px;overflow:hidden;border:1px solid var(--line);background:var(--surface)}
+.bar i{display:block;height:100%}
+.bar.thin{height:12px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font:500 12px var(--f-label);margin-top:10px}
+.legend b{font-weight:600}
+.sw{display:inline-block;width:10px;height:10px;margin-right:6px}
+.cmp{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:20px}
+.cmp div{background:var(--surface);border:1px solid var(--line);padding:14px}
+.big{font:500 28px var(--f-head);font-variant-numeric:tabular-nums}
+.lab{font:600 10px/1.3 var(--f-label);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.week{background:var(--surface);border:1px solid var(--line);padding:14px 16px;margin-bottom:10px}
+.week.now{border-color:var(--gold)}
+.week h4{margin:0 0 8px;font:600 12px var(--f-label);letter-spacing:.1em;text-transform:uppercase;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.week h4 span{color:var(--muted);font-weight:500;letter-spacing:.04em;text-transform:none}
+label.chk{display:flex;gap:10px;align-items:flex-start;padding:6px 0;cursor:pointer}
+input[type=checkbox]{width:20px;height:20px;margin:3px 0 0;flex:none;accent-color:var(--forest)}
+label.chk.done span{color:var(--muted);text-decoration:line-through}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.progress{display:flex;align-items:baseline;gap:12px;margin-bottom:10px}
+.progress .big{font-size:36px}
+.streak{display:flex;gap:24px;flex-wrap:wrap;margin-top:18px}
+.daycard{background:var(--surface);border:1px solid var(--line);padding:18px 20px}
+.goalrow{display:flex;justify-content:space-between;gap:12px;font-size:13px;color:var(--muted);margin-top:10px;font-family:var(--f-label)}
+form.log{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;background:var(--surface);border:1px solid var(--line);padding:16px}
+form.log label{display:flex;flex-direction:column;gap:4px;min-width:0}
+input,select,textarea{font:16px var(--f-body);background:var(--bg);color:var(--fg);border:1px solid var(--line);padding:9px 10px;width:100%;min-width:0}
+textarea{min-height:200px;resize:vertical}
+.btn{font:600 11px/1 var(--f-label);letter-spacing:.12em;text-transform:uppercase;background:var(--forest);color:var(--on-forest);border:1px solid var(--forest);padding:13px 18px;cursor:pointer}
+.btn.ghost{background:none;color:var(--fg);border-color:var(--line)}
+:root[data-theme="dark"] .btn:not(.ghost){border-color:var(--gold)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .btn:not(.ghost){border-color:var(--gold)}}
+.empty{border:1px dashed var(--line);padding:20px;color:var(--muted);text-align:center;margin-top:12px}
+.charts{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-top:20px}
+.chart{background:var(--surface);border:1px solid var(--line);padding:14px}
+.chart svg{width:100%;height:auto;display:block}
+.chart text{fill:var(--muted);font:10px var(--f-label)}
+.links{display:grid;gap:10px}
+.link{display:block;background:var(--surface);border:1px solid var(--line);padding:14px 16px;color:var(--fg);text-decoration:none;overflow-wrap:anywhere}
+.link:hover{border-color:var(--gold)}
+.link b{display:block;font:600 11px var(--f-label);letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px}
+.link span{color:var(--gold-text);font-size:14px}
+.path{font:13px ui-monospace,Menlo,monospace;overflow-wrap:anywhere;background:var(--surface);border:1px solid var(--line);padding:10px 12px;margin-bottom:8px}
+.rules li{margin-bottom:8px}
+ul{padding-left:20px;margin:0}
+footer{margin-top:48px;color:var(--muted);font-size:14px}
+@media (max-width:520px){td,th{padding:10px}}
+
+.smb{display:flex;flex-wrap:wrap;gap:6px 22px;align-items:baseline;margin:14px 0 0;font:600 11px/1 var(--f-label);letter-spacing:.16em;text-transform:uppercase}
+.smb span{display:inline-flex;gap:8px;align-items:baseline}
+.smb i{font:italic 400 26px/1 var(--f-glyph);letter-spacing:0;text-transform:none}
+.smb .s i{color:var(--soul)}.smb .m i{color:var(--mind)}.smb .b i{color:var(--body)}
+.rule{height:1px;background:var(--gold);border:0;margin:14px 0 0;max-width:120px}
+.phase{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:4px;margin-top:14px}
+.phase div{border-top:3px solid var(--line);padding-top:6px;font:600 10px/1.3 var(--f-label);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.phase div.on{border-top-color:var(--gold);color:var(--fg)}
+.phase div small{display:block;font:500 11px var(--f-label);letter-spacing:.02em;text-transform:none;color:var(--muted)}
+.dayline{font:500 13px var(--f-label);color:var(--muted);margin-top:10px}
+.dayline b{color:var(--fg);font-weight:600}
+.stat{display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;background:var(--surface);border:1px solid var(--line);padding:12px 14px;font:500 13px var(--f-label);margin:14px 0}
+.stat b{font-weight:600}
+details.fallback{margin-top:22px;border:1px solid var(--line);background:var(--surface)}
+details.fallback summary{cursor:pointer;padding:12px 14px;font:600 11px var(--f-label);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+details.fallback form.log{border:0;border-top:1px solid var(--line)}
+.filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:12px 0}
+.tgt{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;background:var(--surface);border:1px solid var(--line);padding:12px 14px;margin-bottom:8px}
+.tgt.on{border-color:var(--ok)}
+.tgt .tk{grid-row:1/4;padding-top:3px}
+.tgt h4{margin:0;font:600 15px/1.35 var(--f-body);display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.tgt .meta{font:500 12px var(--f-label);color:var(--muted);overflow-wrap:anywhere}
+.tgt .meta a{color:var(--gold-text)}
+.tgt p{margin:0;font-size:14px;max-width:none}
+.tgt .ang{color:var(--fg)}
+.chip{font:600 9px/1 var(--f-label);letter-spacing:.1em;text-transform:uppercase;padding:4px 6px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.chip.u{border-color:var(--gold);color:var(--gold-text)}
+.chip.t1{border-color:var(--audience);color:var(--fg)}
+.chip.m{border-color:var(--line)}
+.todayhead{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline}
+
+.mode{display:inline-flex;border:1px solid var(--line);margin-bottom:18px}
+.mode button{font:600 11px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase;background:none;border:0;color:var(--muted);padding:12px 22px;cursor:pointer}
+.mode button[aria-pressed="true"]{background:var(--forest);color:var(--on-forest)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:16px 0}
+.kpi{background:var(--surface);border:1px solid var(--line);border-top:3px solid var(--gold);padding:16px}
+.kpi .big{font-size:38px;line-height:1.1}
+.kpi .sub{font-size:13px;margin:4px 0 0}
+.kpi.nodata .big{color:var(--muted)}
+.how{background:var(--surface);border:1px solid var(--line);padding:14px 16px;margin:14px 0;font-size:15px}
+.how ol{margin:6px 0 0;padding-left:20px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}
+.card{background:var(--surface);border:1px solid var(--line);padding:14px 16px}
+.card h4{margin:0 0 4px;font:600 15px var(--f-body)}
+.card .meta{font:500 12px var(--f-label);color:var(--muted);margin-bottom:6px}
+.card p{font-size:14px;margin:0 0 6px;max-width:none}
+.card a{color:var(--gold-text)}
+.qt{max-width:60ch}
+.type-own{border-color:var(--gold);color:var(--gold-text)}
+.kpi.warn{border-top-color:var(--conversion)}
+.alert{border:1px solid var(--gold);background:var(--surface);padding:12px 14px;margin:12px 0;font-size:14px}
+
+.tfbar{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;background:var(--surface);border:1px solid var(--line);padding:12px 14px;font:500 13px var(--f-label);margin:14px 0}
+.tfbar .dot{width:9px;height:9px;border-radius:50%;background:var(--muted);flex:none}
+.tfbar.live .dot{background:var(--ok)}
+.tfbar button,.tfbtn{font:600 11px/1 var(--f-label);letter-spacing:.1em;text-transform:uppercase;background:none;border:1px solid var(--line);color:var(--fg);padding:9px 12px;cursor:pointer}
+.tfbar .grow{flex:1 1 auto;min-width:0}
+.tf{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 14px;background:var(--surface);border:1px solid var(--line);padding:12px 14px;margin-bottom:8px}
+.tf h4{margin:0;font:600 15px/1.35 var(--f-body);overflow-wrap:anywhere}
+.tf .meta{font:500 12px var(--f-label);color:var(--muted);display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center}
+.tf p{margin:0;font-size:14px;color:var(--muted);max-width:none;grid-column:1/-1;overflow-wrap:anywhere}
+.tf a.open{align-self:start;font:600 11px/1 var(--f-label);letter-spacing:.1em;text-transform:uppercase;color:var(--gold-text);white-space:nowrap;padding:6px 0}
+.tf.sch{border-left:3px solid var(--ok)}
+@media (max-width:480px){.tf{grid-template-columns:minmax(0,1fr)}}
+</style>
+
+
+<div class="wrap">
+<header>
+  <div class="mode" role="group" aria-label="Platform"><button type="button" data-mode="li" aria-pressed="true">LinkedIn</button><button type="button" data-mode="x" aria-pressed="false">X</button></div>
+  <div class="eyebrow">Eudaimonia · Business OS</div>
+  <h1 id="h1">LinkedIn dashboard</h1>
+  <p class="sub" id="hSub">one place for the whole system. post, comment, talk to people, review. calm and consistent.</p>
+  <div class="smb" aria-label="Soul, Mind, Body"><span class="s"><i>&#10022;</i>Soul</span><span class="m"><i>&#9672;</i>Mind</span><span class="b"><i>&#9673;</i>Body</span></div>
+  <hr class="rule">
+  <div class="phase" data-m="li" id="phase" aria-label="90-day phases"></div>
+  <div class="dayline" data-m="li" id="dayLine"></div>
+  <p class="save" id="saveNote">Ticks, streak, plan progress and hand-entered metrics are saved in this browser only and are not shared or backed up. The comment target list and the metrics log are built into the page, so they are the same on every device.</p><p class="save" data-m="x" hidden>X quotes and metrics are built into this page from the vault notes. Nothing posts from here; X native scheduler does the posting.</p><p class="save" style="display:none" aria-hidden="true">Ticks, streak, plan progress and hand-entered metrics are saved in this browser only and are not shared or backed up. The comment target list and the metrics log are built into the page, so they are the same on every device.</p>
+</header>
+
+<nav role="tablist" aria-label="Sections">
+  <button role="tab" data-m="li" data-t="schedule" aria-selected="true">Schedule</button>
+  <button role="tab" data-m="li" data-t="mix" aria-selected="false">Goal mix</button>
+  <button role="tab" data-m="li" data-t="plan" aria-selected="false">90 days</button>
+  <button role="tab" data-m="li" data-t="daily" aria-selected="false">Daily</button>
+  <button role="tab" data-m="li" data-t="metrics" aria-selected="false">Metrics</button>
+  <button role="tab" data-m="li" data-t="targets" aria-selected="false">Comment targets</button>
+  <button role="tab" data-m="li" data-t="links" aria-selected="false">Links and rules</button>
+  <button role="tab" data-m="li" data-t="typefully" aria-selected="false">Typefully</button>
+  <button role="tab" data-m="x" data-t="x-sched" aria-selected="false" hidden>Scheduled posts</button>
+  <button role="tab" data-m="x" data-t="x-metrics" aria-selected="false" hidden>Metrics</button>
+  <button role="tab" data-m="x" data-t="x-best" aria-selected="false" hidden>Best posts</button>
+  <button role="tab" data-m="x" data-t="x-insp" aria-selected="false" hidden>Inspiration</button>
+  <button role="tab" data-m="x" data-t="x-trend" aria-selected="false" hidden>Trending now</button>
+  <button role="tab" data-m="x" data-t="x-typefully" aria-selected="false" hidden>Typefully</button>
+</nav>
+
+<!-- 1 SCHEDULE -->
+<section id="schedule">
+  <h2>Posting schedule</h2>
+  <p class="sub">8 posts, 17 Nov to 10 Dec. Two a week, Tuesday and Thursday, 09:00 Europe/Copenhagen. All 8 are scheduled in Typefully (checked live 14 Nov).</p>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Date</th><th>Code</th><th>Post</th><th>Type</th><th>Goal</th><th>Status</th></tr></thead>
+    <tbody id="schedBody"></tbody>
+  </table></div>
+  <p class="parked">Parked: N1-5 (not scheduled).</p>
+</section>
+
+<!-- 2 MIX -->
+<section id="mix" hidden>
+  <h2>Goal mix</h2>
+  <p class="sub">Target 40 audience / 40 trust / 20 conversion. Actual is computed from the schedule table.</p>
+  <h3>Target</h3>
+  <div class="bar" id="barTarget" aria-label="Target mix"></div>
+  <h3>Scheduled</h3>
+  <div class="bar" id="barActual" aria-label="Scheduled mix"></div>
+  <div class="legend">
+    <span><i class="sw" style="background:var(--audience)"></i><b>Audience</b></span>
+    <span><i class="sw" style="background:var(--trust)"></i><b>Trust</b></span>
+    <span><i class="sw" style="background:var(--conversion)"></i><b>Conversion</b></span>
+  </div>
+  <div class="cmp" id="mixCards"></div>
+  <p style="margin-top:20px" id="mixNote"></p>
+</section>
+
+<!-- 3 PLAN -->
+<section id="plan" hidden>
+  <h2>90-day plan</h2>
+  <p class="sub">Milestones from the strategy note and the Nov 2026 growth research. Reviews: R1 day 14 (30 Nov), R2 day 30 (14 Dec), R3 day 60 (24 Jan), R4 day 90 (14 Feb).</p>
+  <div class="row" style="margin:14px 0">
+    <label class="lab" for="startDate">Day 1</label>
+    <input type="date" id="startDate" style="width:auto">
+  </div>
+  <div class="progress"><div class="big" id="planPct">0%</div><div class="sub" id="planCount"></div></div>
+  <div class="bar thin" id="planBar" role="progressbar" aria-label="Plan progress"></div>
+  <h3>Weeks</h3>
+  <div id="weeks"></div>
+</section>
+
+<!-- 4 DAILY -->
+<section id="daily" hidden>
+  <h2>Daily checklist</h2>
+  <p class="sub" id="today"></p>
+  <div class="daycard" id="dayCard"></div>
+  <p class="parked" id="tickNote"></p>
+  <div class="streak">
+    <div><div class="big" id="streakNow">0</div><div class="lab">day streak</div></div>
+    <div><div class="big" id="streakBest">0</div><div class="lab">best streak</div></div>
+    <div><div class="big" id="daysDone">0</div><div class="lab">full days logged</div></div>
+  </div>
+  <p class="parked">A day counts when all four boxes are ticked. A streak survives until the end of the day, so today can still be completed.</p>
+  <h3>Last 14 days</h3>
+  <div class="row" id="dots" style="gap:6px"></div>
+</section>
+
+<!-- 5 METRICS -->
+<section id="metrics" hidden>
+  <h2>Metrics log</h2>
+  <p class="sub">Loaded from the data block inside this page. Claude refreshes it after each LinkedIn export and each X read, and republishes the page. Nothing to type.</p>
+  <div class="stat" id="mStat"></div>
+  <div class="row" style="margin-bottom:6px"><label class="lab" for="mPlat">Platform</label><select id="mPlat" style="width:auto"><option value="all">All</option><option value="LinkedIn">LinkedIn</option><option value="X">X</option></select></div>
+  <div id="mEmpty" class="empty">No metrics loaded yet. The first load happens after the first LinkedIn export is dropped in <b>Content &amp; Brand/LinkedIn Analytics/</b>. Trend charts appear once two posts are loaded.</div>
+  <div class="tablewrap" id="mTableWrap" hidden style="margin-top:16px"><table style="min-width:760px">
+    <thead><tr><th>Date</th><th>Platform</th><th>Post</th><th>Impr.</th><th>React.</th><th>Comm.</th><th>Reposts</th><th>Saves</th><th>Visits</th><th>Follows</th><th></th></tr></thead>
+    <tbody id="mBody"></tbody>
+  </table></div>
+  <h3>Weekly followers</h3>
+  <div id="wEmpty" class="empty" style="margin-top:0">No weekly follower counts loaded yet.</div>
+  <div class="tablewrap" id="wWrap" hidden><table style="min-width:420px"><thead><tr><th>Week of</th><th>Platform</th><th>Followers</th><th>Change</th></tr></thead><tbody id="wBody"></tbody></table></div>
+  <div class="charts" id="charts" hidden></div>
+  <div class="row" style="margin-top:16px">
+    <button class="btn ghost" id="csvBtn" type="button">Copy as CSV</button>
+    <span class="sub" id="csvNote"></span>
+  </div>
+  <textarea id="csvOut" readonly hidden style="min-height:120px;margin-top:10px"></textarea>
+  <details class="fallback">
+    <summary>Optional: add a row by hand</summary>
+    <form class="log" id="mForm">
+      <label class="lab">Date<input type="date" id="m_date" required></label>
+      <label class="lab">Platform<select id="m_platform"><option>LinkedIn</option><option>X</option></select></label>
+      <label class="lab">Post code<input type="text" id="m_code" placeholder="N1-1" required></label>
+      <label class="lab">Impressions<input type="number" min="0" id="m_imp"></label>
+      <label class="lab">Reactions<input type="number" min="0" id="m_rea"></label>
+      <label class="lab">Comments<input type="number" min="0" id="m_com"></label>
+      <label class="lab">Reposts<input type="number" min="0" id="m_rep"></label>
+      <label class="lab">Saves<input type="number" min="0" id="m_sav"></label>
+      <label class="lab">Profile visits<input type="number" min="0" id="m_vis"></label>
+      <label class="lab">Follows<input type="number" min="0" id="m_fol"></label>
+      <div style="display:flex;align-items:flex-end"><button class="btn" type="submit">Add row</button></div>
+    </form>
+    <p class="parked" style="padding:0 14px 12px">Hand-entered rows stay in this browser only and are marked "hand".</p>
+  </details>
+</section>
+<script type="application/json" id="metricsData">{"updated":null,"source":null,"posts":[],"weekly":[]}</script>
+
+<!-- 6 TARGETS -->
+<section id="targets" hidden>
+  <h2>Comment targets</h2>
+  <p class="sub">Built into this page from the vault note. Tick a person once you have commented today. Ticks reset every day and stay in this browser.</p>
+  <div class="todayhead"><h3 style="margin:18px 0 8px">Today's 15</h3><span class="lab" id="tgtCount"></span></div>
+  <p class="parked" style="margin-top:0">Mix: 6 peers, 4 mid creators, 2 big names, 3 ICP-side people to find by hand. The list rotates each day.</p>
+  <div id="tgtToday"></div>
+  <h3>Full list</h3>
+  <div class="filters">
+    <select id="fTier" aria-label="Tier"><option value="0">All tiers</option><option value="1">Tier 1 peers</option><option value="2">Tier 2 mid creators</option><option value="3">Tier 3 big names</option><option value="4">ICP-side people</option></select>
+    <select id="fU" aria-label="Verification"><option value="all">Verified and unverified</option><option value="v">Hide unverified [U]</option><option value="u">Only unverified [U]</option></select>
+    <input type="search" id="fQ" placeholder="Search name, topic, angle" aria-label="Search targets">
+  </div>
+  <div id="tgtAll"></div>
+  <p class="parked"><b>Evidence limits.</b> LinkedIn was not opened or scraped to build this list. <b>[U]</b> means the handle, link and size come from general knowledge and are not verified: open the profile yourself. Sizes and tiers are assumed. Open each profile once, drop weak fits and move people between tiers by real follower count. Source: <i>(C) Comment targets - first list - Nov 2026</i> in Content &amp; Brand.</p>
+</section>
+<script type="application/json" id="targetData">[{"n":1,"tier":1,"who":"Daniel Glyde","plat":"LinkedIn: linkedin.com/posts/danglydecoach_most-people-dont-need-a-boss-they-just-activity-7388477089852678144-mXKv","link":"https://linkedin.com/posts/danglydecoach_most-people-dont-need-a-boss-they-just-activity-7388477089852678144-mXKv","why":"Headline is the ICP's exact feeling: men whose life looks good but doesn't feel that way","posts":"Men, performance, accountability","angle":"Add one honest scene from your own \"looks fine, feels off\" stretch","u":false,"note":"[V]"},{"n":2,"tier":1,"who":"Paul Garrigan","plat":"LinkedIn: uk.linkedin.com/in/paul-garrigan-89762799 (Men's Inner Mastery Academy)","link":"https://uk.linkedin.com/in/paul-garrigan-89762799","why":"\"Men who feel lost, burnt out\"; same buyer, UK","posts":"Inner work, burnout, men's coaching","angle":"Name the distinction his post blurs (tired vs. pointed the wrong way)","u":false,"note":"[V]"},{"n":3,"tier":1,"who":"Chris Howell","plat":"LinkedIn: linkedin.com/in/chris-howell-men’s-performance-coach-7b1863383 (Bulletproof 90)","link":"https://linkedin.com/in/chris-howell-men’s-performance-coach-7b1863383","why":"Rebuilding \"discipline, clarity and identity\"; identity is your pillar 1","posts":"Discipline, resilience, identity","angle":"Where identity breaks discipline: a time willpower worked and still felt empty","u":false,"note":"[V]"},{"n":4,"tier":1,"who":"Frank Paul Vignola","plat":"LinkedIn: linkedin.com/in/frankpaulvignola (The Iron Brotherhood)","link":"https://linkedin.com/in/frankpaulvignola","why":"Lifestyle/leadership coach for high-performing men","posts":"Brotherhood, leadership, lifestyle","angle":"Add the softer side: what you could not say in a group of ambitious guys","u":false,"note":"[V]"},{"n":5,"tier":1,"who":"Todd Gorishek","plat":"LinkedIn post \"Why men feel burned out even when life looks...\" (linkedin.com/posts/toddgorishek_why-men-feel-burned-out-even-when-life-looks-activity-7513276137364520960-TFUP)","link":"https://linkedin.com/posts/toddgorishek_why-men-feel-burned-out-even-when-life-looks-activity-7513276137364520960-TFUP","why":"Almost your hook, \"even when life looks good\"","posts":"Men's burnout","angle":"Say what the burnout looked like day to day, one concrete detail","u":false,"note":"[V]"},{"n":6,"tier":1,"who":"Stefanos Koutsoumpis","plat":"Men's coach on burnout (seen in an Instagram podcast post, instagram.com/p/DYxLI1liWoH/); find his LinkedIn by name","link":"https://instagram.com/p/DYxLI1liWoH/","why":"Men breaking free from burnout; guests on podcasts","posts":"Burnout, men","angle":"Podcast/guest overlap: comment on his episode with your own take","u":false,"note":"[V, platform unclear]"},{"n":7,"tier":1,"who":"Hannah Zhang","plat":"LinkedIn post \"Building a Business in Your 5-9 Hours\" (linkedin.com/posts/hannahzhang0_i-built-my-creator-business-while-working-activity-7518437919716593664-ncfr)","link":"https://linkedin.com/posts/hannahzhang0_i-built-my-creator-business-while-working-activity-7518437919716593664-ncfr","why":"Corporate-to-creator, \"needed to quit to be a real founder\" trap","posts":"Building on the side while employed","angle":"Share the pressure to leave before you are ready; ICP lurkers reading","u":false,"note":"[V]"},{"n":8,"tier":1,"who":"Steve P. Brady","plat":"LinkedIn: linkedin.com/in/stevepbrady","link":"https://linkedin.com/in/stevepbrady","why":"\"High performers navigating career burnout and transitions\"","posts":"Career burnout, transitions","angle":"One question the post skips: what did they want before the job?","u":false,"note":"[V]"},{"n":9,"tier":1,"who":"Shelley Maley","plat":"LinkedIn: linkedin.com/in/shelleymaleycareercoach","link":"https://linkedin.com/in/shelleymaleycareercoach","why":"Young professionals, career clarity","posts":"Early-career clarity","angle":"Younger-side ICP; add the \"behind at 27\" feeling, plainly","u":false,"note":"[V]"},{"n":10,"tier":1,"who":"Steph Gilles","plat":"LinkedIn: linkedin.com/in/stephgillies","link":"https://linkedin.com/in/stephgillies","why":"\"Career development is a mental health strategy\"; adventure, multi-passionate","posts":"Career stories, mental health","angle":"Tie to nomad life: moving changed what felt \"on paper\"","u":false,"note":"[V]"},{"n":11,"tier":1,"who":"Jonathan Corrales","plat":"LinkedIn: linkedin.com/in/jonathancorrales","link":"https://linkedin.com/in/jonathancorrales","why":"Millennial tech job seekers","posts":"Tech careers, confidence","angle":"Tech guys at 28 asking \"is this it\": add the pause before the next job","u":false,"note":"[V]"},{"n":12,"tier":1,"who":"McKay Roozen","plat":"LinkedIn: linkedin.com/in/mckayroozen","link":"https://linkedin.com/in/mckayroozen","why":"Career coach for tech leaders: \"High performer? Great, let's keep it that way\"","posts":"Tech leadership, comp","angle":"Contrarian add: staying a high performer vs. staying aimed","u":false,"note":"[V]"},{"n":13,"tier":1,"who":"Janel (Millennial Career Crisis Hotline)","plat":"Instagram reel instagram.com/reel/DSSZ_fgkVJ9/; handle not confirmed","link":"https://instagram.com/reel/DSSZ_fgkVJ9/","why":"Ex-HR, \"Millennial Career Crisis\"; same audience, Instagram first","posts":"Career crisis, corporate","angle":"Instagram later; watch now, comment when IG routine starts","u":false,"note":"[V]"},{"n":14,"tier":2,"who":"Paul Millerd","plat":"Newsletter newsletter.pathlesspath.com; X handle","link":null,"why":"Left corporate for meaning, \"The Pathless Path\": your story's older cousin","posts":"Work, meaning, leaving the script","angle":"Respond to the essay with what the script felt like at 25","u":true,"note":"[V]"},{"n":15,"tier":2,"who":"Austin Belcak","plat":"LinkedIn: linkedin.com/in/abelcak","link":"https://linkedin.com/in/abelcak","why":"Huge career-change audience of 25-35 year olds","posts":"Job change, raises","angle":"Add the part he skips: the feeling before the search","u":false,"note":"[V]"},{"n":16,"tier":2,"who":"Kerri Twigg","plat":"LinkedIn: linkedin.com/in/kerritwigg","link":"https://linkedin.com/in/kerritwigg","why":"Career stories, storytelling; Top Voice","posts":"Storytelling, workplace","angle":"Story craft: your \"scene first\" habit, one line","u":false,"note":"[V]"},{"n":17,"tier":2,"who":"Kyle Elliott","plat":"LinkedIn, search by name","link":null,"why":"Tech career coach, large young-pro audience","posts":"Career strategy","angle":"Add the identity layer behind the strategy","u":true,"note":"[V via HRCap list; URL U]"},{"n":18,"tier":2,"who":"Ken Coleman","plat":"LinkedIn / X","link":null,"why":"Career and calling, big audience of unsure 25-40","posts":"Calling, career","angle":"Agree-and-extend: \"calling\" for men who already have the job","u":true,"note":"[flagged in your LinkedIn research note; handle U]"},{"n":19,"tier":2,"who":"Jenny Blake","plat":"LinkedIn / X","link":null,"why":"Pivoting and career change author","posts":"Pivots","angle":"A small experiment you ran after leaving a path","u":true,"note":"[U]"},{"n":20,"tier":2,"who":"Tim Denning","plat":"X, LinkedIn","link":null,"why":"Ex-corporate, huge male 20s-30s audience","posts":"Quitting corporate, mindset","angle":"Quick add on what the \"freedom\" story misses","u":true,"note":"[U]"},{"n":21,"tier":2,"who":"Dan Koe","plat":"X (@thedankoe)","link":null,"why":"Purpose, identity, one-person business","posts":"Identity, purpose","angle":"Take his identity idea into the corporate job, not away from it","u":true,"note":"[U]"},{"n":22,"tier":2,"who":"Ed Latimore","plat":"X (@EdLatimore)","link":null,"why":"Men, self-improvement, stoic tone","posts":"Discipline, men, meaning","angle":"Agree, then add the softer cost","u":false,"note":"[V via owlead list]"},{"n":23,"tier":2,"who":"Jack Butcher","plat":"X (@jackbutcher)","link":null,"why":"Visual reframes, audience of builders/creators","posts":"Reframes, leverage","angle":"Translate his visual into one plain ICP sentence","u":false,"note":"[V via owlead list]"},{"n":24,"tier":2,"who":"Oliver Burkeman","plat":"Substack \"The Imperfectionist\", X","link":null,"why":"Finite time, anti-optimizer","posts":"Time, imperfection","angle":"Your optimizer admission fits; tie to a recent post","u":true,"note":"[U]"},{"n":25,"tier":2,"who":"Ben Wiant","plat":"LinkedIn: linkedin.com/in/benwiant","link":"https://linkedin.com/in/benwiant","why":"Career transitions, executive retreat facilitator, like you","posts":"Transitions, retreats","angle":"Retreat insight from your own facilitation","u":false,"note":"[V]"},{"n":26,"tier":2,"who":"Michelle Schafer","plat":"LinkedIn: linkedin.com/in/michelleschafercoaching","link":"https://linkedin.com/in/michelleschafercoaching","why":"Career transition, \"find energizing work\"","posts":"Transition, clarity","angle":"Offer the gap between \"energizing\" and \"easy\"","u":false,"note":"[V]"},{"n":27,"tier":2,"who":"Jasmin Alic","plat":"LinkedIn, search by name","link":null,"why":"Wrong ICP (audience is creators/coaches) but huge LinkedIn reach and a master of comments","posts":"Personal branding","angle":"Max 1-2 a week; only for visibility; keep short and specific","u":false,"note":"[V in a top-40 list]"},{"n":28,"tier":3,"who":"Simon Sinek","plat":"X (@SimonSinek), LinkedIn","link":null,"why":"Purpose; old audience, wide","posts":"","angle":"One concrete example of \"why\" feeling absent despite results","u":false,"note":"[V list]"},{"n":29,"tier":3,"who":"Adam Grant","plat":"X (@AdamMGrant), LinkedIn","link":null,"why":"Work, motivation, languishing","posts":"","angle":"Add one line from lived experience, no study cite","u":false,"note":"[V list]"},{"n":30,"tier":3,"who":"Arthur Brooks","plat":"LinkedIn, X","link":null,"why":"Your Brooks pillar (success addiction, meaning)","posts":"","angle":"Your \"in my world;\" translation of one idea","u":true,"note":"[U handle]"},{"n":31,"tier":3,"who":"Tim Ferriss","plat":"X (@tferriss)","link":null,"why":"Lifestyle design, men 25-45","posts":"","angle":"Add an experiment angle","u":false,"note":"[V list]"},{"n":32,"tier":3,"who":"Steven Bartlett","plat":"LinkedIn, X","link":null,"why":"Huge young-male audience, founder identity","posts":"","angle":"Disagree gently with one detail","u":true,"note":"[U]"},{"n":33,"tier":3,"who":"Sahil Bloom","plat":"X (@SahilBloom), LinkedIn","link":null,"why":"Meaning, simple life tweaks, wide men 25-40","posts":"","angle":"Small observation from a nomad day","u":false,"note":"[V search]"},{"n":34,"tier":3,"who":"Chris Williamson","plat":"X (@ChrisWillx)","link":null,"why":"Modern Wisdom: men, meaning, status","posts":"","angle":"Add the thing the guest did not say","u":true,"note":"[U]"},{"n":35,"tier":3,"who":"Ali Abdaal","plat":"X, LinkedIn, YouTube","link":null,"why":"Ex-doctor career change, productivity","posts":"","angle":"Productivity vs. direction","u":true,"note":"[U]"},{"n":36,"tier":3,"who":"Mark Manson","plat":"X, newsletter","link":null,"why":"Plain-spoken meaning, male audience","posts":"","angle":"Match his plainness; one honest line","u":true,"note":"[U]"},{"n":37,"tier":3,"who":"Mel Robbins","plat":"LinkedIn, Instagram","link":null,"why":"Huge reach, motivation","posts":"","angle":"Only if a post fits the ICP exactly","u":true,"note":"[U]"},{"n":38,"tier":3,"who":"Justin Welsh","plat":"LinkedIn","link":null,"why":"Not ICP; studies LinkedIn systems","posts":"","angle":"Study his replies, comment rarely","u":false,"note":"[V in own research note]"},{"n":39,"tier":3,"who":"Cal Newport","plat":"Blog, X","link":null,"why":"Career capital, deep work, meaning vs. passion","posts":"","angle":"Add the feeling behind \"career capital\"","u":true,"note":"[U]"},{"n":40,"tier":3,"who":"Ryan Holiday","plat":"X, LinkedIn","link":null,"why":"Stoic, men 25-40","posts":"","angle":"A lived example, not a quote","u":true,"note":"[U]"},{"n":41,"tier":4,"who":"ICP-side: Corporate men 25-32 posting \"I'm burnt out at 28\" or \"is this normal\"","plat":"Search by hand in LinkedIn or X","link":null,"why":"Corporate men 25-32 posting \"I'm burnt out at 28\" or \"is this normal\". Search: \"burnout at 28\", \"feel lost at 27\".","posts":"","angle":"Help, never pitch. Add one real experience or distinction.","u":false,"note":""},{"n":42,"tier":4,"who":"ICP-side: \"I quit my job\" announcements, week 1-8 (excited and unsure)","plat":"Search by hand in LinkedIn or X","link":null,"why":"\"I quit my job\" announcements, week 1-8 (excited and unsure).","posts":"","angle":"Help, never pitch. Add one real experience or distinction.","u":false,"note":""},{"n":43,"tier":4,"who":"ICP-side: \"I got the promotion and feel nothing\" posts; salary raise, empty feel","plat":"Search by hand in LinkedIn or X","link":null,"why":"\"I got the promotion and feel nothing\" posts; salary raise, empty feeling.","posts":"","angle":"Help, never pitch. Add one real experience or distinction.","u":false,"note":""},{"n":44,"tier":4,"who":"ICP-side: Consultants and Big 4 men in year 2-4","plat":"Search by hand in LinkedIn or X","link":null,"why":"Consultants and Big 4 men in year 2-4: \"is this it\", Sunday-night dread.","posts":"","angle":"Help, never pitch. Add one real experience or distinction.","u":false,"note":""},{"n":45,"tier":4,"who":"ICP-side: Finance and tech men with golden handcuffs","plat":"Search by hand in LinkedIn or X","link":null,"why":"Finance and tech men with golden handcuffs: can't leave something objectively good.","posts":"","angle":"Help, never pitch. Add one real experience or distinction.","u":false,"note":""},{"n":46,"tier":4,"who":"ICP-side: Men posting vulnerably about a sabbatical, gap year or solo trip; the ","plat":"Search by hand in LinkedIn or X","link":null,"why":"Men posting vulnerably about a sabbatical, gap year or solo trip; the break helped, then the feeling came back.","posts":"","angle":"Help, never pitch. Add one real experience or distinction.","u":false,"note":""},{"n":47,"tier":4,"who":"ICP-side: New founders-on-the-side in a corporate job (\"5-9\" builders) who feel ","plat":"Search by hand in LinkedIn or X","link":null,"why":"New founders-on-the-side in a corporate job (\"5-9\" builders) who feel pressure to quit.","posts":"","angle":"Help, never pitch. Add one real experience or distinction.","u":false,"note":""},{"n":48,"tier":4,"who":"ICP-side: Men commenting honestly under tier 1-2 posts (\"this is me\"); reply to ","plat":"Search by hand in LinkedIn or X","link":null,"why":"Men commenting honestly under tier 1-2 posts (\"this is me\"); reply to the commenter.","posts":"","angle":"Help, never pitch. Add one real experience or distinction.","u":false,"note":""},{"n":49,"tier":4,"who":"ICP-side: Early-career \"behind\" posts at 26-29","plat":"Search by hand in LinkedIn or X","link":null,"why":"Early-career \"behind\" posts at 26-29: comparison, age, milestone anxiety.","posts":"","angle":"Help, never pitch. Add one real experience or distinction.","u":false,"note":""},{"n":50,"tier":4,"who":"ICP-side: Men who post about moving countries, remote work, or nomad curiosity f","plat":"Search by hand in LinkedIn or X","link":null,"why":"Men who post about moving countries, remote work, or nomad curiosity from a desk job.","posts":"","angle":"Help, never pitch. Add one real experience or distinction.","u":false,"note":""}]</script>
+
+<!-- 7 LINKS -->
+<section id="links" hidden>
+  <h2>Links and rules</h2>
+  <h3>Featured, in this order</h3>
+  <div class="links">
+    <a class="link" href="https://tristangregoire01.github.io/eudaimonia/reset.html" target="_blank" rel="noopener"><b>1 · Life by Design Guide</b><span>https://tristangregoire01.github.io/eudaimonia/reset.html</span></a>
+    <a class="link" href="https://www.youtube.com/watch?v=7MHzF_v1pOg" target="_blank" rel="noopener"><b>2 · Hero video</b><span>https://www.youtube.com/watch?v=7MHzF_v1pOg</span></a>
+    <a class="link" href="https://tristangregoire.substack.com/" target="_blank" rel="noopener"><b>3 · Dreamer's Diary (Substack)</b><span>https://tristangregoire.substack.com/</span></a>
+    <a class="link" href="https://www.skool.com/eudaimonia" target="_blank" rel="noopener"><b>Skool community</b><span>https://www.skool.com/eudaimonia</span></a>
+  </div>
+  <h3>Strategy notes in the vault</h3>
+  <div class="path">Content &amp; Brand/(C) LinkedIn strategy - flow, pillars, post types.md</div>
+  <div class="path">Content &amp; Brand/(C) LinkedIn growth research - deep dive - Nov 2026.md</div>
+  <div class="path">Content &amp; Brand/(C) Comment targets - first list - Nov 2026.md</div>
+  <div class="path">Content &amp; Brand/(C) ICP Language Research - LinkedIn and X - Nov 2026.md</div>
+  <div class="path">Content &amp; Brand/(C) Metrics log - LinkedIn and X.md</div>
+  <div class="path">06 Skills/metrics-sync.md</div>
+  <div class="path">Content &amp; Brand/LinkedIn Analytics/ (drop the LinkedIn export here)</div>
+  <h3>Rules</h3>
+  <ul class="rules">
+    <li><b>No automation.</b> No tools for comments or DMs, no scraping LinkedIn. Tristan comments and writes DMs himself.</li>
+    <li><b>No keyword comments.</b> No "comment GUIDE" funnels, no engagement bait, no pods, no polls.</li>
+    <li><b>No link in the post body</b> (or the first comment). The offer lives in Featured. Say "full video is in my Featured section".</li>
+    <li>Hook inside about 150 characters. One idea, one CTA. Reply to every comment in the first hour.</li>
+    <li>DM only people who replied or commented with substance. Never send the same text twice. Stop after one follow-up.</li>
+    <li>Pause any format that falls below the account median after four tries.</li>
+  </ul>
+</section>
+
+<!-- X: SCHEDULED -->
+<section id="x-sched" hidden>
+  <h2>X scheduled posts</h2>
+  <p class="sub" id="xsSub"></p>
+  <div class="kpis" id="xsKpi"></div>
+  <div class="filters">
+    <select id="xsType" aria-label="Type"><option value="all">Quotes and own lines</option><option value="quote">Quotes only</option><option value="own">Own lines only</option></select>
+    <select id="xsSlot" aria-label="Slot"><option value="all">12:00 and 17:00</option><option value="12:00">12:00 only</option><option value="17:00">17:00 only</option></select>
+    <input type="search" id="xsQ" placeholder="Search quote or author" aria-label="Search quotes">
+  </div>
+  <div class="tablewrap"><table style="min-width:680px"><thead><tr><th>Date</th><th>Time</th><th>Type</th><th>Post</th><th>Author</th></tr></thead><tbody id="xsBody"></tbody></table></div>
+  <p class="parked">Source: (C) X quote log in Content &amp; Brand. Posted through X's own scheduler at 12:00 and 17:00 Copenhagen (browser time is +7 h). The 22 Nov to 21 Dec batch is not yet reviewed by Tristan (month-end review). Rule: never repeat a quote within 90 days.</p>
+</section>
+
+<!-- X: METRICS -->
+<section id="x-metrics" hidden>
+  <h2>X metrics</h2>
+  <p class="sub">Per post: impressions, likes, replies, profile visits. Plus followers over time. Loaded from the same data block as LinkedIn.</p>
+  <div class="kpis" id="xmKpi"></div>
+  <div class="how"><b>How the numbers arrive.</b>
+    <ol>
+      <li>Each Sunday Claude reads X analytics read-only (nothing is posted or changed).</li>
+      <li>Likes, replies, views, reposts, profile visits and follows per post go into <i>(C) Metrics log - LinkedIn and X</i> in Content &amp; Brand.</li>
+      <li>The log is mirrored into this page and republished, so this tab fills itself. First read: Sunday 22 Nov (first scheduled batch from 14 Nov).</li>
+    </ol></div>
+  <div class="stat" id="xmStat"></div>
+  <div id="xmEmpty" class="empty">No X posts loaded yet. Baseline from the first research pass: best own post ever was 8 likes and 117 views; a typical one-liner gets 0 to 1 likes and 30 to 50 views. Anything above that is progress.</div>
+  <div class="tablewrap" id="xmWrap" hidden><table style="min-width:640px"><thead><tr><th>Date</th><th>Post</th><th>Impr.</th><th>Likes</th><th>Replies</th><th>Reposts</th><th>Visits</th><th>Follows</th></tr></thead><tbody id="xmBody"></tbody></table></div>
+  <h3>Followers</h3>
+  <div id="xwEmpty" class="empty" style="margin-top:0">No weekly X follower counts loaded yet.</div>
+  <div class="tablewrap" id="xwWrap" hidden><table style="min-width:420px"><thead><tr><th>Week of</th><th>Followers</th><th>Change</th></tr></thead><tbody id="xwBody"></tbody></table></div>
+  <div class="charts" id="xmCharts" hidden></div>
+  <p class="parked">Weekly comparison to run once data exists: 12:00 vs 17:00, quote vs own line, by theme and author. If views per post stay under 100 after two weeks, add replies to niche accounts before adding more posts.</p>
+</section>
+
+<!-- X: BEST -->
+<section id="x-best" hidden>
+  <h2>Best-performing posts</h2>
+  <p class="sub">Own history first, then what the niche proves. Source: (C) X quote research - first pass (13 Nov 2026). Own numbers are tiny, so read them as hints.</p>
+  <h3>Own history, @TristanGr3goire</h3>
+  <div class="tablewrap"><table style="min-width:620px"><thead><tr><th>Date</th><th>Post</th><th>Likes</th><th>Replies</th><th>Views</th><th>Theme</th></tr></thead><tbody id="xbOwn"></tbody></table></div>
+  <h3>What the niche proves (likes / views)</h3>
+  <div class="tablewrap"><table style="min-width:560px"><thead><tr><th>Account</th><th>Post</th><th>Likes</th><th>Views</th><th>Date</th></tr></thead><tbody id="xbNiche"></tbody></table></div>
+  <h3>Takeaways for new posts</h3>
+  <ul class="rules" id="xbTake"></ul>
+</section>
+
+<!-- X: INSPIRATION -->
+<section id="x-insp" hidden>
+  <h2>Inspiration pages</h2>
+  <p class="sub">Accounts that surfaced in the research with proven reach in the niche. Open each profile yourself and judge fit. No scraping.</p>
+  <div class="cards" id="xiCards"></div>
+</section>
+
+<!-- X: TRENDING -->
+<section id="x-trend" hidden>
+  <h2>Trending topics to leverage now</h2>
+  <p class="sub">Topics moving on X today that fit the voice. Add your own below; they stay in this browser.</p>
+  <div class="cards" id="xtCards"></div>
+  <details class="fallback">
+    <summary>Add a trend</summary>
+    <form class="log" id="xtForm">
+      <label class="lab">Topic<input type="text" id="xt_topic" required></label>
+      <label class="lab">Date<input type="date" id="xt_date"></label>
+      <label class="lab">Example post link<input type="text" id="xt_link"></label>
+      <label class="lab">Angle in my voice<input type="text" id="xt_angle"></label>
+      <div style="display:flex;align-items:flex-end"><button class="btn" type="submit">Add trend</button></div>
+    </form>
+  </details>
+  <p class="parked">Rule for trends: add one real line from your own life, never a quote you cannot verify. Misattributed quotes spike around every tribute.</p>
+</section>
+<script type="application/json" id="xQuotes">[["2026-11-14", "12:00", "We are what we repeatedly do. Excellence, then, is not an act, but a habit.", "Will Durant"], ["2026-11-14", "17:00", "How we spend our days is, of course, how we spend our lives.", "Annie Dillard"], ["2026-11-15", "12:00", "a goal that isn't really yours will always feel like a lack of motivation.", "own line"], ["2026-11-22", "12:00", "If it is not right, do not do it. If it is not true, do not say it.", "Marcus Aurelius"], ["2026-11-22", "17:00", "most of my discipline problems turned out to be direction problems.", "own line"], ["2026-11-23", "12:00", "Whoever does not have two-thirds of his day for himself is a slave, whatever he may be.", "Friedrich Nietzsche"], ["2026-11-23", "17:00", "We suffer more often in imagination than in reality.", "Seneca"], ["2026-11-24", "12:00", "Your time is limited, so don't waste it living someone else's life.", "Steve Jobs"], ["2026-11-24", "17:00", "Decide the type of person you want to be. Prove it to yourself with small wins.", "James Clear"], ["2026-11-25", "12:00", "He who has a why to live for can bear almost any how.", "Friedrich Nietzsche"], ["2026-11-25", "17:00", "on paper the plan was perfect. i kept following it until i noticed i couldn't remember choosing it.", "own line"], ["2026-11-26", "12:00", "Think of yourself as dead. You have lived your life. Now take what's left and live it properly.", "Marcus Aurelius"], ["2026-11-26", "17:00", "Everything can be taken from a man but one thing: the last of the human freedoms, to choose one's attitude in any given set of circumstances, to choose one's own way.", "Viktor Frankl"], ["2026-11-27", "12:00", "The mass of men lead lives of quiet desperation.", "Henry David Thoreau"], ["2026-11-27", "17:00", "waiting to feel ready was just a quieter way of staying where i was.", "own line"], ["2026-11-28", "12:00", "First say to yourself what you would be; and then do what you have to do.", "Epictetus"], ["2026-11-28", "17:00", "Life can only be understood backwards; but it must be lived forwards.", "Soren Kierkegaard"], ["2026-11-29", "12:00", "If it's endurable, then endure it. Stop complaining.", "Marcus Aurelius"], ["2026-11-29", "17:00", "i booked the flight before i had a plan. the plan showed up around week two.", "own line"], ["2026-11-30", "12:00", "It's rare to find your purpose for life, so instead look for your purpose for this season.", "James Clear"], ["2026-11-30", "17:00", "i used to think a full calendar meant a full life. mine was mostly full of other people's requests.", "own line"], ["2026-12-01", "12:00", "I went to the woods because I wished to live deliberately.", "Henry David Thoreau"], ["2026-12-01", "17:00", "the strangest feeling is hitting the goal and checking in to see if you feel anything.", "own line"], ["2026-12-02", "12:00", "When a man does not know what harbour he is making for, no wind is the right wind.", "Seneca"], ["2026-12-02", "17:00", "i can fit my whole life in one bag now. fitting it in my own head took longer.", "own line"], ["2026-12-03", "12:00", "A journey of a thousand miles begins with a single step.", "Lao Tzu"], ["2026-12-03", "17:00", "discipline gets easier the day you stop negotiating with yourself in the morning.", "own line"], ["2026-12-04", "12:00", "Whoever fights monsters should see to it that he does not become a monster in the process.", "Friedrich Nietzsche"], ["2026-12-04", "17:00", "a lot of what i called ambition was just wanting someone to be impressed.", "own line"], ["2026-12-05", "12:00", "When you fall in love with the process rather than the product, you don't have to wait to give yourself permission to be happy. You can be satisfied anytime your system is running.", "James Clear"], ["2026-12-05", "17:00", "i did the degree, the job and the routine right. the feeling that something was off showed up anyway.", "own line"], ["2026-12-06", "12:00", "It is difficulties that show what men are.", "Epictetus"], ["2026-12-06", "17:00", "every city feels new for about two weeks. after that you are just yourself in a different kitchen.", "own line"], ["2026-12-07", "12:00", "The struggle itself toward the heights is enough to fill a man's heart. One must imagine Sisyphus happy.", "Albert Camus"], ["2026-12-07", "17:00", "i don't miss the title. i miss being sure what my days were for.", "own line"], ["2026-12-08", "12:00", "Waste no more time arguing what a good man should be. Be one.", "Marcus Aurelius"], ["2026-12-08", "17:00", "most of my freedom came from saying no to things i had already said yes to.", "own line"], ["2026-12-09", "12:00", "you can be disciplined about a goal you don't want. i did it for years and called it motivation.", "own line"], ["2026-12-09", "17:00", "How vain it is to sit down to write when you have not stood up to live.", "Henry David Thoreau"], ["2026-12-10", "12:00", "identity changes when your actions change first. the belief usually shows up late.", "own line"], ["2026-12-10", "17:00", "If you want to avoid criticism, create less. If you want to avoid irrelevance, create more.", "James Clear"], ["2026-12-11", "12:00", "i still avoid the hard conversation by making more content. noticing it is a start.", "own line"], ["2026-12-11", "17:00", "While we are postponing, life speeds by.", "Seneca"], ["2026-12-12", "12:00", "rest is easier to enjoy when you know what you are resting from.", "own line"], ["2026-12-12", "17:00", "Tell me, what is it you plan to do with your one wild and precious life?", "Mary Oliver"], ["2026-12-13", "12:00", "nobody told me that being free would mean deciding everything myself.", "own line"], ["2026-12-13", "17:00", "The soul becomes dyed with the colour of its thoughts.", "Marcus Aurelius"], ["2026-12-14", "12:00", "the question that changed my year was what i would do if no one could see it.", "own line"], ["2026-12-14", "17:00", "The only way to do great work is to love what you do.", "Steve Jobs"], ["2026-12-15", "12:00", "some days the most disciplined thing i do is close the laptop.", "own line"], ["2026-12-15", "17:00", "A good traveler has no fixed plans and is not intent upon arriving.", "Lao Tzu"], ["2026-12-16", "12:00", "a routine built for someone else's life will always feel like a cage.", "own line"], ["2026-12-16", "17:00", "The ultimate form of preparation is not planning for a specific scenario, but a mindset that can handle uncertainty.", "James Clear"], ["2026-12-17", "12:00", "i used to ask what i wanted to achieve. now i ask what i want a normal tuesday to feel like.", "own line"], ["2026-12-17", "17:00", "If one advances confidently in the direction of his dreams, and endeavors to live the life which he has imagined, he will meet with a success unexpected in common hours.", "Henry David Thoreau"], ["2026-12-18", "12:00", "moving countries does not fix the thing you are running from. it gives it a better view.", "own line"], ["2026-12-18", "17:00", "The best revenge is not to be like your enemy.", "Marcus Aurelius"], ["2026-12-19", "12:00", "status is easy to measure, which is why it is so easy to chase.", "own line"], ["2026-12-19", "17:00", "some weeks i do everything on my list and still feel behind. usually the list was not mine.", "own line"], ["2026-12-20", "12:00", "Nothing great was ever achieved without enthusiasm.", "Ralph Waldo Emerson"], ["2026-12-20", "17:00", "being good at something is not the same as wanting it.", "own line"], ["2026-12-21", "12:00", "When your body isn't right, your mind starts lying to you.", "James Clear"], ["2026-12-21", "17:00", "showing up for 20 minutes beats planning for two hours.", "own line"]]</script>
+
+<footer>i'm rooting for you. 🤍</footer>
+</div>
+
+<section id="typefully" hidden>
+  <h2>Typefully queue</h2>
+  <p class="sub">Everything in Typefully for LinkedIn: scheduled posts and drafts. Read only. Edit and schedule in Typefully.</p>
+  <div class="tfbar" id="typefully-bar" role="status"><span class="dot"></span><span class="grow" id="typefully-msg">Loading</span><button type="button" data-tfrefresh>Refresh</button></div>
+  <h3 id="typefully-h1">Scheduled</h3><div id="typefully-sch"></div>
+  <h3 id="typefully-h2">Drafts</h3><div id="typefully-drf"></div>
+</section>
+<section id="x-typefully" hidden>
+  <h2>Typefully queue</h2>
+  <p class="sub">Everything in Typefully for X: scheduled posts and drafts. Read only. Edit and schedule in Typefully.</p>
+  <div class="tfbar" id="x-typefully-bar" role="status"><span class="dot"></span><span class="grow" id="x-typefully-msg">Loading</span><button type="button" data-tfrefresh>Refresh</button></div>
+  <h3 id="x-typefully-h1">Scheduled</h3><div id="x-typefully-sch"></div>
+  <h3 id="x-typefully-h2">Drafts</h3><div id="x-typefully-drf"></div>
+</section>
+
+<script>
+(function(){
+var LS={};
+function get(k,d){try{var v=localStorage.getItem('eud-li-'+k);return v==null?d:JSON.parse(v)}catch(e){return LS[k]!==undefined?LS[k]:d}}
+function set(k,v){LS[k]=v;try{localStorage.setItem('eud-li-'+k,JSON.stringify(v))}catch(e){}}
+function $(id){return document.getElementById(id)}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+
+/* tabs and mode */
+var tabs=document.querySelectorAll('nav button');
+var modeBtns=document.querySelectorAll('.mode button');
+var MODE_HOME={li:'schedule',x:'x-sched'};
+function setMode(m){
+  document.querySelectorAll('[data-m]').forEach(function(el){el.hidden=el.dataset.m!==m});
+  modeBtns.forEach(function(b){b.setAttribute('aria-pressed',b.dataset.mode===m)});
+  $('h1').textContent=m==='x'?'X dashboard':'LinkedIn dashboard';
+  $('hSub').textContent=m==='x'?'scheduled quotes, metrics, what wins, who to learn from, what is trending. one place, calm and consistent.':'one place for the whole system. post, comment, talk to people, review. calm and consistent.';
+}
+function show(t){
+  setMode(t.indexOf('x-')===0?'x':'li');
+  tabs.forEach(function(b){b.setAttribute('aria-selected',b.dataset.t===t)});
+  document.querySelectorAll('section').forEach(function(s){s.hidden=s.id!==t});
+  try{history.replaceState(null,'','#'+t)}catch(e){}
+}
+tabs.forEach(function(b){b.addEventListener('click',function(){show(b.dataset.t)})});
+modeBtns.forEach(function(b){b.addEventListener('click',function(){show(MODE_HOME[b.dataset.mode])})});
+var h=(location.hash||'').slice(1);
+setMode('li');
+if(h&&$(h)&&$(h).tagName==='SECTION')show(h);
+
+/* 1 schedule */
+var P=[
+ ['2026-11-17','Tue 17 Nov','N1-1','the optimizer','story','trust'],
+ ['2026-11-19','Thu 19 Nov','OI-3','the goal that felt empty','value','audience'],
+ ['2026-11-24','Tue 24 Nov','N1-2','why a diary','story','trust'],
+ ['2026-11-26','Thu 26 Nov','OI-1','happiness is a meal','value','audience'],
+ ['2026-12-01','Tue 1 Dec','OI-2','pleasure vs enjoyment','value','audience'],
+ ['2026-12-03','Thu 3 Dec','N1-4','i shipped it imperfect','story','trust'],
+ ['2026-12-08','Tue 8 Dec','N1-3','the online life is faked','contrarian','audience'],
+ ['2026-12-10','Thu 10 Dec','OI-4','three questions about meaning','value / exercise','audience']
+];
+$('schedBody').innerHTML=P.map(function(p){
+ return '<tr><td>'+p[1]+'<br><span class="sub" style="font-size:13px">09:00 CET</span></td><td class="code">'+p[2]+'</td><td>'+p[3]+'</td><td>'+p[4]+'</td><td><span class="tag '+p[5]+'">'+p[5]+'</span></td><td><span class="pill">scheduled</span><br><span class="sub" style="font-size:13px">Typefully</span></td></tr>'});
+
+/* 2 mix */
+var T={audience:40,trust:40,conversion:20},C=['audience','trust','conversion'];
+function bar(el,vals){el.innerHTML=C.map(function(k){return '<i style="width:'+vals[k]+'%;background:var(--'+k+')" title="'+k+' '+Math.round(vals[k])+'%"></i>'}).join('')}
+var cnt={audience:0,trust:0,conversion:0};P.forEach(function(p){cnt[p[5]]++});
+var act={};C.forEach(function(k){act[k]=cnt[k]/P.length*100});
+bar($('barTarget'),T);bar($('barActual'),act);
+$('mixCards').innerHTML=C.map(function(k){
+ var d=Math.round(act[k]-T[k]);
+ return '<div><div class="lab">'+k+'</div><div class="big">'+Math.round(act[k])+'%</div><div class="sub" style="font-size:14px">'+cnt[k]+' of '+P.length+' posts · target '+T[k]+'% · '+(d>0?'+':'')+d+' pts</div></div>'}).join('');
+$('mixNote').textContent='Audience is heavy and no conversion post is scheduled yet. Trust is at 3 of 8. Add one practical exercise with the Guide, or a soft "who this is for" post, in the next block. Research advice: at most one conversion post in five.';
+
+/* 3 plan */
+var W=[
+ ['Foundation','Profile, banner, Featured',['Rewrite headline, banner and About to the Path A structure (pain first, ICP words)','Approve and apply profile changes; set Featured in order: Guide, hero video, Dreamer\'s Diary','Follow 30-40 niche creators','Metrics log and DM log ready (this page plus the vault note)']],
+ ['Foundation','Engage first (R1 review on day 14)',['Start 5-15 comments a day from the target list','Send 5-15 personal connection requests a day','Posts live: N1-1 (Tue) and OI-3 (Thu)','Reply to every comment in the first 90 minutes','R1 review (30 Nov): profile and routine']],
+ ['Rhythm','Posts and DM ladder',['Post Tue and Thu; first LinkedIn export dropped in the analytics folder','Start DM ladder: 5-8 a day, only to people who replied','First PDF carousel (framework)','Tag every post by goal: audience, trust, conversion']],
+ ['Rhythm','Slot test and video scripts',['Compare 09:00 against about 16:00 on a few posts','Write 6 video scripts','Log every DM thread: source, stage, outcome']],
+ ['Video test','Clip 1 (R2 review on day 30)',['Record, caption and post native clip 1 (30-75 s, 9:16, hook in 2 s, no link)','R2 review (14 Dec): first 8-10 posts, slot test','Keep comments and requests going']],
+ ['Video test','Clip 2, holiday week',['Batch posts ahead; keep 2 posts a week','Clip 2','Commenting at 5 a day']],
+ ['Video test','Clip 3',['Clip 3','At most 1 conversion post','DM ladder to Guide to call: log every conversation']],
+ ['Video test','Clip 4',['Clip 4','Reopen the "building in public" pillar with 1 client-style insight (about day 45)']],
+ ['Video test','Clip 5',['Clip 5','Prepare the R3 comparison: clip vs text']],
+ ['Video test','Clip 6 (R3 review on day 60)',['Clip 6, close the 6-week test','R3 review (24 Jan): keep the best 2 formats, drop the worst','Pause any format below the account median after 4 tries']],
+ ['Double down','Best two formats',['1 carousel a week, best 2 formats only','DMs to calls: target 2+ calls by here']],
+ ['Double down','Repurpose and collaborate',['Repurpose best posts from new angles','Decide on a LinkedIn newsletter pointing to Substack','Line up 1 collaboration (podcast or co-post)']],
+ ['Scale','R4 review on day 90',['R4 review (14 Feb): followers, DM threads, calls; go or no-go','Targets: 1,000-2,000 relevant followers, 15+ DM threads, 4+ Direction Reset calls','Write the next 90 days into the strategy note']]
+];
+var done=get('plan',{});
+var start=get('start','2026-11-16');
+$('startDate').value=start;
+var total=W.reduce(function(a,w){return a+w[2].length},0);
+function wk(i){var d=new Date(start+'T00:00:00');d.setDate(d.getDate()+i*7);return d}
+function fmt(d){return d.toLocaleDateString('en-GB',{day:'numeric',month:'short'})}
+function renderPlan(){
+ var n=0,html='';
+ var now=Math.floor((new Date().setHours(0,0,0,0)-new Date(start+'T00:00:00'))/(7*864e5));
+ W.forEach(function(w,i){
+  var b=wk(i),e=new Date(b);e.setDate(e.getDate()+6);
+  html+='<div class="week'+(i===now?' now':'')+'"><h4>Week '+(i+1)+' · '+w[1]+'<span>'+fmt(b)+' to '+fmt(e)+' · '+w[0]+'</span></h4>';
+  w[2].forEach(function(t,j){var k=i+'-'+j,c=!!done[k];if(c)n++;
+   html+='<label class="chk'+(c?' done':'')+'"><input type="checkbox" data-k="'+k+'"'+(c?' checked':'')+'><span>'+esc(t)+'</span></label>'});
+  html+='</div>'});
+ $('weeks').innerHTML=html;
+ var pct=Math.round(n/total*100);
+ $('planPct').textContent=pct+'%';$('planCount').textContent=n+' of '+total+' milestones';
+ $('planBar').innerHTML='<i style="width:'+pct+'%;background:var(--gold)"></i>';
+ $('planBar').setAttribute('aria-valuenow',pct);
+}
+$('weeks').addEventListener('change',function(e){var k=e.target.dataset.k;if(k===undefined)return;if(e.target.checked)done[k]=1;else delete done[k];set('plan',done);renderPlan()});
+$('startDate').addEventListener('change',function(e){if(e.target.value){start=e.target.value;set('start',start);renderPlan()}});
+renderPlan();
+(function(){
+ var PH=[['Foundation',0,2],['Rhythm',2,4],['Video test',4,10],['Double down',10,12],['Scale',12,13]];
+ var rv={1:'R1 30 Nov',4:'R2 14 Dec',9:'R3 24 Jan',12:'R4 14 Feb'};
+ var now=Math.floor((new Date().setHours(0,0,0,0)-new Date(start+'T00:00:00'))/864e5);
+ var wkNow=Math.floor(now/7);
+ $('phase').innerHTML=PH.map(function(p){var on=wkNow>=p[1]&&wkNow<p[2];var b=wk(p[1]);
+  var rvs=[];for(var i=p[1];i<p[2];i++)if(rv[i])rvs.push(rv[i]);
+  return '<div class="'+(on?'on':'')+'">'+p[0]+'<small>from '+fmt(b)+(rvs.length?' · '+rvs.join(', '):'')+'</small></div>'}).join('');
+ var txt;
+ if(now<0)txt='Day 1 is <b>'+fmt(wk(0))+'</b>. '+(-now)+' days to go.';
+ else if(now>=90)txt='Day <b>'+(now+1)+'</b>. The first 90 days are done; write the next 90 into the strategy note.';
+ else{var ph=PH.filter(function(p){return wkNow>=p[1]&&wkNow<p[2]})[0];txt='Day <b>'+(now+1)+' of 90</b> · week '+(wkNow+1)+' · '+(ph?ph[0]:'')}
+ $('dayLine').innerHTML=txt;
+})();
+
+/* 4 daily */
+var log=get('days',{});
+function ymd(d){var m=d.getMonth()+1,dd=d.getDate();return d.getFullYear()+'-'+(m<10?'0':'')+m+'-'+(dd<10?'0':'')+dd}
+var todayD=new Date(),tk=ymd(todayD);
+$('today').textContent=todayD.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
+var ITEMS=[['c','Comment on 5-15 posts (real, adds an experience or a distinction)'],['q','Send 5-15 personal connection requests'],['d','Send 5-8 personal DMs (only to people who replied or commented)'],['r','Reply to all comments on my post in the first hour (post days)']];
+function full(k){var r=log[k];return !!(r&&r.c&&r.q&&r.d&&r.r)}
+function streaks(){
+ var d=new Date(),cur=0;
+ if(!full(ymd(d)))d.setDate(d.getDate()-1);
+ while(full(ymd(d))){cur++;d.setDate(d.getDate()-1)}
+ var keys=Object.keys(log).filter(full).sort(),best=0,run=0,prev=null;
+ keys.forEach(function(k){var dt=new Date(k+'T00:00:00');
+  if(prev&&Math.round((dt-prev)/864e5)===1)run++;else run=1;
+  if(run>best)best=run;prev=dt});
+ return [cur,best,keys.length]}
+function renderDaily(){
+ var r=log[tk]||{};
+ $('dayCard').innerHTML=ITEMS.map(function(it){return '<label class="chk'+(r[it[0]]?' done':'')+'"><input type="checkbox" data-d="'+it[0]+'"'+(r[it[0]]?' checked':'')+'><span>'+it[1]+'</span></label>'}).join('');
+ var s=streaks();$('streakNow').textContent=s[0];$('streakBest').textContent=s[1];$('daysDone').textContent=s[2];
+ var dots='';
+ for(var i=13;i>=0;i--){var d=new Date();d.setDate(d.getDate()-i);var k=ymd(d),f=full(k),p=log[k]&&(log[k].c||log[k].q||log[k].d||log[k].r);
+  dots+='<span title="'+k+'" style="width:22px;height:22px;display:inline-block;border:1px solid var(--line);background:'+(f?'var(--gold)':p?'var(--trust)':'transparent')+'"></span>'}
+ $('dots').innerHTML=dots;if(window.__tickNote)window.__tickNote()}
+$('dayCard').addEventListener('change',function(e){var k=e.target.dataset.d;if(!k)return;log[tk]=log[tk]||{};log[tk][k]=e.target.checked;set('days',log);renderDaily()});
+renderDaily();
+
+/* 5 metrics */
+var EMB={updated:null,source:null,posts:[],weekly:[]};
+try{EMB=JSON.parse($('metricsData').textContent)}catch(e){}
+var MAN=get('metrics2',[]);
+var F=['imp','rea','com','rep','sav','vis','fol'];
+$('m_date').value=tk;
+function rows(){
+ var a=(EMB.posts||[]).map(function(p){return Object.assign({src:'loaded'},p)});
+ var b=MAN.map(function(p,i){return Object.assign({src:'hand',i:i},p)});
+ var pl=$('mPlat').value;
+ return a.concat(b).filter(function(r){return pl==='all'||r.platform===pl}).sort(function(x,y){return x.date<y.date?-1:x.date>y.date?1:0})}
+function renderM(){
+ var R=rows(),nl=(EMB.posts||[]).length,nm=MAN.length;
+ $('mStat').innerHTML='<span>Last refresh: <b>'+(EMB.updated?esc(EMB.updated):'never')+'</b></span><span>Loaded rows: <b>'+nl+'</b></span>'+(nm?'<span>Hand rows: <b>'+nm+'</b></span>':'')+(EMB.source?'<span>Source: '+esc(EMB.source)+'</span>':'');
+ $('mEmpty').hidden=R.length>0;$('mTableWrap').hidden=!R.length;
+ $('mBody').innerHTML=R.map(function(m){var cell=function(f){return '<td>'+(m[f]===''||m[f]==null?'-':esc(m[f]))+'</td>'};
+  return '<tr><td>'+esc(m.date)+'</td><td>'+esc(m.platform||'')+(m.src==='hand'?' <span class="chip">hand</span>':'')+'</td><td class="code">'+esc(m.code||'')+'</td>'+F.map(cell).join('')+'<td>'+(m.src==='hand'?'<button class="btn ghost" style="padding:8px 10px" data-del="'+m.i+'" type="button" aria-label="Delete row">x</button>':'')+'</td></tr>'}).join('');
+ var W2=(EMB.weekly||[]).slice().sort(function(a,b){return a.date<b.date?-1:1}),last={};
+ var wr=W2.map(function(w){var d=last[w.platform]!=null?w.followers-last[w.platform]:null;last[w.platform]=w.followers;return {w:w,d:d}}).reverse();
+ $('wEmpty').hidden=wr.length>0;$('wWrap').hidden=!wr.length;
+ $('wBody').innerHTML=wr.map(function(x){return '<tr><td>'+esc(x.w.date)+'</td><td>'+esc(x.w.platform)+'</td><td>'+esc(x.w.followers)+'</td><td>'+(x.d==null?'-':(x.d>0?'+':'')+x.d)+'</td></tr>'}).join('');
+ var ch=$('charts');
+ if(R.length<2){ch.hidden=true;return}
+ ch.hidden=false;
+ ch.innerHTML=[['imp','Impressions'],['rea','Reactions'],['vis','Profile visits'],['fol','Follows']].map(function(c){return chart(R,c[0],c[1])}).join('')}
+function chart(S,f,title){
+ var v=S.map(function(m){return +m[f]||0}),mx=Math.max.apply(null,v.concat([1]));
+ var W=300,H=130,l=34,r=10,t=10,b=22,w=W-l-r,hh=H-t-b;
+ function X(i){return l+(S.length===1?w/2:i*w/(S.length-1))}function Y(x){return t+hh-x/mx*hh}
+ var pts=v.map(function(x,i){return X(i)+','+Y(x)}).join(' ');
+ var area='M'+X(0)+','+(t+hh)+' L'+pts.split(' ').join(' L')+' L'+X(v.length-1)+','+(t+hh)+'Z';
+ var last=v.length-1;
+ return '<div class="chart"><div class="lab" style="margin-bottom:6px">'+title+'</div><svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+title+' by post">'+
+ '<line x1="'+l+'" x2="'+(W-r)+'" y1="'+Y(0)+'" y2="'+Y(0)+'" stroke="var(--line)"/><line x1="'+l+'" x2="'+(W-r)+'" y1="'+Y(mx)+'" y2="'+Y(mx)+'" stroke="var(--line)" stroke-dasharray="3 3"/>'+
+ '<text x="'+(l-6)+'" y="'+(Y(0)+3)+'" text-anchor="end">0</text><text x="'+(l-6)+'" y="'+(Y(mx)+3)+'" text-anchor="end">'+mx+'</text>'+
+ '<path d="'+area+'" fill="var(--gold)" fill-opacity=".14"/><polyline points="'+pts+'" fill="none" stroke="var(--gold)" stroke-width="2"/>'+
+ '<circle cx="'+X(last)+'" cy="'+Y(v[last])+'" r="4" fill="var(--gold)"/>'+
+ '<text x="'+l+'" y="'+(H-6)+'">'+esc(S[0].code||'')+'</text><text x="'+(W-r)+'" y="'+(H-6)+'" text-anchor="end">'+esc(S[last].code||'')+'</text></svg></div>'}
+$('mPlat').addEventListener('change',renderM);
+$('mForm').addEventListener('submit',function(e){
+ e.preventDefault();
+ var m={date:$('m_date').value,platform:$('m_platform').value,code:$('m_code').value.trim()};
+ F.forEach(function(f){m[f]=$('m_'+f).value});
+ MAN.push(m);set('metrics2',MAN);
+ ['code'].concat(F).forEach(function(f){$('m_'+f).value=''});renderM()});
+$('mBody').addEventListener('click',function(e){var i=e.target.dataset.del;if(i===undefined)return;MAN.splice(+i,1);set('metrics2',MAN);renderM()});
+$('csvBtn').addEventListener('click',function(){
+ var csv='date,platform,post,impressions,reactions,comments,reposts,saves,profile_visits,follows\n'+rows().map(function(m){return [m.date,m.platform,m.code].concat(F.map(function(f){return m[f]==null?'':m[f]})).join(',')}).join('\n');
+ var o=$('csvOut');o.value=csv;o.hidden=false;o.select();
+ try{navigator.clipboard.writeText(csv).then(function(){$('csvNote').textContent='Copied.'},function(){$('csvNote').textContent='Select and copy the text below.'})}catch(x){$('csvNote').textContent='Select and copy the text below.'}});
+renderM();
+
+/* 6 targets */
+var DATA=[];
+try{DATA=JSON.parse($('targetData').textContent)}catch(e){}
+var ticks=get('ticks',{});
+var TL={1:'Tier 1 peer',2:'Tier 2 mid',3:'Tier 3 big',4:'ICP-side'};
+function mkToday(){
+ var dn=Math.floor(Date.UTC(todayD.getFullYear(),todayD.getMonth(),todayD.getDate())/864e5),out=[];
+ [[1,6],[2,4],[3,2],[4,3]].forEach(function(q){
+  var arr=DATA.filter(function(t){return t.tier===q[0]}),n=arr.length;
+  for(var i=0;i<q[1]&&n;i++)out.push(arr[(dn*q[1]+i)%n])});
+ return out}
+function card(t){
+ var on=!!(ticks[tk]&&ticks[tk][t.n]);
+ var plat=t.link?esc(t.plat).replace(esc(t.link.replace(/^https?:\/\//,'')),'')+'<a href="'+esc(encodeURI(decodeURI(t.link)))+'" target="_blank" rel="noopener">open profile</a>':esc(t.plat);
+ return '<div class="tgt'+(on?' on':'')+'"><div class="tk"><input type="checkbox" data-n="'+t.n+'" id="tg'+t.n+'" aria-label="Commented today: '+esc(t.who)+'"'+(on?' checked':'')+'></div>'+
+ '<h4><label for="tg'+t.n+'" style="cursor:pointer">'+esc(t.who)+'</label><span class="chip t'+t.tier+'">'+TL[t.tier]+'</span>'+(t.u?'<span class="chip u" title="Not verified: open the profile yourself">[U] unverified</span>':'')+'</h4>'+
+ '<div class="meta">'+plat+(t.posts?' · '+esc(t.posts):'')+'</div>'+
+ '<p><b>Why aligned:</b> '+esc(t.why)+'</p><p class="ang"><b>Angle:</b> '+esc(t.angle)+'</p></div>'}
+function renderT(){
+ var td=mkToday(),n=td.filter(function(t){return ticks[tk]&&ticks[tk][t.n]}).length;
+ $('tgtCount').textContent=n+' of '+td.length+' commented today';
+ $('tgtToday').innerHTML=td.map(card).join('');
+ var ft=+$('fTier').value,fu=$('fU').value,q=$('fQ').value.trim().toLowerCase();
+ var list=DATA.filter(function(t){
+  if(ft&&t.tier!==ft)return false;
+  if(fu==='v'&&t.u)return false;if(fu==='u'&&!t.u)return false;
+  if(q&&(t.who+' '+t.why+' '+t.posts+' '+t.angle+' '+t.plat).toLowerCase().indexOf(q)<0)return false;
+  return true});
+ $('tgtAll').innerHTML=list.length?list.map(card).join(''):'<div class="empty">No targets match the filter.</div>';
+ tickNote()}
+function tickNote(){
+ var td=DATA.length?mkToday():[],n=td.filter(function(t){return ticks[tk]&&ticks[tk][t.n]}).length;
+ var el=$('tickNote');if(el)el.textContent='Targets ticked today: '+n+' of '+td.length+'. Tick them in the Comment targets tab.'}
+window.__tickNote=tickNote;
+function onTick(e){var k=e.target.dataset.n;if(!k)return;ticks[tk]=ticks[tk]||{};if(e.target.checked)ticks[tk][k]=1;else delete ticks[tk][k];
+ var keep={};keep[tk]=ticks[tk];ticks=keep;set('ticks',ticks);renderT()}
+$('tgtToday').addEventListener('change',onTick);$('tgtAll').addEventListener('change',onTick);
+['fTier','fU'].forEach(function(i){$(i).addEventListener('change',renderT)});$('fQ').addEventListener('input',renderT);
+renderT();
+
+/* X mode */
+var XQ=[];try{XQ=JSON.parse($('xQuotes').textContent)}catch(e){}
+var DOW=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+function dlab(d){var x=new Date(d+'T00:00:00');return DOW[x.getDay()]+' '+x.getDate()+' '+x.toLocaleDateString('en-GB',{month:'short'})}
+(function(){
+ var own=XQ.filter(function(r){return r[3]==='own line'}).length;
+ $('xsSub').textContent=XQ.length+' posts scheduled in X native scheduler, '+dlab(XQ[0][0])+' to '+dlab(XQ[XQ.length-1][0])+', 12:00 and 17:00 Copenhagen.';
+ var days={};XQ.forEach(function(r){days[r[0]]=1});
+ $('xsKpi').innerHTML=[[XQ.length,'scheduled posts'],[XQ.length-own,'quotes'],[own,'own lines'],[Object.keys(days).length,'days covered']].map(function(k){return '<div class="kpi"><div class="big">'+k[0]+'</div><div class="lab">'+k[1]+'</div></div>'}).join('');
+ function rend(){
+  var t=$('xsType').value,sl=$('xsSlot').value,q=$('xsQ').value.trim().toLowerCase();
+  var L=XQ.filter(function(r){var o=r[3]==='own line';
+   if(t==='quote'&&o)return false;if(t==='own'&&!o)return false;if(sl!=='all'&&r[1]!==sl)return false;
+   return !q||(r[2]+' '+r[3]).toLowerCase().indexOf(q)>=0});
+  $('xsBody').innerHTML=L.length?L.map(function(r){var o=r[3]==='own line';
+   return '<tr><td>'+dlab(r[0])+'</td><td class="code">'+r[1]+'</td><td><span class="chip '+(o?'type-own':'')+'">'+(o?'own':'quote')+'</span></td><td class="qt">'+esc(r[2])+'</td><td>'+(o?'<span class="sub">Tristan</span>':esc(r[3]))+'</td></tr>'}).join(''):'<tr><td colspan="5" class="sub">No posts match.</td></tr>'}
+ ['xsType','xsSlot'].forEach(function(i){$(i).addEventListener('change',rend)});$('xsQ').addEventListener('input',rend);rend();
+})();
+
+(function(){
+ function sum(a,f){return a.reduce(function(x,r){return x+(+r[f]||0)},0)}
+ var XP=(EMB.posts||[]).filter(function(p){return p.platform==='X'}).sort(function(a,b){return a.date<b.date?-1:1});
+ var XW=(EMB.weekly||[]).filter(function(w){return w.platform==='X'}).sort(function(a,b){return a.date<b.date?-1:1});
+ var n=XP.length;
+ function avg(f){return n?Math.round(sum(XP,f)/n):null}
+ function kpi(label,val,sub){var nd=val==null;return '<div class="kpi'+(nd?' nodata':'')+'"><div class="lab">'+label+'</div><div class="big">'+(nd?'-':val)+'</div><div class="sub">'+sub+'</div></div>'}
+ var lastF=XW.length?XW[XW.length-1].followers:null;
+ var gain=XW.length>1?lastF-XW[0].followers:null;
+ $('xmKpi').innerHTML=
+  kpi('Impressions',n?sum(XP,'imp'):null,n?'avg '+avg('imp')+' per post':'avg per post, once loaded')+
+  kpi('Likes',n?sum(XP,'rea'):null,n?'avg '+avg('rea')+' per post':'baseline: 0 to 1 per post')+
+  kpi('Replies',n?sum(XP,'com'):null,n?'avg '+avg('com')+' per post':'best own post so far: 2')+
+  kpi('Profile visits',n?sum(XP,'vis'):null,n?'avg '+avg('vis')+' per post':'per post, once loaded')+
+  kpi('Followers',lastF,gain==null?'weekly count, once loaded':(gain>0?'+':'')+gain+' since first week');
+ $('xmStat').innerHTML='<span>Last refresh: <b>'+(EMB.updated?esc(EMB.updated):'never')+'</b></span><span>X posts loaded: <b>'+n+'</b></span>'+(EMB.source?'<span>Source: '+esc(EMB.source)+'</span>':'');
+ $('xmEmpty').hidden=n>0;$('xmWrap').hidden=!n;
+ $('xmBody').innerHTML=XP.map(function(m){var c=function(f){return '<td>'+(m[f]===''||m[f]==null?'-':esc(m[f]))+'</td>'};return '<tr><td>'+esc(m.date)+'</td><td class="qt">'+esc(m.code||'')+'</td>'+['imp','rea','com','rep','vis','fol'].map(c).join('')+'</tr>'}).join('');
+ var last=null;var wr=XW.map(function(w){var d=last!=null?w.followers-last:null;last=w.followers;return {w:w,d:d}}).reverse();
+ $('xwEmpty').hidden=wr.length>0;$('xwWrap').hidden=!wr.length;
+ $('xwBody').innerHTML=wr.map(function(x){return '<tr><td>'+esc(x.w.date)+'</td><td>'+esc(x.w.followers)+'</td><td>'+(x.d==null?'-':(x.d>0?'+':'')+x.d)+'</td></tr>'}).join('');
+ var ch=$('xmCharts');
+ if(n<2){ch.hidden=true}else{ch.hidden=false;ch.innerHTML=[['imp','Impressions'],['rea','Likes'],['vis','Profile visits'],['fol','Follows']].map(function(c){return chart(XP,c[0],c[1])}).join('')}
+})();
+
+(function(){
+ var OWN=[['2024-07-03','life is not about finding yourself, but about creating yourself. (Shaw misattribution)',8,1,117,'identity'],
+ ['2025-04-19','Life is so beautiful..',1,0,397,'gratitude'],
+ ['2024-03-19','dreams are meant to become reality.',0,0,307,'dreams'],
+ ['2025-03-02','the future depends on what you do today.',0,0,230,'action'],
+ ['2024-06-25','a life well-lived is often the opposite of what society tells us.',2,0,228,'the script vs your life'],
+ ['2024-05-02','How does material possesses mean winning in life?',1,2,52,'meaning vs status'],
+ ['2026-05-12','Alyssa Liu retired at 16. burnt out. done. came back two years later...',1,0,52,'burnout story'],
+ ['2024-03-30','a life lived in the head is an empty one.',1,0,37,'action over thought'],
+ ['2024-03-23',"if you can't say no, then your yesses are meaningless.",1,0,36,'boundaries'],
+ ['2025-03-21','"we must not allow other people\'s limited perceptions to define us." - Virginia Satir',1,1,35,'identity']];
+ $('xbOwn').innerHTML=OWN.map(function(r){return '<tr><td>'+r[0]+'</td><td class="qt">'+esc(r[1])+'</td><td>'+r[2]+'</td><td>'+r[3]+'</td><td>'+r[4]+'</td><td>'+esc(r[5])+'</td></tr>'}).join('');
+ var N=[['@ofctimallen','Marcus Aurelius: "If it is not right, do not do it..."','120K','2.6M','Sep 2025'],
+ ['@Naturalphilosy','Nietzsche: "Whoever does not have two-thirds of his day for himself..."','21.6K','723K','Aug 2026'],
+ ['@saradotxyz','Meaning over happiness (Tom Hiddleston clip)','19.7K','1.2M','Nov 2026'],
+ ['@PathOfMen_','Marcus Aurelius: do not imagine your whole life at once','11.5K','175K','Jun 2026'],
+ ['@dhh','Nietzsche: "He who has a why to live for..."','11.4K','659K','Sep 2026'],
+ ['@wakeupbr_o','Three-word post: discipline creates freedom','10.1K','305K','Sep 2026'],
+ ['@JamesClear','"Decide the type of person you want to be..."','6.2K','131K','Oct 2026'],
+ ['@JamesClear','"It\'s rare to find your purpose for life..."','3.4K','120K','Nov 2026']];
+ $('xbNiche').innerHTML=N.map(function(r){return '<tr><td class="code">'+esc(r[0])+'</td><td class="qt">'+esc(r[1])+'</td><td>'+r[2]+'</td><td>'+r[3]+'</td><td>'+r[4]+'</td></tr>'}).join('');
+ var T=['<b>Own history is thin.</b> Best ever: 8 likes, 117 views. Views never passed 400, so he is below the level where X shows posts to non-followers.',
+ '<b>Replies came from life-vs-script and meaning-vs-status lines.</b> Keep own lines on those themes and add a specific scene (the "on paper" hook).',
+ '<b>Borrow proven material.</b> Verified Stoic and philosopher quotes the big accounts already proved are 10x his best. Check the skip list before scheduling: about half of viral Stoic quotes are misattributed.',
+ '<b>Short wins.</b> One to two sentences, bare quote plus author. Long quotes (Frankl, Thoreau) are tests, not the default.',
+ '<b>Winning themes this autumn:</b> discipline and freedom, time, meaning over happiness, burnout as a meaning gap.',
+ '<b>Compare slots to each other for two weeks.</b> Numbers are too small to learn from alone. If views stay under 100, add 5 replies a day in the niche before adding posts.'];
+ $('xbTake').innerHTML=T.map(function(t){return '<li>'+t+'</li>'}).join('');
+ var A=[['@JamesClear','Short, plain one- to two-sentence lines, 2.5K to 10K likes. Template for the own-line voice.','Decide the type of person...'],
+ ['@ofctimallen','Bare verified Stoic quote with author; biggest single reach in the research (2.6M views).','format: quote + author'],
+ ['@Naturalphilosy','Nietzsche and Seneca lines at 20K likes; steady daily rhythm.','sustained niche engagement'],
+ ['@readswithravi','Recycles proven quotes after weeks (28.9K, then 9.2K). Posts almost daily.','recycling works with lower return'],
+ ['@dhh','Meaning and why lines with 659K views.','meaning-led reach'],
+ ['@SahilBloom','Staying in the game beats intensity; 5.9K to 6.7K likes.','durability angle'],
+ ['@RyanHoliday','Stoic one-liners, 6.7K likes, Nov 2026.','Marcus-style progress lines'],
+ ['@PathOfMen_','Men-focused Stoic posts, 11.5K likes.','closest audience overlap'],
+ ['@saradotxyz','Meaning over happiness clip; 1.2M views.','clip-led format to study'],
+ ['@wakeupbr_o','"Discipline creates freedom" three-word post, 305K views.','minimal post, big reach'],
+ ['@thedankoe','Purpose, identity, one-person business. From the comment target list.','identity angle (unverified)'],
+ ['@EdLatimore','Men, discipline, stoic tone. From the comment target list.','agree, then add the softer cost']];
+ $('xiCards').innerHTML=A.map(function(a){var hd=a[0].slice(1);return '<div class="card"><h4>'+esc(a[0])+'</h4><div class="meta">'+esc(a[2])+'</div><p>'+esc(a[1])+'</p><p><a href="https://x.com/'+encodeURIComponent(hd)+'" target="_blank" rel="noopener">open on X</a></p></div>'}).join('');
+})();
+
+(function(){
+ var SEED=[{topic:'Brian Tracy passing, tribute trend',date:'2026-11-13',link:'',angle:'Tributes are spiking. Post one real line about what his work changed in your own habits; skip any Tracy quote you cannot verify.',note:'Example tweet by @valormental, 605 likes. Window: this week.',seed:true}];
+ var UT=get('trends',[]);
+ function rend(){
+  var L=SEED.concat(UT.map(function(t,i){t.i=i;return t}));
+  $('xtCards').innerHTML=L.map(function(t){return '<div class="card"><h4>'+esc(t.topic)+'</h4><div class="meta">'+esc(t.date||'')+(t.seed?' · seeded':' · mine')+'</div>'+(t.note?'<p>'+esc(t.note)+'</p>':'')+'<p><b>Angle:</b> '+esc(t.angle||'to decide')+'</p>'+(t.link?'<p><a href="'+esc(t.link)+'" target="_blank" rel="noopener">example post</a></p>':'')+(t.seed?'':'<button class="btn ghost" style="padding:8px 10px" data-xd="'+t.i+'" type="button">Remove</button>')+'</div>'}).join('')}
+ $('xt_date').value=tk;
+ $('xtForm').addEventListener('submit',function(e){e.preventDefault();UT.push({topic:$('xt_topic').value.trim(),date:$('xt_date').value,link:/^https?:\/\//.test($('xt_link').value.trim())?$('xt_link').value.trim():'',angle:$('xt_angle').value.trim()});set('trends',UT);['xt_topic','xt_link','xt_angle'].forEach(function(i){$(i).value=''});rend()});
+ $('xtCards').addEventListener('click',function(e){var i=e.target.dataset.xd;if(i===undefined)return;UT.splice(+i,1);set('trends',UT);rend()});
+ rend();
+})();
+})();
+</script>
+<script>
+/* Typefully tab. Live via the mcp capability (Typefully connector, list_drafts). Falls back to the snapshot below when the connector is not available in this view. */
+(function(){
+var SERVER='Typefully',SET=311033,SNAP_DATE='14 Nov 2026';
+/* snapshot rows: [id, title, scheduled UTC or null, status, flags: l=LinkedIn x=X t=Threads s=Substack] */
+var SNAP=[
+[11527861,"N1-1 LinkedIn - the optimizer (Newsletter 1)","2026-11-17T08:00:00Z","scheduled","l"],
+[11527860,"OI-3 LinkedIn - Brooks: the goal that feels flat","2026-11-19T08:00:00Z","scheduled","l"],
+[11527862,"N1-2 LinkedIn - why a diary (Newsletter 1)","2026-11-24T08:00:00Z","scheduled","l"],
+[11527858,"OI-1 LinkedIn - Brooks: happiness is a meal","2026-11-26T08:00:00Z","scheduled","l"],
+[11527859,"OI-2 LinkedIn - Brooks: pleasure vs enjoyment","2026-12-01T08:00:00Z","scheduled","l"],
+[11689171,"N1-4 LinkedIn - i shipped it imperfect (Newsletter 1)","2026-12-03T08:00:00Z","scheduled","l"],
+[11689170,"N1-3 LinkedIn - the online life is easy to fake (Newsletter 1)","2026-12-08T08:00:00Z","scheduled","l"],
+[11689174,"OI-4 LinkedIn - Brooks: three questions about meaning","2026-12-10T08:00:00Z","scheduled","l"],
+[11915052,"Brian Tracy 1/3 - 10 quotes thread (post Nov 14-15)",null,"draft","xt"],
+[11915207,"Brian Tracy 3/3 - standout quote + identity takeaway + Substack",null,"draft","xt"],
+[11915206,"Brian Tracy 2/3 - one lesson, own voice (post Nov 14-15)",null,"draft","xt"],
+[11915074,"OI-4 standalone b (X + Threads) - blank is information",null,"draft","xts"],
+[11915073,"OI-4 standalone a (X + Threads) - meaning in three questions",null,"draft","xts"],
+[11915072,"OI-3 standalone b (X + Threads) - that's it? you're not behind",null,"draft","xts"],
+[11915070,"OI-3 standalone a (X + Threads) - the finish line was never where the feeling lived",null,"draft","xts"],
+[11915069,"OI-2 standalone b (X + Threads) - what it's for, not what it will look like",null,"draft","xts"],
+[11915068,"OI-2 standalone a (X + Threads) - beach house, status or family",null,"draft","xts"],
+[11915067,"OI-1 standalone b (X + Threads) - pleasure is the quick hit",null,"draft","xts"],
+[11915066,"OI-1 standalone a (X + Threads) - happiness works like a meal",null,"draft","xts"],
+[11915060,"N1-4 standalone b (X + Threads) - polish vs share",null,"draft","xts"],
+[11915059,"N1-4 standalone a (X + Threads) - days into weeks into months",null,"draft","xts"],
+[11915058,"N1-3 standalone b (X + Threads) - Wayne Dyer on perception",null,"draft","xts"],
+[11915057,"N1-3 standalone a (X + Threads) - the online life is easy to fake",null,"draft","xts"],
+[11915056,"N1-2 standalone b (X + Threads) - successful musician, miserable inside",null,"draft","xts"],
+[11915055,"N1-2 standalone a (X + Threads) - the unpolished diary",null,"draft","xts"],
+[11915054,"N1-1 standalone b (X + Threads) - $70 per kilo",null,"draft","xts"],
+[11915053,"N1-1 standalone a (X + Threads) - optimizing and the baggage system",null,"draft","xts"],
+[11915049,"OI-4 X+Threads thread - Brooks: three questions about meaning",null,"draft","xt"],
+[11915048,"OI-3 X+Threads thread - Brooks: the goal that feels empty",null,"draft","xt"],
+[11915047,"OI-2 X+Threads thread - Brooks: pleasure vs enjoyment (travelling for the post or the soul)",null,"draft","xt"],
+[11915044,"OI-1 X+Threads thread - Brooks: happiness is a meal",null,"draft","xt"],
+[11915042,"N1-4 X+Threads thread - i shipped it imperfect (back and forth on your idea)",null,"draft","xt"],
+[11915041,"N1-3 X+Threads thread - the online life is easy to fake (business class)",null,"draft","xt"],
+[11915040,"N1-2 X+Threads thread - why a diary (musician to Dreamer's Diary)",null,"draft","xt"],
+[11915032,"N1-1 X+Threads thread - the optimizer (flight, $1,400)",null,"draft","xt"],
+[11689172,"N1-5 LinkedIn - the unpolished version (Newsletter 1)",null,"draft","l"],
+[9329185,"(untitled) Most people creating a dream life, focus on optimising their mindset...",null,"draft","xt"],
+[9328202,"(Typefully template) sample draft",null,"draft","x"]
+];
+function $(id){return document.getElementById(id)}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function norm(r){
+  return {id:Number(r.id),title:r.draft_title||'',preview:String(r.preview||'').split('\n')[0],date:r.scheduled_date||null,status:r.status,
+    f:(r.linkedin_post_enabled?'l':'')+(r.x_post_enabled?'x':'')+(r.threads_post_enabled?'t':'')+(r.substack_post_enabled?'s':'')};
+}
+var snapItems=SNAP.map(function(r){return {id:r[0],title:r[1],preview:'',date:r[2],status:r[3],f:r[4]}});
+var st={sch:null,drf:null,live:false,at:null,err:null,needAllow:false};
+var PL={l:'LinkedIn',x:'X',t:'Threads',s:'Substack'};
+function fmt(d){
+  try{return new Intl.DateTimeFormat('en-GB',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit',timeZone:'Europe/Copenhagen'}).format(new Date(d))+' CET'}catch(e){return d}
+}
+function card(it,sch){
+  var chips=it.f.split('').map(function(c){return '<span class="chip">'+PL[c]+'</span>'}).join('');
+  var when=it.date?'<span class="pill">'+esc(fmt(it.date))+'</span>':'<span class="chip m">'+esc(it.status||'draft')+'</span>';
+  return '<div class="tf'+(sch?' sch':'')+'"><div><h4>'+esc(it.title||it.preview||'(untitled)')+'</h4><div class="meta">'+when+chips+'</div></div>'
+    +'<a class="open" href="https://typefully.com/?d='+it.id+'&a='+SET+'" target="_blank" rel="noopener">Open in Typefully</a>'
+    +(it.preview&&it.title?'<p>'+esc(it.preview)+'</p>':'')+'</div>';
+}
+function render(){
+  var all=st.live&&st.sch&&st.drf?st.sch.concat(st.drf):snapItems;
+  var sch=all.filter(function(i){return i.status==='scheduled'||i.status==='planned'}).sort(function(a,b){return String(a.date).localeCompare(String(b.date))});
+  var drf=all.filter(function(i){return i.status==='draft'});
+  [['typefully','l','LinkedIn'],['x-typefully','x','X']].forEach(function(p){
+    var id=p[0],f=p[1];
+    var a=sch.filter(function(i){return i.f.indexOf(f)>-1}),b=drf.filter(function(i){return i.f.indexOf(f)>-1});
+    $(id+'-h1').textContent='Scheduled ('+a.length+')';$(id+'-h2').textContent='Drafts ('+b.length+')';
+    $(id+'-sch').innerHTML=a.length?a.map(function(i){return card(i,true)}).join(''):'<p class="sub">Nothing scheduled for '+p[2]+'.</p>';
+    $(id+'-drf').innerHTML=b.length?b.map(function(i){return card(i,false)}).join(''):'<p class="sub">No drafts for '+p[2]+'.</p>';
+    var bar=$(id+'-bar'),msg=$(id+'-msg');
+    bar.className='tfbar'+(st.live?' live':'');
+    if(st.live){var t=st.at?new Date(st.at).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}):'';msg.textContent='Live from Typefully'+(t?', updated '+t:'')+'. Refreshes every minute while this tab is open.'}
+    else msg.innerHTML='Snapshot from '+esc(SNAP_DATE)+'. '+esc(st.err||'Live connection not available in this view.')+(st.needAllow?' <button type="button" class="tfbtn" data-tfallow>Allow Typefully</button>':'');
+  });
+}
+function rows(res){
+  var p=res&&res.payload;
+  if(typeof p==='string'){try{p=JSON.parse(p)}catch(e){p=null}}
+  return p&&Array.isArray(p.results)?p.results.map(norm):null;
+}
+function onErr(e){
+  var c=e&&e.code;st.live=false;st.needAllow=false;
+  if(c==='needs_reauth')st.err='Reconnect Typefully in claude.ai Settings, Connectors.';
+  else if(c==='server_not_connected'||c==='selection_required')st.err='Add or choose the Typefully connector in claude.ai Settings, Connectors.';
+  else if(c==='not_in_manifest'||c==='approval_required'||c==='consent_required'){st.err='Typefully access is not allowed for this page yet.';st.needAllow=true}
+  else if(c==='blocked_by_policy')st.err='Typefully is blocked by your organization policy.';
+  else st.err='Live data could not be loaded just now.';
+  render();
+}
+function handler(key){return function(ev){
+  if(ev.type==='error'){onErr(ev.error);return}
+  var r=rows(ev.result);if(!r)return;
+  st[key]=r;st.err=null;st.needAllow=false;st.at=(ev.result.cache&&ev.result.cache.storedAt)||Date.now();
+  st.live=!!(st.sch&&st.drf);render();
+}}
+var mcpRef=null;
+function start(mcp){
+  mcpRef=mcp;
+  mcp.watchTool(SERVER,'list_drafts',{social_set_id:SET,status:'scheduled',limit:50,order_by:'scheduled_date'},handler('sch'),{refetchInterval:60000});
+  mcp.watchTool(SERVER,'list_drafts',{social_set_id:SET,status:'draft',limit:50},handler('drf'),{refetchInterval:60000});
+}
+document.addEventListener('click',function(e){
+  var t=e.target;if(!t.closest)return;
+  if(t.closest('[data-tfrefresh]')&&mcpRef){mcpRef.invalidate(SERVER,'list_drafts').catch(function(){})}
+  if(t.closest('[data-tfallow]')&&mcpRef){
+    mcpRef.callTool(SERVER,'list_drafts',{social_set_id:SET,status:'scheduled',limit:1}).then(function(){st.needAllow=false;return mcpRef.invalidate(SERVER,'list_drafts')}).catch(onErr);
+  }
+});
+render();
+try{
+  if(window.claude&&claude.use){claude.use('mcp').then(function(m){if(m)start(m);else{st.err='Live connection not available in this view.';render()}}).catch(function(){})}
+}catch(e){}
+})();
+
+</script>
