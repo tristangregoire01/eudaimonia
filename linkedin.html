@@ -1,4 +1,5 @@
 <meta charset="utf-8">
+<!-- 2026-11-25: white text on forest and dark backgrounds; Pipeline tab -->
 <title>Eudaimonia LinkedIn Dashboard</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=Cardo:ital@1&family=Montserrat:wght@500;600&family=Playfair+Display:wght@500;600&display=swap">
@@ -183,13 +184,13 @@ details.fallback form.log{border:0;border-top:1px solid var(--line)}
   <button role="tab" data-m="li" data-t="metrics" aria-selected="false">Metrics</button>
   <button role="tab" data-m="li" data-t="targets" aria-selected="false">Comment targets</button>
   <button role="tab" data-m="li" data-t="links" aria-selected="false">Links and rules</button>
-  <button role="tab" data-m="li" data-t="typefully" aria-selected="false">Typefully</button>
+  <button role="tab" data-m="li" data-t="typefully" aria-selected="false">Pipeline</button>
   <button role="tab" data-m="x" data-t="x-sched" aria-selected="false" hidden>Scheduled posts</button>
   <button role="tab" data-m="x" data-t="x-metrics" aria-selected="false" hidden>Metrics</button>
   <button role="tab" data-m="x" data-t="x-best" aria-selected="false" hidden>Best posts</button>
   <button role="tab" data-m="x" data-t="x-insp" aria-selected="false" hidden>Inspiration</button>
   <button role="tab" data-m="x" data-t="x-trend" aria-selected="false" hidden>Trending now</button>
-  <button role="tab" data-m="x" data-t="x-typefully" aria-selected="false" hidden>Typefully</button>
+  <button role="tab" data-m="x" data-t="x-typefully" aria-selected="false" hidden>Pipeline</button>
 </nav>
 
 <!-- 1 SCHEDULE -->
@@ -414,18 +415,16 @@ details.fallback form.log{border:0;border-top:1px solid var(--line)}
 </div>
 
 <section id="typefully" hidden>
-  <h2>Typefully queue</h2>
-  <p class="sub">Everything in Typefully for LinkedIn: scheduled posts and drafts. Read only. Edit and schedule in Typefully.</p>
+  <h2>Content pipeline</h2>
+  <p class="sub">All LinkedIn content from Typefully in one table: scheduled, scheduled natively on X, needs your review, drafts and posted. Read only. Edit and approve in Typefully.</p>
   <div class="tfbar" id="typefully-bar" role="status"><span class="dot"></span><span class="grow" id="typefully-msg">Loading</span><button type="button" data-tfrefresh>Refresh</button></div>
-  <h3 id="typefully-h1">Scheduled</h3><div id="typefully-sch"></div>
-  <h3 id="typefully-h2">Drafts</h3><div id="typefully-drf"></div>
+  <div id="typefully-groups"></div>
 </section>
 <section id="x-typefully" hidden>
-  <h2>Typefully queue</h2>
-  <p class="sub">Everything in Typefully for X: scheduled posts and drafts. Read only. Edit and schedule in Typefully.</p>
+  <h2>Content pipeline</h2>
+  <p class="sub">All X content from Typefully in one table: scheduled, scheduled natively on X, needs your review, drafts and posted. Read only. Edit and approve in Typefully.</p>
   <div class="tfbar" id="x-typefully-bar" role="status"><span class="dot"></span><span class="grow" id="x-typefully-msg">Loading</span><button type="button" data-tfrefresh>Refresh</button></div>
-  <h3 id="x-typefully-h1">Scheduled</h3><div id="x-typefully-sch"></div>
-  <h3 id="x-typefully-h2">Drafts</h3><div id="x-typefully-drf"></div>
+  <div id="x-typefully-groups"></div>
 </section>
 
 <script>
@@ -433,6 +432,7 @@ details.fallback form.log{border:0;border-top:1px solid var(--line)}
 var LS={};
 function get(k,d){try{var v=localStorage.getItem('eud-li-'+k);return v==null?d:JSON.parse(v)}catch(e){return LS[k]!==undefined?LS[k]:d}}
 function set(k,v){LS[k]=v;try{localStorage.setItem('eud-li-'+k,JSON.stringify(v))}catch(e){}}
+var TAGMAP={'scheduled-on-x':'sx','needs-review':'nr','approved':'ap','posted':'po'};
 function $(id){return document.getElementById(id)}
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 
@@ -760,81 +760,103 @@ function dlab(d){var x=new Date(d+'T00:00:00');return DOW[x.getDay()]+' '+x.getD
 <script>
 /* Typefully tab. Live via the mcp capability (Typefully connector, list_drafts). Falls back to the snapshot below when the connector is not available in this view. */
 (function(){
-var SERVER='Typefully',SET=311033,SNAP_DATE='14 Nov 2026';
-/* snapshot rows: [id, title, scheduled UTC or null, status, flags: l=LinkedIn x=X t=Threads s=Substack] */
+var SERVER='Typefully',SET=311033,SNAP_DATE='25 Nov 2026';
+/* snapshot rows: [id, title, scheduled UTC or null, status (draft|scheduled|published), flags: l=LinkedIn x=X t=Threads s=Substack, tags: sx=scheduled-on-x nr=needs-review ap=approved, published url or ''] */
 var SNAP=[
-[11527861,"N1-1 LinkedIn - the optimizer (Newsletter 1)","2026-11-17T08:00:00Z","scheduled","l"],
-[11527860,"OI-3 LinkedIn - Brooks: the goal that feels flat","2026-11-19T08:00:00Z","scheduled","l"],
-[11527862,"N1-2 LinkedIn - why a diary (Newsletter 1)","2026-11-24T08:00:00Z","scheduled","l"],
-[11527858,"OI-1 LinkedIn - Brooks: happiness is a meal","2026-11-26T08:00:00Z","scheduled","l"],
-[11527859,"OI-2 LinkedIn - Brooks: pleasure vs enjoyment","2026-12-01T08:00:00Z","scheduled","l"],
-[11689171,"N1-4 LinkedIn - i shipped it imperfect (Newsletter 1)","2026-12-03T08:00:00Z","scheduled","l"],
-[11689170,"N1-3 LinkedIn - the online life is easy to fake (Newsletter 1)","2026-12-08T08:00:00Z","scheduled","l"],
-[11689174,"OI-4 LinkedIn - Brooks: three questions about meaning","2026-12-10T08:00:00Z","scheduled","l"],
-[11915052,"Brian Tracy 1/3 - 10 quotes thread (post Nov 14-15)",null,"draft","xt"],
-[11915207,"Brian Tracy 3/3 - standout quote + identity takeaway + Substack",null,"draft","xt"],
-[11915206,"Brian Tracy 2/3 - one lesson, own voice (post Nov 14-15)",null,"draft","xt"],
-[11915074,"OI-4 standalone b (X + Threads) - blank is information",null,"draft","xts"],
-[11915073,"OI-4 standalone a (X + Threads) - meaning in three questions",null,"draft","xts"],
-[11915072,"OI-3 standalone b (X + Threads) - that's it? you're not behind",null,"draft","xts"],
-[11915070,"OI-3 standalone a (X + Threads) - the finish line was never where the feeling lived",null,"draft","xts"],
-[11915069,"OI-2 standalone b (X + Threads) - what it's for, not what it will look like",null,"draft","xts"],
-[11915068,"OI-2 standalone a (X + Threads) - beach house, status or family",null,"draft","xts"],
-[11915067,"OI-1 standalone b (X + Threads) - pleasure is the quick hit",null,"draft","xts"],
-[11915066,"OI-1 standalone a (X + Threads) - happiness works like a meal",null,"draft","xts"],
-[11915060,"N1-4 standalone b (X + Threads) - polish vs share",null,"draft","xts"],
-[11915059,"N1-4 standalone a (X + Threads) - days into weeks into months",null,"draft","xts"],
-[11915058,"N1-3 standalone b (X + Threads) - Wayne Dyer on perception",null,"draft","xts"],
-[11915057,"N1-3 standalone a (X + Threads) - the online life is easy to fake",null,"draft","xts"],
-[11915056,"N1-2 standalone b (X + Threads) - successful musician, miserable inside",null,"draft","xts"],
-[11915055,"N1-2 standalone a (X + Threads) - the unpolished diary",null,"draft","xts"],
-[11915054,"N1-1 standalone b (X + Threads) - $70 per kilo",null,"draft","xts"],
-[11915053,"N1-1 standalone a (X + Threads) - optimizing and the baggage system",null,"draft","xts"],
-[11915049,"OI-4 X+Threads thread - Brooks: three questions about meaning",null,"draft","xt"],
-[11915048,"OI-3 X+Threads thread - Brooks: the goal that feels empty",null,"draft","xt"],
-[11915047,"OI-2 X+Threads thread - Brooks: pleasure vs enjoyment (travelling for the post or the soul)",null,"draft","xt"],
-[11915044,"OI-1 X+Threads thread - Brooks: happiness is a meal",null,"draft","xt"],
-[11915042,"N1-4 X+Threads thread - i shipped it imperfect (back and forth on your idea)",null,"draft","xt"],
-[11915041,"N1-3 X+Threads thread - the online life is easy to fake (business class)",null,"draft","xt"],
-[11915040,"N1-2 X+Threads thread - why a diary (musician to Dreamer's Diary)",null,"draft","xt"],
-[11915032,"N1-1 X+Threads thread - the optimizer (flight, $1,400)",null,"draft","xt"],
-[11689172,"N1-5 LinkedIn - the unpolished version (Newsletter 1)",null,"draft","l"],
-[9329185,"(untitled) Most people creating a dream life, focus on optimising their mindset...",null,"draft","xt"],
-[9328202,"(Typefully template) sample draft",null,"draft","x"]
+[11527861, "N1-1 LinkedIn - the optimizer (Newsletter 1)", "2026-11-17T08:00:00Z", "published", "l", "", "https://www.linkedin.com/feed/update/urn:li:share:7528366593433587713"],
+[11527860, "OI-3 LinkedIn - Brooks: the goal that feels flat", "2026-11-19T08:00:00Z", "published", "l", "", "https://www.linkedin.com/feed/update/urn:li:share:7529091369789800448"],
+[11527862, "N1-2 LinkedIn - why a diary (Newsletter 1)", "2026-11-24T08:00:00Z", "published", "l", "", "https://www.linkedin.com/feed/update/urn:li:share:7530903306450411520"],
+[11527858, "OI-1 LinkedIn - Brooks: happiness is a meal", "2026-11-26T08:00:00Z", "scheduled", "l", "", ""],
+[11527859, "OI-2 LinkedIn - Brooks: pleasure vs enjoyment", "2026-12-01T08:00:00Z", "scheduled", "l", "", ""],
+[11689171, "N1-4 LinkedIn - i shipped it imperfect (Newsletter 1)", "2026-12-03T08:00:00Z", "scheduled", "l", "", ""],
+[11689170, "N1-3 LinkedIn - the online life is easy to fake (Newsletter 1)", "2026-12-08T08:00:00Z", "scheduled", "l", "", ""],
+[11689174, "OI-4 LinkedIn - Brooks: three questions about meaning", "2026-12-10T08:00:00Z", "scheduled", "l", "", ""],
+[11915052, "Brian Tracy 1/3 - 10 quotes thread (post Nov 14-15)", null, "draft", "xt", "nr", ""],
+[11915207, "Brian Tracy 3/5 - standout quote + portrait card (no CTA)", null, "draft", "xt", "sx", ""],
+[11915206, "Brian Tracy 2/3 - one lesson, own voice (post Nov 14-15)", null, "draft", "xt", "sx", ""],
+[11915074, "OI-4 standalone b (X + Threads) - blank is information", null, "draft", "xts", "", ""],
+[11915073, "OI-4 standalone a (X + Threads) - meaning in three questions", null, "draft", "xts", "sx", ""],
+[11915072, "OI-3 standalone b (X + Threads) - that's it? you're not behind", null, "draft", "xts", "sx", ""],
+[11915070, "OI-3 standalone a (X + Threads) - the finish line was never where the feeling lived", null, "draft", "xts", "sx", ""],
+[11915069, "OI-2 standalone b (X + Threads) - what it's for, not what it will look like", null, "draft", "xts", "sx", ""],
+[11915068, "OI-2 standalone a (X + Threads) - beach house, status or family", null, "draft", "xts", "sx", ""],
+[11915067, "OI-1 standalone b (X + Threads) - pleasure is the quick hit", null, "draft", "xts", "sx", ""],
+[11915066, "OI-1 standalone a (X + Threads) - happiness works like a meal", null, "draft", "xts", "sx", ""],
+[11915060, "N1-4 standalone b (X + Threads) - polish vs share", null, "draft", "xts", "", ""],
+[11915059, "N1-4 standalone a (X + Threads) - days into weeks into months", null, "draft", "xts", "", ""],
+[11915058, "N1-3 standalone b (X + Threads) - Wayne Dyer on perception", null, "draft", "xts", "sx", ""],
+[11915057, "N1-3 standalone a (X + Threads) - the online life is easy to fake", null, "draft", "xts", "sx", ""],
+[11915056, "N1-2 standalone b (X + Threads) - successful musician, miserable inside", null, "draft", "xts", "", ""],
+[11915055, "N1-2 standalone a (X + Threads) - the unpolished diary", null, "draft", "xts", "", ""],
+[11915054, "N1-1 standalone b (X + Threads) - $70 per kilo", null, "draft", "xts", "", ""],
+[11915053, "N1-1 standalone a (X + Threads) - optimizing and the baggage system", null, "draft", "xts", "", ""],
+[11915049, "OI-4 X+Threads thread - Brooks: three questions about meaning", null, "draft", "xt", "sx", ""],
+[11915048, "OI-3 X+Threads thread - Brooks: the goal that feels empty", null, "draft", "xt", "sx", ""],
+[11915047, "OI-2 X+Threads thread - Brooks: pleasure vs enjoyment (travelling for the post or the soul)", null, "draft", "xt", "sx", ""],
+[11915044, "OI-1 X+Threads thread - Brooks: happiness is a meal", null, "draft", "xt", "sx", ""],
+[11915042, "N1-4 X+Threads thread - i shipped it imperfect (back and forth on your idea)", null, "draft", "xt", "", ""],
+[11915041, "N1-3 X+Threads thread - the online life is easy to fake (business class)", null, "draft", "xt", "sx", ""],
+[11915040, "N1-2 X+Threads thread - why a diary (musician to Dreamer's Diary)", null, "draft", "xt", "sx", ""],
+[11915032, "N1-1 X+Threads thread - the optimizer (flight, $1,400)", null, "draft", "xt", "", ""],
+[11689172, "N1-5 LinkedIn - the unpolished version (Newsletter 1)", null, "draft", "l", "nr", ""],
+[9329185, "(untitled) Most people creating a dream life, focus on optimising their mindset...", null, "draft", "xt", "", ""],
+[9328202, "(Typefully template) sample draft", null, "draft", "x", "", ""],
+[11915587, "Brian Tracy 4/5 - YouTube share: Daily Habits of Successful People", null, "draft", "x", "sx", ""],
+[11918699, "N1-5 standalone b (X + Threads) - ex-musician, did everything right, free diary", null, "draft", "xt", "nr", ""],
+[11918694, "N1-5 standalone a (X + Threads) - the Dreamer's Diary, free, no polished advice", null, "draft", "xt", "nr", ""],
+[11918690, "N1-5 X+Threads thread - free diary offer (the unpolished version)", null, "draft", "xt", "nr", ""],
+[11915588, "Brian Tracy 5/5 - LinkedIn tribute: habits + direction", "2026-11-15T08:00:00Z", "published", "l", "", "https://www.linkedin.com/feed/update/urn:li:share:7527641603491069952"],
+[11526643, "Brooks standalone D (day 6, plug)", "2026-10-31T11:00:00Z", "published", "xts", "", "https://x.com/TristanGr3goire/status/2116485600006357335"],
+[11526641, "Brooks standalone B (day 2)", "2026-10-30T11:00:00Z", "published", "xts", "", "https://x.com/TristanGr3goire/status/2116138363740930316"],
+[11526639, "Brooks macronutrients - THREAD (X + Threads)", "2026-10-29T16:00:00Z", "published", "xts", "", "https://x.com/TristanGr3goire/status/2115836584373465293"],
+[11526640, "Brooks standalone A (day 0)", "2026-10-29T11:00:00Z", "published", "xts", "", "https://x.com/TristanGr3goire/status/2115760861751173133"],
+[11526642, "Brooks standalone C (day 4)", null, "published", "xts", "", "https://x.com/TristanGr3goire/status/2115263508501999921"]
 ];
 function $(id){return document.getElementById(id)}
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 function norm(r){
   return {id:Number(r.id),title:r.draft_title||'',preview:String(r.preview||'').split('\n')[0],date:r.scheduled_date||null,status:r.status,
-    f:(r.linkedin_post_enabled?'l':'')+(r.x_post_enabled?'x':'')+(r.threads_post_enabled?'t':'')+(r.substack_post_enabled?'s':'')};
+    f:(r.linkedin_post_enabled?'l':'')+(r.x_post_enabled?'x':'')+(r.threads_post_enabled?'t':'')+(r.substack_post_enabled?'s':''),
+    tags:(r.tags||[]).map(function(t){return TAGMAP[t]||''}).filter(Boolean),url:r.x_published_url||r.linkedin_published_url||r.threads_published_url||''};
 }
-var snapItems=SNAP.map(function(r){return {id:r[0],title:r[1],preview:'',date:r[2],status:r[3],f:r[4]}});
-var st={sch:null,drf:null,live:false,at:null,err:null,needAllow:false};
+var snapItems=SNAP.map(function(r){return {id:r[0],title:r[1],preview:'',date:r[2],status:r[3],f:r[4],tags:(r[5]||'').match(/../g)||[],url:r[6]||''}});
+var st={sch:null,drf:null,pub:null,live:false,at:null,err:null,needAllow:false};
 var PL={l:'LinkedIn',x:'X',t:'Threads',s:'Substack'};
 function fmt(d){
   try{return new Intl.DateTimeFormat('en-GB',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit',timeZone:'Europe/Copenhagen'}).format(new Date(d))+' CET'}catch(e){return d}
 }
-function card(it,sch){
-  var chips=it.f.split('').map(function(c){return '<span class="chip">'+PL[c]+'</span>'}).join('');
-  var when=it.date?'<span class="pill">'+esc(fmt(it.date))+'</span>':'<span class="chip m">'+esc(it.status||'draft')+'</span>';
-  return '<div class="tf'+(sch?' sch':'')+'"><div><h4>'+esc(it.title||it.preview||'(untitled)')+'</h4><div class="meta">'+when+chips+'</div></div>'
-    +'<a class="open" href="https://typefully.com/?d='+it.id+'&a='+SET+'" target="_blank" rel="noopener">Open in Typefully</a>'
-    +(it.preview&&it.title?'<p>'+esc(it.preview)+'</p>':'')+'</div>';
+function badge(g){return {sch:'<span class="chip u">Scheduled</span>',sx:'<span class="chip u">Scheduled on X</span>',nr:'<span class="chip">Needs review</span>',drf:'<span class="chip m">Draft</span>',pub:'<span class="chip t1">Posted</span>'}[g]}
+function row(it,g){
+  var chips=it.f.split('').map(function(c){return '<span class="chip">'+PL[c]+'</span>'}).join(' ');
+  var when=it.date?esc(fmt(it.date)):(g==='sx'?'on X (native)':'');
+  var href=(g==='pub'&&it.url)?it.url:'https://typefully.com/?d='+it.id+'&a='+SET;
+  return '<tr><td>'+badge(g)+'</td><td>'+esc(it.title||it.preview||'(untitled)')+'</td><td>'+chips+'</td><td style="white-space:nowrap">'+when+'</td><td><a href="'+href+'" target="_blank" rel="noopener">'+(g==='pub'&&it.url?'View post':'Open')+'</a></td></tr>';
 }
+function group(it){
+  if(it.status==='published'||it.tags.indexOf('po')>-1)return 'pub';
+  if(it.status==='scheduled'||it.status==='planned')return 'sch';
+  if(it.tags.indexOf('sx')>-1)return 'sx';
+  if(it.tags.indexOf('nr')>-1)return 'nr';
+  return 'drf';
+}
+var GT=[['sch','Scheduled in Typefully'],['sx','Scheduled natively on X'],['nr','Needs your review'],['drf','Drafts'],['pub','Posted']];
 function render(){
-  var all=st.live&&st.sch&&st.drf?st.sch.concat(st.drf):snapItems;
-  var sch=all.filter(function(i){return i.status==='scheduled'||i.status==='planned'}).sort(function(a,b){return String(a.date).localeCompare(String(b.date))});
-  var drf=all.filter(function(i){return i.status==='draft'});
+  var all=st.live&&st.sch&&st.drf&&st.pub?st.sch.concat(st.drf,st.pub):snapItems;
   [['typefully','l','LinkedIn'],['x-typefully','x','X']].forEach(function(p){
-    var id=p[0],f=p[1];
-    var a=sch.filter(function(i){return i.f.indexOf(f)>-1}),b=drf.filter(function(i){return i.f.indexOf(f)>-1});
-    $(id+'-h1').textContent='Scheduled ('+a.length+')';$(id+'-h2').textContent='Drafts ('+b.length+')';
-    $(id+'-sch').innerHTML=a.length?a.map(function(i){return card(i,true)}).join(''):'<p class="sub">Nothing scheduled for '+p[2]+'.</p>';
-    $(id+'-drf').innerHTML=b.length?b.map(function(i){return card(i,false)}).join(''):'<p class="sub">No drafts for '+p[2]+'.</p>';
+    var id=p[0],f=p[1],html='';
+    var mine=all.filter(function(i){return i.f.indexOf(f)>-1});
+    GT.forEach(function(g){
+      var a=mine.filter(function(i){return group(i)===g[0]});
+      if(g[0]==='sx'&&f==='l')return;
+      a.sort(function(x,y){var dx=x.date||'',dy=y.date||'';return g[0]==='pub'?dy.localeCompare(dx):(dx&&dy?dx.localeCompare(dy):(dx?-1:(dy?1:0)))});
+      html+='<h3>'+g[1]+' ('+a.length+')</h3>';
+      html+=a.length?'<div class="tablewrap"><table style="min-width:640px"><thead><tr><th>Status</th><th>Post</th><th>Platforms</th><th>When</th><th></th></tr></thead><tbody>'+a.map(function(i){return row(i,g[0])}).join('')+'</tbody></table></div>':'<p class="sub">None.</p>';
+    });
+    $(id+'-groups').innerHTML=html;
     var bar=$(id+'-bar'),msg=$(id+'-msg');
     bar.className='tfbar'+(st.live?' live':'');
     if(st.live){var t=st.at?new Date(st.at).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}):'';msg.textContent='Live from Typefully'+(t?', updated '+t:'')+'. Refreshes every minute while this tab is open.'}
-    else msg.innerHTML='Snapshot from '+esc(SNAP_DATE)+'. '+esc(st.err||'Live connection not available in this view.')+(st.needAllow?' <button type="button" class="tfbtn" data-tfallow>Allow Typefully</button>':'');
+    else msg.innerHTML='Snapshot from '+esc(SNAP_DATE)+', refreshed by the biweekly run. '+esc(st.err||'Live connection not available in this view.')+(st.needAllow?' <button type="button" class="tfbtn" data-tfallow>Allow Typefully</button>':'');
   });
 }
 function rows(res){
@@ -855,13 +877,14 @@ function handler(key){return function(ev){
   if(ev.type==='error'){onErr(ev.error);return}
   var r=rows(ev.result);if(!r)return;
   st[key]=r;st.err=null;st.needAllow=false;st.at=(ev.result.cache&&ev.result.cache.storedAt)||Date.now();
-  st.live=!!(st.sch&&st.drf);render();
+  st.live=!!(st.sch&&st.drf&&st.pub);render();
 }}
 var mcpRef=null;
 function start(mcp){
   mcpRef=mcp;
   mcp.watchTool(SERVER,'list_drafts',{social_set_id:SET,status:'scheduled',limit:50,order_by:'scheduled_date'},handler('sch'),{refetchInterval:60000});
   mcp.watchTool(SERVER,'list_drafts',{social_set_id:SET,status:'draft',limit:50},handler('drf'),{refetchInterval:60000});
+  mcp.watchTool(SERVER,'list_drafts',{social_set_id:SET,status:'published',limit:25,order_by:'-published_at'},handler('pub'),{refetchInterval:60000});
 }
 document.addEventListener('click',function(e){
   var t=e.target;if(!t.closest)return;
