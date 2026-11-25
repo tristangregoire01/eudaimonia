@@ -1,3 +1,4 @@
+<meta charset="utf-8">
 <title>Eudaimonia LinkedIn Dashboard</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=Cardo:ital@1&family=Montserrat:wght@500;600&family=Playfair+Display:wght@500;600&display=swap">
@@ -5,18 +6,21 @@
 /* Layout: one calm column, sticky tab bar, seven sections shown one at a time. Soul, Mind, Body glyphs and the gold rule are the brand's own ornaments. */
 :root{
   --bg:#FAF7F2; --surface:#FFFFFF; --fg:#1A1F1E; --muted:#5F6B65; --line:#E3DDD2;
-  --forest:#2D3B34; --on-forest:#FAF7F2; --gold:#C4963A; --gold-text:#8A6416;
+  --forest:#2D3B34; --on-forest:#FFFFFF; --gold:#C4963A; --gold-text:#8A6416;
   --audience:#2D3B34; --trust:#7E8F83; --conversion:#C4963A; --ok:#3F6B53; --soul:#2D3B34; --mind:#8A6416; --body:#4A6741; --f-glyph:'Cardo',Georgia,serif;
   --f-head:'Playfair Display',Georgia,serif; --f-body:'Lora',Georgia,serif; --f-label:'Montserrat',system-ui,sans-serif;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#1A1F1E; --surface:#232A28; --fg:#F1EDE4; --muted:#A3AEA7; --line:#34403B;
-  --forest:#2D3B34; --on-forest:#FAF7F2; --gold-text:#D8AE55;
+  --bg:#1A1F1E; --surface:#232A28; --fg:#FFFFFF; --muted:#D3DBD6; --line:#34403B;
+  --forest:#2D3B34; --on-forest:#FFFFFF; --gold-text:#D8AE55;
   --audience:#9DB5A5; --trust:#5F7568; --conversion:#C4963A; --ok:#7FB596; --soul:#9DB5A5; --mind:#D8AE55; --body:#7A9E7E; color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#1A1F1E; --surface:#232A28; --fg:#F1EDE4; --muted:#A3AEA7; --line:#34403B;
-  --forest:#2D3B34; --on-forest:#FAF7F2; --gold-text:#D8AE55;
+  --bg:#1A1F1E; --surface:#232A28; --fg:#FFFFFF; --muted:#D3DBD6; --line:#34403B;
+  --forest:#2D3B34; --on-forest:#FFFFFF; --gold-text:#D8AE55;
   --audience:#9DB5A5; --trust:#5F7568; --conversion:#C4963A; --ok:#7FB596; --soul:#9DB5A5; --mind:#D8AE55; --body:#7A9E7E; color-scheme:dark}
+/* readability: any text on forest/dark green is pure white */
+.pill,.btn,.mode button[aria-pressed="true"],.on-forest{color:#FFFFFF!important}
+:root[data-theme="dark"] body,:root:not([data-theme="light"]) .darkfg{color:var(--fg)}
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--fg);font:16px/1.6 var(--f-body);padding-inline:max(16px,env(safe-area-inset-left,0px)) max(16px,env(safe-area-inset-right,0px));padding-block:24px 64px}
 .wrap{max-width:960px;margin:0 auto}
